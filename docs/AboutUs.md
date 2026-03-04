@@ -40,9 +40,9 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Developer
 * Responsibilities: Data
 
-### Jean Doe
+### Song Yiyang
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/song-yiyang.png" width="200px">
 
 [[github](https://github.com/song-yiyang)]
 
