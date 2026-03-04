@@ -49,12 +49,12 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Developer
 * Responsibilities: Dev Ops + Threading
 
-### James Doe
+### Tan Ze Jian
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/zejian.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[homepage](https://onetw0three.github.io/)]
+[[github](http://github.com/onetw0three)]
 
 * Role: Developer
 * Responsibilities: UI
