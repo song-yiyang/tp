@@ -321,36 +321,131 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*`      | scam caller                    | purge data immediately                                                                       | I can wipe my hard disk if I get raided by the police                            |
 | `*`      | new user                       | follow a tutorial                                                                            | I am guided through the onboarding process                                       |
 
-*{More to be added}*
-
 ### Use cases
 
 (For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC01 - Create potential victim profile**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1. User enters a command to create a new potential victim profile (e.g., `add Ze Jian -email tzh@gmail.com -tag job : investment banker -tag yearly income : $100000`).
+2. System validates the input fields.
+3. System saves the new profile and displays a success message with the created profile summary.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 1a. Required fields (e.g., name) are missing from the command.
+    * 1a1. System shows an error message indicating the missing required fields.
 
-  Use case ends.
+      Use case ends.
 
-* 3a. The given index is invalid.
+* 2a. Phone number or email format is invalid.
+    * 2a1. System shows an error message with the expected format.
 
-    * 3a1. AddressBook shows an error message.
+      Use case ends.
 
-      Use case resumes at step 2.
+* 2b. A duplicate profile with the same name and phone number already exists.
+    * 2b1. System shows an error indicating the duplicate.
 
-*{More to be added}*
+      Use case ends.
+
+
+**Use case: UC02 - Delete potential victim profile**
+
+**MSS**
+
+1. User enters a command to delete a profile by index (e.g., `delete 3`).
+2. System locates the profile at the specified index.
+3. System deletes the profile and displays a success message with the deleted profile's name.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. No index is provided.
+    * 1a1. System shows an error indicating the expected command format.
+
+      Use case ends.
+
+* 2a. The index is out of range or invalid (e.g., negative, non-integer).
+    * 2a1. System shows an error indicating the valid index range.
+
+      Use case ends.
+
+
+**Use case: UC03 - Search up victim profile**
+
+**MSS**
+
+1. User enters a search command with a keyword (e.g., `find John --job banker`).
+2. System searches stored profiles for matches.
+3. System displays a list of all matching profiles with their stored details.
+ 
+    Use case ends.
+
+**Extensions**
+
+* 1a. No search keyword is provided.
+    * 1a1. System shows an error indicating the expected command format.
+
+      Use case ends.
+
+* 2a. No profiles match the query.
+    * 2a1. System shows a message indicating no results found.
+
+      Use case ends.
+
+
+**Use case: UC04 - Filter and sort contacts by attributes**
+
+**MSS**
+
+1. User enters a command with sort criteria (e.g., `list --sort age`).
+2. System validates the specified tag(s).
+3. System displays the sorted list of profiles.
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. No profile has the specified tag, or the tag name is invalid.
+    * 2a1. System shows an error listing example valid tags.
+
+      Use case ends.
+
+    
+**Use case: UC05 - Append New Information to a Victim Profile**
+
+**MSS**
+
+1. User enters a command to append information to a profile by index (e.g., `append 3 --tag income : $100000`).
+2. System locates the profile at the specified index.
+3. System validates the new information.
+4. System updates the profile with the new information and displays a success message with the updated profile.
+
+    Use case ends.
+
+**Extensions**
+
+* 1a. No index or no new information is provided.
+    * 1a1. System shows an error indicating the expected command format.
+
+      Use case ends.
+* 2a. The index is out of range or invalid.
+    * 2a1. System shows an error indicating the valid index range.
+
+      Use case ends.
+* 3a. The new information format is invalid (e.g., missing tag name or value).
+    * 3a1. System shows an error indicating the expected command.
+
+      Use case ends.
+* 4a. The new information conflicts with existing information (e.g., trying to append a tag that already exists).
+    * 4a1. System shows an error indicating the conflict and suggests using the edit command instead.
+
+      Use case ends.
 
 ### Non-Functional Requirements
 
