@@ -327,22 +327,22 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: UC01 - Create potential victim profile**
 
-**MSS**
+**MSS:**
 
 1. User requests to create a new potential victim profile with name and other attributes.
-2. System validates the attributes.
+2. System validates the name and attributes.
 3. System saves the new profile and displays a success message with the created profile summary.
 
     Use case ends.
 
-**Extensions**
+**Extensions:**
 
-* 1a. Victim name is unspecified.
-    * 1a1. System shows an error message indicating the missing attribute.
+* 1a. Victim name is unspecified or invalid.
+    * 1a1. System shows an error message indicating the issue with the name.
 
       Use case ends.
 
-* 2a. Phone number or email format is invalid.
+* 2a. Specified attribute(s) is/are invalid.
     * 2a1. System shows an error message with the expected format.
 
       Use case ends.
@@ -350,24 +350,29 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case: UC02 - Delete potential victim profile**
 
-**MSS**
+**MSS:**
 
 1. User requests to delete a potential victim profile.
 2. System deletes the specified profile and displays a success message with the deleted profile's name.
 
     Use case ends.
 
-**Extensions**
+**Extensions:**
 
-* 1a. Request format is invalid or victim profile is unspecified
-    * 1a1. System shows an error indicating the expected command format.
+* 1a. Request format is invalid or victim profile is unspecified.
+    * 1a1. System shows an error indicating the expected specification format.
+
+      Use case ends.
+
+* 1b. Specified victim does not exist.
+    * 1b1. System shows an error indicating non-existent victim and potential remedies.
 
       Use case ends.
 
 
 **Use case: UC03 - Search up victim profile**
 
-**MSS**
+**MSS:**
 
 1. User requests to search for victim profiles by name or other attributes.
 2. System searches stored profiles for matches.
@@ -375,9 +380,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
  
     Use case ends.
 
-**Extensions**
+**Extensions:**
 
-* 1a. Request format is invalid
+* 1a. Request format is invalid.
     * 1a1. System shows an error indicating the expected command format.
 
       Use case ends.
@@ -388,9 +393,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 
-**Use case: UC04 - Sort contacts by attributes**
+**Use case: UC04 - Sort contacts by tag(s)**
 
-**MSS**
+**MSS:**
 
 1. User requests to sort profiles by specified tag(s).
 2. System validates the specified tag(s).
@@ -398,7 +403,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case ends.
 
-**Extensions**
+**Extensions:**
 
 * 2a. No profile has the specified tag, or the tag name is invalid.
     * 2a1. System shows an error listing example valid tags.
@@ -408,28 +413,28 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     
 **Use case: UC05 - Append New Information to a Victim Profile**
 
-**MSS**
+**MSS:**
 
 1. User requests to append information to a specified profile.
-2. System validates the new information.
+2. System validates the specification and the new information.
 3. System updates the profile with the new information and displays a success message with the updated profile.
 
     Use case ends.
 
-**Extensions**
+**Extensions:**
 
-* 1a. No new information is provided or profile is not well specified.
-    * 1a1. System shows an error indicating the expected command format.
+* 2a. No new information is provided or profile is not well specified.
+    * 2a1. System shows an error indicating the expected specification or information format.
 
       Use case ends.
  
-* 3a. The new information is invalid.
-    * 3a1. System shows an error indicating the expected format.
+* 2b. The new information is invalid.
+    * 2b1. System shows an error indicating the expected information format.
 
       Use case ends.
 
-* 4a. The new information conflicts with existing information (e.g., trying to append a tag that already exists).
-    * 4a1. System shows an error indicating the conflict.
+* 2c. The new information conflicts with existing information (e.g., trying to append a tag that already exists).
+    * 2c1. System shows an error indicating the conflict.
 
       Use case ends.
 
