@@ -17,12 +17,24 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.inputpatterns.InputPattern;
+import seedu.address.logic.parser.inputpatterns.IntegerToken;
 import seedu.address.model.tag.Tag;
 
 /**
  * Parses input arguments and creates a new EditCommand object
  */
-public class EditCommandParser implements Parser<EditCommand> {
+public class EditCommandParser extends Parser<EditCommand> {
+
+    @Override
+    InputPattern createInputPattern() {
+        return new InputPattern("edit",
+
+                // TODO find a way to retrieve the size of the list
+                new IntegerToken("taskno" , 1, 100)
+
+        );
+    }
 
     /**
      * Parses the given {@code String} of arguments in the context of the EditCommand

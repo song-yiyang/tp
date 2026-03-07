@@ -6,12 +6,18 @@ import java.util.Arrays;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.inputpatterns.InputPattern;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 /**
  * Parses input arguments and creates a new FindCommand object
  */
-public class FindCommandParser implements Parser<FindCommand> {
+public class FindCommandParser extends Parser<FindCommand> {
+
+    @Override
+    InputPattern createInputPattern() {
+        return null;
+    }
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand

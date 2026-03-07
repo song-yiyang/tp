@@ -22,7 +22,8 @@ public class PersonUtil {
      * Returns an add command string for adding the {@code person}.
      */
     public static String getAddCommand(Person person) {
-        return AddCommand.COMMAND_WORD + " " + getPersonDetails(person);
+        String commandString = AddCommand.COMMAND_WORD + " " + getPersonDetails(person);
+        return commandString;
     }
 
     /**
@@ -30,10 +31,13 @@ public class PersonUtil {
      */
     public static String getPersonDetails(Person person) {
         StringBuilder sb = new StringBuilder();
-        sb.append(PREFIX_NAME + person.getName().fullName + " ");
-        sb.append(PREFIX_PHONE + person.getPhone().value + " ");
-        sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
-        sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
+        sb.append(person.getName().fullName + " ");
+        if (person.hasPhone()) {
+            sb.append("-phone " + person.getPhone().value + " ");
+        }
+        if (person.hasEmail()) {
+            sb.append("-email " + person.getEmail().value + " ");
+        }
         person.getTags().stream().forEach(
             s -> sb.append(PREFIX_TAG + s.tagName + " ")
         );
