@@ -1,14 +1,14 @@
 package seedu.address.logic.parser;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.logic.parser.inputpatterns.InputPattern;
-import seedu.address.logic.parser.inputpatterns.StringToken;
-import seedu.address.logic.parser.inputpatterns.Token;
+import seedu.address.logic.parser.inputpatterns.*;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
@@ -23,9 +23,16 @@ public class AddCommandParser extends Parser<AddCommand> {
 
     @Override
     InputPattern createInputPattern() {
-        return new InputPattern("add",
+        ArrayList<Token> tokens = new ArrayList<Token>(List.of(
                 new StringToken("name", "<name>")
-        );
+        ));
+
+        ArrayList<Param> params = new ArrayList<>(List.of(
+                new PhoneParam(0, 1),
+                new EmailParam(0, 1)
+        ));
+
+        return new InputPattern("add", tokens, params);
     }
 
     /**
@@ -42,7 +49,20 @@ public class AddCommandParser extends Parser<AddCommand> {
         Name name = new Name(nameString);
 
         Phone phone = null;
+        Param phoneParam = inputPattern.getParamWithId("-phone");
+        ArrayList<String> phoneValues = phoneParam.getValues();
+        if (!phoneValues.isEmpty()) {
+            phone = new Phone(phoneValues.get(0));
+        }
+
         Email email = null;
+        Param emailParam = inputPattern.getParamWithId("-email");
+        ArrayList<String> emailValues = emailParam.getValues();
+        if (!emailValues.isEmpty()) {
+            email = new Email(emailValues.get(0));
+        }
+
+
         Set<Tag> tagList = new HashSet<Tag>();
 
         Person person = new Person(name, phone, email, tagList);
