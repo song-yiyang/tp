@@ -29,7 +29,7 @@ public class SampleDataUtil {
             new Person(new Name("Irfan Ibrahim"), new Phone("92492021"), new Email("irfan@example.com"),
                     getTagSet("status:scammed")),
             new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
-                    getTagSet("income:$100,000"))
+                    getTagSet())
         };
     }
 
