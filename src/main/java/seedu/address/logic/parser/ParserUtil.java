@@ -104,12 +104,11 @@ public class ParserUtil {
     public static Tag parseTag(String tag) throws ParseException {
         requireNonNull(tag);
 
-        String[] parts = tag.split(":", 2);
-        if (parts.length < 2) {
+        if (!Tag.isValidTagString(tag)) {
             throw new ParseException(Tag.FORMAT_MESSAGE_CONSTRAINTS);
         }
-        String tagName = parts[0].trim();
-        String tagValue = parts[1].trim();
+        String tagName = Tag.getNameFromRaw(tag);
+        String tagValue = Tag.getValueFromRaw(tag);
 
         if (!Tag.isValidTagName(tagName)) {
             throw new ParseException(Tag.NAME_MESSAGE_CONSTRAINTS);
@@ -119,7 +118,7 @@ public class ParserUtil {
             throw new ParseException(Tag.VALUE_MESSAGE_CONSTRAINTS);
         }
 
-        return new Tag(tagName, tagValue);
+        return new Tag(tag);
     }
 
     /**

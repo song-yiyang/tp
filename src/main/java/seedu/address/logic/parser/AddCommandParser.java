@@ -4,9 +4,7 @@ import static seedu.address.logic.parser.CliSyntax.PARAM_ID_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_PHONE;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
@@ -21,7 +19,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.person.TagList;
 
 
 
@@ -73,7 +71,7 @@ public class AddCommandParser extends Parser<AddCommand> {
         }
 
 
-        Set<Tag> tagList = new HashSet<Tag>();
+        TagList tagList = new TagList();
 
         Person person = new Person(name, phone, email, tagList);
 

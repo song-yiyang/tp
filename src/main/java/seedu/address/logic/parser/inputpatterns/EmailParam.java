@@ -9,8 +9,8 @@ import seedu.address.model.person.Email;
  */
 public class EmailParam extends Param {
 
-    public EmailParam(int minOccurences, int maxOccurences) {
-        super(PARAM_ID_EMAIL, minOccurences, maxOccurences);
+    public EmailParam(int minOccurrences, int maxOccurrences) {
+        super(PARAM_ID_EMAIL, minOccurrences, maxOccurrences);
     }
 
     @Override

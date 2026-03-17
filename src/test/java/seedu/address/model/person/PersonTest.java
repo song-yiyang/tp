@@ -23,7 +23,7 @@ public class PersonTest {
     @Test
     public void asObservableList_modifyList_throwsUnsupportedOperationException() {
         Person person = new PersonBuilder().build();
-        assertThrows(UnsupportedOperationException.class, () -> person.getTags().remove(0));
+        assertThrows(UnsupportedOperationException.class, () -> person.getPrintableTags().remove(0));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class PersonTest {
     public void toStringMethod() {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone="
                 + Optional.of(ALICE.getPhone()) + ", email=" + Optional.of(ALICE.getEmail())
-                + ", tags=" + ALICE.getTags() + "}";
+                + ", tags=" + ALICE.getPrintableTags() + "}";
         assertEquals(expected, ALICE.toString());
     }
 }

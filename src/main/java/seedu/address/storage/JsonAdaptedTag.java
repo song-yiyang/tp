@@ -11,26 +11,26 @@ import seedu.address.model.tag.Tag;
  */
 class JsonAdaptedTag {
 
-    private final String tag;
+    private final String tagString;
 
     /**
      * Constructs a {@code JsonAdaptedTag} with the given {@code tagName}.
      */
     @JsonCreator
-    public JsonAdaptedTag(String tag) {
-        this.tag = tag;
+    public JsonAdaptedTag(String tagString) {
+        this.tagString = tagString;
     }
 
     /**
      * Converts a given {@code Tag} into this class for Jackson use.
      */
     public JsonAdaptedTag(Tag source) {
-        tag = source.tagName + ":" + source.tagValue;
+        this.tagString = source.tagName + ":" + source.tagValue;
     }
 
     @JsonValue
     public String getTag() {
-        return tag;
+        return this.tagString;
     }
 
     /**
@@ -39,22 +39,12 @@ class JsonAdaptedTag {
      * @throws IllegalValueException if there were any data constraints violated in the adapted tag.
      */
     public Tag toModelType() throws IllegalValueException {
-        String[] parts = tag.split(":", 2);
-        if (parts.length < 2) {
-            throw new IllegalValueException(Tag.FORMAT_MESSAGE_CONSTRAINTS);
+        try {
+            return new Tag(this.tagString);
+        } catch (NullPointerException e) {
+            throw new IllegalValueException("Null pointer exception. This should not happen.");
+        } catch (IllegalArgumentException e) {
+            throw new IllegalValueException(e.getMessage());
         }
-        String tagName = parts[0].trim();
-        String tagValue = parts[1].trim();
-
-        if (!Tag.isValidTagName(tagName)) {
-            throw new IllegalValueException(Tag.NAME_MESSAGE_CONSTRAINTS);
-        }
-
-        if (!Tag.isValidTagValue(tagValue)) {
-            throw new IllegalValueException(Tag.VALUE_MESSAGE_CONSTRAINTS);
-        }
-
-        return new Tag(tagName, tagValue);
     }
-
 }
