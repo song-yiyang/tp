@@ -12,6 +12,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class InputPattern {
 
+    public static final String MESSAGE_TOO_FEW_FIELDS = "Too few fields inputted (TODO MORE DESCRIPTIVE)";
+    public static final String MESSAGE_TOO_MANY_FIELDS = "Too many fields inputted (TODO MORE DESCRIPTIVE)";
     /**
      * The list of tokens that form the first part of the input arguments
      */
@@ -97,7 +99,7 @@ public class InputPattern {
                 continue;
             }
 
-            // choose the earliest occurence of any param to split
+            // choose the earliest occurrence of any param to split
             tokenParamSplitPoint = Math.min(thisSplitPoint, tokenParamSplitPoint);
         }
 
@@ -109,9 +111,9 @@ public class InputPattern {
         ArrayList<String> combinedSegments = getCombinedSegments(tokenArgs);
 
         if (combinedSegments.size() < this.tokens.size()) {
-            throw new ParseException("Too few fields inputted (TODO MORE DESCRIPTIVE)");
+            throw new ParseException(MESSAGE_TOO_FEW_FIELDS);
         } else if (combinedSegments.size() > this.tokens.size()) {
-            throw new ParseException("Too many fields inputted (TODO MORE DESCRIPTIVE)");
+            throw new ParseException(MESSAGE_TOO_MANY_FIELDS);
         }
 
         for (int i = 0; i < combinedSegments.size(); i++) {
@@ -173,9 +175,16 @@ public class InputPattern {
      * @return the list of segments that matches the token pattern
      */
     private ArrayList<String> getCombinedSegments(String input) {
+        String strippedInput = input.strip();
+
+        if (strippedInput.isEmpty()) {
+            // empty ArrayList
+            return new ArrayList<>();
+        }
+
         ArrayList<String> rawSegments = new ArrayList<String>();
-        rawSegments.addAll(List.of(input.split(" ")));
-        if (!input.isEmpty() && input.charAt(input.length() - 1) == ' ') {
+        rawSegments.addAll(List.of(strippedInput.split(" ")));
+        if (!strippedInput.isEmpty() && strippedInput.charAt(strippedInput.length() - 1) == ' ') {
             rawSegments.add("");
         }
 
