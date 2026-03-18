@@ -43,11 +43,11 @@ public class EditCommandParserTest {
     public void parse_invalidPreamble_failure() {
         // negative index
         assertParseFailure(parser, "-5 " + PARAM_ID_NAME + " " + VALID_NAME_AMY,
-                "-5 does not match [1...2147483647]");
+                "Your input of '-5' does not match an expected value of the form [1...2147483647]");
 
         // zero index
         assertParseFailure(parser, "0 " + PARAM_ID_NAME + " " + VALID_NAME_AMY,
-                "0 does not match [1...2147483647]");
+                "Your input of '0' does not match an expected value of the form [1...2147483647]");
 
         // too many token fields before params
         assertParseFailure(parser, "1 some random string", "Too many fields inputted (TODO MORE DESCRIPTIVE)");

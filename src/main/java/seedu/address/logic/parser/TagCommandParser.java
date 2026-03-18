@@ -34,7 +34,7 @@ public class TagCommandParser extends Parser<TagCommand> {
     @Override
     InputPattern createInputPattern() {
         ArrayList<Token> tokens = new ArrayList<Token>(List.of(
-                new IntegerToken("profile_number" , 1, 100)
+                new IntegerToken("index" , 1, 100)
         ));
 
         ArrayList<Param> params = new ArrayList<>(List.of(
@@ -53,26 +53,31 @@ public class TagCommandParser extends Parser<TagCommand> {
      */
     @Override
     TagCommand parse(String args) throws ParseException {
-        InputPattern inputPattern = createInputPattern();
-        inputPattern.assignSegmentsFromArgs(args.strip());
+        try {
+            InputPattern inputPattern = createInputPattern();
+            inputPattern.assignSegmentsFromArgs(args.strip());
 
+            Token indexToken = inputPattern.getTokenWithId("index");
+            Index index = ParserUtil.parseIndex(indexToken.getAssignedSegment());
+            Param tagAddParam = inputPattern.getParamWithId(PARAM_ID_TAG_ADD);
+            ArrayList<String> addTagStrings = tagAddParam.getValues();
+            List<Tag> addTags = addTagStrings.stream().map(Tag::new).toList();
 
-        Token indexToken = inputPattern.getTokenWithId("profile_number");
-        Index index = ParserUtil.parseIndex(indexToken.getAssignedSegment());
+            Param tagEditParam = inputPattern.getParamWithId(PARAM_ID_TAG_EDIT);
+            ArrayList<String> editTagStrings = tagEditParam.getValues();
+            List<Tag> editTags = editTagStrings.stream().map(Tag::new).toList();
 
+            Param tagDeleteParam = inputPattern.getParamWithId(PARAM_ID_TAG_DELETE);
+            ArrayList<String> deleteTagStrings = tagDeleteParam.getValues();
+            List<Tag> deleteTags = deleteTagStrings.stream().map(str -> new Tag(str + ":dummy")).toList();
 
-        Param tagAddParam = inputPattern.getParamWithId(PARAM_ID_TAG_ADD);
-        ArrayList<String> addTagStrings = tagAddParam.getValues();
-        List<Tag> addTags = addTagStrings.stream().map(Tag::new).toList();
-
-        Param tagEditParam = inputPattern.getParamWithId(PARAM_ID_TAG_EDIT);
-        ArrayList<String> editTagStrings = tagEditParam.getValues();
-        List<Tag> editTags = editTagStrings.stream().map(Tag::new).toList();
-
-        Param tagDeleteParam = inputPattern.getParamWithId(PARAM_ID_TAG_DELETE);
-        ArrayList<String> deleteTagStrings = tagDeleteParam.getValues();
-        List<Tag> deleteTags = deleteTagStrings.stream().map(str -> new Tag(str + ":dummy")).toList();
-
-        return new TagCommand(index, addTags, editTags, deleteTags);
+            return new TagCommand(index, addTags, editTags, deleteTags);
+        } catch (ParseException e) {
+            if (e.getMessage().contains("is not a valid value")) {
+                throw new ParseException(e.getMessage().replace("is not a valid value",
+                        "is not a valid tag format"));
+            }
+            throw e;
+        }
     }
 }
