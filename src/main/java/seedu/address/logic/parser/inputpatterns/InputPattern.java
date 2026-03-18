@@ -12,6 +12,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class InputPattern {
 
+    public static final String MESSAGE_TOO_FEW_FIELDS = "Too few fields inputted (TODO MORE DESCRIPTIVE)";
+    public static final String MESSAGE_TOO_MANY_FIELDS = "Too many fields inputted (TODO MORE DESCRIPTIVE)";
     /**
      * The list of tokens that form the first part of the input arguments
      */
@@ -109,9 +111,9 @@ public class InputPattern {
         ArrayList<String> combinedSegments = getCombinedSegments(tokenArgs);
 
         if (combinedSegments.size() < this.tokens.size()) {
-            throw new ParseException("Too few fields inputted (TODO MORE DESCRIPTIVE)");
+            throw new ParseException(MESSAGE_TOO_FEW_FIELDS);
         } else if (combinedSegments.size() > this.tokens.size()) {
-            throw new ParseException("Too many fields inputted (TODO MORE DESCRIPTIVE)");
+            throw new ParseException(MESSAGE_TOO_MANY_FIELDS);
         }
 
         for (int i = 0; i < combinedSegments.size(); i++) {

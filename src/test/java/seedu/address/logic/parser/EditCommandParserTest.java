@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.parser.inputpatterns.InputPattern;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 public class EditCommandParserTest {
@@ -29,13 +30,13 @@ public class EditCommandParserTest {
     @Test
     public void parse_missingParts_failure() {
         // no index specified
-        assertParseFailure(parser, PARAM_ID_NAME + " " + VALID_NAME_AMY, " does not match [1...2147483647]");
+        assertParseFailure(parser, PARAM_ID_NAME + " " + VALID_NAME_AMY, InputPattern.MESSAGE_TOO_FEW_FIELDS);
 
         // no field specified
         assertParseFailure(parser, "1", EditCommand.MESSAGE_NOT_EDITED);
 
         // no index and no field specified
-        assertParseFailure(parser, "", " does not match [1...2147483647]");
+        assertParseFailure(parser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS);
     }
 
     @Test
