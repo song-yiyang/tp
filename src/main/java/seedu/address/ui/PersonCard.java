@@ -1,6 +1,6 @@
 package seedu.address.ui;
 
-import java.util.Comparator;
+import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -62,8 +62,14 @@ public class PersonCard extends UiPart<Region> {
             email.setVisible(false);
         }
 
-        person.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        List<String> tagList = person.getPrintableTags();
+
+        if (!tagList.isEmpty()) {
+            tags.setVisible(true);
+            tagList.forEach(tag -> {
+                Label tagLabel = new Label(tag);
+                tags.getChildren().add(tagLabel);
+            });
+        }
     }
 }

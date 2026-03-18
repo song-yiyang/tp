@@ -13,8 +13,11 @@ public class CliSyntax {
     public static final Prefix PREFIX_TAG = new Prefix("t/");
 
     /* tag id definitions */
-    public static final String PARAM_ID_NAME = "--phone";
+    public static final String PARAM_ID_NAME = "--name";
     public static final String PARAM_ID_PHONE = "--phone";
     public static final String PARAM_ID_EMAIL = "--email";
     public static final String PARAM_ID_TAG = "--tag";
+    public static final String PARAM_ID_TAG_ADD = "--add";
+    public static final String PARAM_ID_TAG_EDIT = "--edit";
+    public static final String PARAM_ID_TAG_DELETE = "--delete";
 }

@@ -11,8 +11,8 @@ import seedu.address.model.person.Phone;
  */
 public class PhoneParam extends Param {
 
-    public PhoneParam(int minOccurences, int maxOccurences) {
-        super(PARAM_ID_PHONE, minOccurences, maxOccurences);
+    public PhoneParam(int minOccurrences, int maxOccurrences) {
+        super(PARAM_ID_PHONE, minOccurrences, maxOccurrences);
     }
 
     @Override

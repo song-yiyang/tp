@@ -103,11 +103,22 @@ public class ParserUtil {
      */
     public static Tag parseTag(String tag) throws ParseException {
         requireNonNull(tag);
-        String trimmedTag = tag.trim();
-        if (!Tag.isValidTagName(trimmedTag)) {
-            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+
+        if (!Tag.isValidTagString(tag)) {
+            throw new ParseException(Tag.FORMAT_MESSAGE_CONSTRAINTS);
         }
-        return new Tag(trimmedTag);
+        String tagName = Tag.getNameFromRaw(tag);
+        String tagValue = Tag.getValueFromRaw(tag);
+
+        if (!Tag.isValidTagName(tagName)) {
+            throw new ParseException(Tag.NAME_MESSAGE_CONSTRAINTS);
+        }
+
+        if (!Tag.isValidTagValue(tagValue)) {
+            throw new ParseException(Tag.VALUE_MESSAGE_CONSTRAINTS);
+        }
+
+        return new Tag(tag);
     }
 
     /**
@@ -116,8 +127,8 @@ public class ParserUtil {
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
         final Set<Tag> tagSet = new HashSet<>();
-        for (String tagName : tags) {
-            tagSet.add(parseTag(tagName));
+        for (String tag : tags) {
+            tagSet.add(parseTag(tag));
         }
         return tagSet;
     }

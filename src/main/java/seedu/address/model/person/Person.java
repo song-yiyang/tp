@@ -2,14 +2,12 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.tag.Tag;
+
 /**
  * Represents a Person in the address book.
  * Guarantees: details are present and not null, field values are validated, immutable.
@@ -22,18 +20,18 @@ public class Person {
     private final Optional<Email> email;
 
     // Data fields
-    private final Set<Tag> tags = new HashSet<>();
+    private final TagList tags;
 
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Set<Tag> tags) {
+    public Person(Name name, Phone phone, Email email, TagList tags) {
         requireAllNonNull(name, tags);
 
         this.name = name;
         this.phone = Optional.ofNullable(phone);
         this.email = Optional.ofNullable(email);
-        this.tags.addAll(tags);
+        this.tags = new TagList(tags);
     }
 
     public Name getName() {
@@ -58,12 +56,15 @@ public class Person {
         return email.get();
     }
 
+    public TagList getTags() {
+        return this.tags;
+    }
+
     /**
-     * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
-     * if modification is attempted.
+     * Returns a list of printable tag name-value pairs, collapsed into Strings.
      */
-    public Set<Tag> getTags() {
-        return Collections.unmodifiableSet(tags);
+    public List<String> getPrintableTags() {
+        return this.tags.viewTags();
     }
 
     /**
