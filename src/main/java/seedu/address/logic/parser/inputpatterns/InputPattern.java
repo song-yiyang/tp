@@ -121,8 +121,8 @@ public class InputPattern {
             Token token = this.tokens.get(i);
 
             if (!token.matches(segment)) {
-                throw new ParseException("Your input of '" + segment +
-                        "' does not match an expected value of the form " + token.getPreview());
+                throw new ParseException("Your input of '" + segment
+                        + "' does not match an expected value of the form " + token.getPreview());
             }
 
             token.setAssignedSegment(segment);

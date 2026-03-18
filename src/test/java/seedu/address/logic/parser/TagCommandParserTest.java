@@ -1,7 +1,7 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.inputpatterns.InputPattern.MESSAGE_TOO_FEW_FIELDS;
 import static seedu.address.logic.parser.inputpatterns.InputPattern.MESSAGE_TOO_MANY_FIELDS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
