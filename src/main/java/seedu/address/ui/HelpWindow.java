@@ -30,8 +30,6 @@ public class HelpWindow extends UiPart<Stage> {
           list    List all contacts
           edit    INDEX [-name NAME] [-phone PHONE] [-email EMAIL]...
                     e.g. edit 1 -phone 91234567 -email newemail@example.com
-          find    KEYWORD [MORE_KEYWORDS]
-                    e.g. find Alex David
           delete  INDEX
           clear   Delete all contacts
           help    Show this help message
