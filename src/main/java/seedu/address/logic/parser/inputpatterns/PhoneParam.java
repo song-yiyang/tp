@@ -7,7 +7,7 @@ import seedu.address.model.person.Phone;
 
 
 /**
- * A param that takes in the phone, with id "-phone"
+ * A param that takes in the phone, with id "--phone"
  */
 public class PhoneParam extends Param {
 

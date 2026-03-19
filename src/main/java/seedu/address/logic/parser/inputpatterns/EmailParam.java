@@ -5,7 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PARAM_ID_EMAIL;
 import seedu.address.model.person.Email;
 
 /**
- * A Param of the id "-email"
+ * A Param of the id "--email"
  */
 public class EmailParam extends Param {
 

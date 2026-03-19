@@ -121,23 +121,24 @@ public class InputPattern {
             Token token = this.tokens.get(i);
 
             if (!token.matches(segment)) {
-                throw new ParseException(segment + " does not match " + token.getPreview());
+                throw new ParseException("Your input of '" + segment
+                        + "' does not match an expected value of the form " + token.getPreview());
             }
 
             token.setAssignedSegment(segment);
         }
 
         /// settle the paramsArgs
-        String[] paramSegments = paramArgs.split(" -");
+        String[] paramSegments = paramArgs.split(" --");
         for (int i = 0; i < paramSegments.length; i++) {
             String segment = paramSegments[i];
             if (segment.isEmpty()) {
                 continue;
             }
 
-            // since splitting by " -" removes the -, we add it back
+            // since splitting by " --" removes the --, we add it back
             if (i != 0) {
-                segment = "-" + segment;
+                segment = "--" + segment;
             }
             segment = segment.strip();
 
