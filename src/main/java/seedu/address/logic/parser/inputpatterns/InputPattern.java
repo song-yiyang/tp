@@ -129,16 +129,16 @@ public class InputPattern {
         }
 
         /// settle the paramsArgs
-        String[] paramSegments = paramArgs.split(" -");
+        String[] paramSegments = paramArgs.split(" --");
         for (int i = 0; i < paramSegments.length; i++) {
             String segment = paramSegments[i];
             if (segment.isEmpty()) {
                 continue;
             }
 
-            // since splitting by " -" removes the -, we add it back
+            // since splitting by " --" removes the --, we add it back
             if (i != 0) {
-                segment = "-" + segment;
+                segment = "--" + segment;
             }
             segment = segment.strip();
 

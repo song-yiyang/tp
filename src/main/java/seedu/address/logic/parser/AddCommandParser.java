@@ -31,7 +31,6 @@ import seedu.address.model.tag.Tag;
  */
 public class AddCommandParser extends Parser<AddCommand> {
 
-
     @Override
     InputPattern createInputPattern() {
         ArrayList<Token> tokens = new ArrayList<Token>(List.of(
@@ -58,6 +57,9 @@ public class AddCommandParser extends Parser<AddCommand> {
 
         Token nameToken = inputPattern.getTokenWithId("name");
         String nameString = nameToken.getAssignedSegment();
+        if (!Name.isValidName(nameString)) {
+            throw new ParseException("Name inputted: " + nameString + "\n" + Name.MESSAGE_CONSTRAINTS);
+        }
         Name name = new Name(nameString);
 
         Phone phone = null;
