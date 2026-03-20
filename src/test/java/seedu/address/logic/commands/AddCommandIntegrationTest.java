@@ -4,6 +4,10 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +36,23 @@ public class AddCommandIntegrationTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.addPerson(validPerson);
+
+        assertCommandSuccess(new AddCommand(validPerson), model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+                expectedModel);
+    }
+
+    @Test
+    public void execute_addPersonNotInFilter_success() {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person validPerson = new PersonBuilder().build();
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.addPerson(validPerson);
+
+        Map<FilterCommand.FilterType, List<String>> filterCriterion = new HashMap<>();
+        filterCriterion.put(FilterCommand.FilterType.NAME, List.of("Alice"));
+        new FilterCommand(filterCriterion).execute(model);
 
         assertCommandSuccess(new AddCommand(validPerson), model,
                 String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
