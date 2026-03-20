@@ -1,6 +1,6 @@
 package seedu.address.testutil;
 
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -15,17 +15,7 @@ public class PersonUtil {
      * Returns an add command string for adding the {@code person}.
      */
     public static String getAddCommand(Person person) {
-        String commandString = AddCommand.COMMAND_WORD + " " + getPersonDetails(person);
-
-        if (person.hasEmail()) {
-            commandString += " -email " + person.getEmail().toString();
-        }
-
-        if (person.hasPhone()) {
-            commandString += " -phone " + person.getPhone().toString();
-        }
-
-        return commandString;
+        return AddCommand.COMMAND_WORD + " " + getPersonDetails(person);
     }
 
     /**
@@ -35,13 +25,13 @@ public class PersonUtil {
         StringBuilder sb = new StringBuilder();
         sb.append(person.getName().fullName + " ");
         if (person.hasPhone()) {
-            sb.append("-phone " + person.getPhone().value + " ");
+            sb.append("--phone " + person.getPhone().value + " ");
         }
         if (person.hasEmail()) {
-            sb.append("-email " + person.getEmail().value + " ");
+            sb.append("--email " + person.getEmail().value + " ");
         }
         person.getPrintableTags().stream().forEach(
-            s -> sb.append(PREFIX_TAG + s + " ")
+            s -> sb.append(PARAM_ID_TAG + s + " ")
         );
         return sb.toString();
     }
