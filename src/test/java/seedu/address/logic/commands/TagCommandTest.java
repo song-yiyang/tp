@@ -21,7 +21,7 @@ import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for EditCommand.
+ * Contains integration tests (interaction with the Model) and unit tests for TagCommand.
  */
 public class TagCommandTest {
     private static final Person ALICE = new PersonBuilder().withName("Alice Pauline")
