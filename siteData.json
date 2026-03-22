@@ -123,6 +123,7 @@
         "sorting-the-list-of-persons-sort": "Sorting the list of persons : sort",
         "editing-a-person-edit": "Editing a person : edit",
         "tagging-a-person-tag": "Tagging a person : tag",
+        "marking-the-status-of-a-person-clearstatus-target-scammed-or-ignore": "Marking the status of a person: clearstatus, target, scammed, or ignore",
         "deleting-a-person-delete": "Deleting a person : delete",
         "clearing-all-entries-clear": "Clearing all entries : clear",
         "deleting-the-app-and-all-data-nuke": "Deleting the app and all data: nuke",
