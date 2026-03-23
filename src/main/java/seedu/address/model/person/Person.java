@@ -21,17 +21,26 @@ public class Person {
 
     // Data fields
     private final TagList tags;
+    private final Status status;
 
     /**
      * Name and tag list must be present and not null (tag list can be empty).
      */
     public Person(Name name, Phone phone, Email email, TagList tags) {
-        requireAllNonNull(name, tags);
+        this(name, phone, email, tags, Status.NONE);
+    }
+
+    /**
+     * Name and tag list must be present and not null (tag list can be empty).
+     */
+    public Person(Name name, Phone phone, Email email, TagList tags, Status status) {
+        requireAllNonNull(name, tags, status);
 
         this.name = name;
         this.phone = Optional.ofNullable(phone);
         this.email = Optional.ofNullable(email);
         this.tags = new TagList(tags);
+        this.status = status;
     }
 
     public Name getName() {
@@ -67,6 +76,10 @@ public class Person {
         return this.tags.viewTags();
     }
 
+    public Status getStatus() {
+        return this.status;
+    }
+
     /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
@@ -99,13 +112,14 @@ public class Person {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && status.equals(otherPerson.status);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, tags);
+        return Objects.hash(name, phone, email, tags, status);
     }
 
     @Override
@@ -115,6 +129,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("tags", tags)
+                .add("status", status)
                 .toString();
     }
 
