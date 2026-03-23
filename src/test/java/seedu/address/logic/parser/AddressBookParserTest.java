@@ -7,10 +7,13 @@ import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ClearStatusCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -18,10 +21,15 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FilterCommand.FilterType;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.IgnoreStatusCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.NukeCommand;
+import seedu.address.logic.commands.ScammedStatusCommand;
+import seedu.address.logic.commands.TagCommand;
+import seedu.address.logic.commands.TargetStatusCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -90,6 +98,40 @@ public class AddressBookParserTest {
     public void parseCommand_nuke() throws Exception {
         assertTrue(parser.parseCommand(NukeCommand.COMMAND_WORD) instanceof NukeCommand);
         assertTrue(parser.parseCommand(NukeCommand.COMMAND_WORD + " now") instanceof NukeCommand);
+    }
+
+    @Test
+    public void parseCommand_tag() throws Exception {
+        List<Tag> tagsToAdd = List.of(new Tag("friend:John"));
+        List<Tag> tagsToEdit = List.of(new Tag("colleague:Jane"));
+        List<Tag> tagsToDelete = List.of(new Tag("office:dummy"));
+        TagCommand command = new TagCommand(INDEX_FIRST_PERSON, tagsToAdd, tagsToEdit, tagsToDelete);
+        TagCommand parsed = (TagCommand) parser.parseCommand(
+                TagCommand.COMMAND_WORD + " 1 --add friend:John --edit colleague:Jane --delete office");
+        assertEquals(parsed, command);
+    }
+
+    @Test
+    public void parseCommand_status() throws Exception {
+        TargetStatusCommand tCommand = new TargetStatusCommand(INDEX_FIRST_PERSON);
+        TargetStatusCommand tParsed = (TargetStatusCommand) parser.parseCommand(
+                TargetStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(tParsed, tCommand);
+
+        ClearStatusCommand cCommand = new ClearStatusCommand(INDEX_FIRST_PERSON);
+        ClearStatusCommand cParsed = (ClearStatusCommand) parser.parseCommand(
+                ClearStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(cParsed, cCommand);
+
+        ScammedStatusCommand sCommand = new ScammedStatusCommand(INDEX_FIRST_PERSON);
+        ScammedStatusCommand sParsed = (ScammedStatusCommand) parser.parseCommand(
+                ScammedStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(sParsed, sCommand);
+
+        IgnoreStatusCommand iCommand = new IgnoreStatusCommand(INDEX_FIRST_PERSON);
+        IgnoreStatusCommand iParsed = (IgnoreStatusCommand) parser.parseCommand(
+                IgnoreStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(iParsed, iCommand);
     }
 
     @Test

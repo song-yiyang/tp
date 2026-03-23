@@ -72,7 +72,8 @@ public class TagCommand extends Command {
         Person updatedPerson = new Person(person.getName(),
                 person.hasPhone() ? person.getPhone() : null,
                 person.hasEmail() ? person.getEmail() : null,
-                person.getTags());
+                person.getTags(),
+                person.getStatus());
 
         for (Tag tag : addTags) {
             if (updatedPerson.getTags().containsTagName(tag.tagName)) {
