@@ -3,6 +3,7 @@ package seedu.address.model.tag;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,14 +19,16 @@ public class Tag {
     public static final String ONE_DELIMITER_REGEX =
             String.format("^[^%s]*%s[^%s]*$", TAG_DELIMITER, TAG_DELIMITER, TAG_DELIMITER);
 
-    public static final int MAX_LENGTH = 50;
+    public static final int MAX_LENGTH = 30;
+
+    public static final List<String> BANNED_NAMES = List.of("name", "phone", "email");
 
     public static final String DELIMITER_MESSAGE_CONSTRAINTS =
             "Tag name-value pairs should contain exactly one occurrence of the delimiter " + TAG_DELIMITER
             + "\nTags to be deleted should be represented by only its name, without any occurrence of the delimiter";
     public static final String NAME_MESSAGE_CONSTRAINTS =
             "Tag names should contain at least one non-whitespace character"
-            + " and must not equal \"name\", \"phone\" or \"email\".";
+            + " and must not equal any one of " + BANNED_NAMES.toString() + ".";
     public static final String VALUE_MESSAGE_CONSTRAINTS =
             "Tag values should contain at least one non-whitespace character.";
     public static final String FORMAT_MESSAGE_CONSTRAINTS =
@@ -106,7 +109,7 @@ public class Tag {
      */
     public static boolean isValidTagName(String test) {
         return isValidLength(test) && test.matches(WHITESPACE_REGEX) && test.matches(NO_DELIMITER_REGEX)
-                && !test.equals("name") && !test.equals("phone") && !test.equals("email");
+                && !BANNED_NAMES.contains(test);
     }
 
     /**
