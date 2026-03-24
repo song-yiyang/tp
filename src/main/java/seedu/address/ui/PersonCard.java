@@ -49,17 +49,15 @@ public class PersonCard extends UiPart<Region> {
         name.setText(person.getName().fullName + " " + person.getStatus().getStatusRepresentation());
 
         if (person.hasPhone()) {
-            phone.setVisible(true);
-            phone.setText(person.getPhone().value);
+            phone.setText("phone: " + person.getPhone().value);
         } else {
-            phone.setVisible(false);
+            phone.setText("phone: ");
         }
 
         if (person.hasEmail()) {
-            email.setVisible(true);
-            email.setText(person.getEmail().value);
+            email.setText("email: " + person.getEmail().value);
         } else {
-            email.setVisible(false);
+            email.setText("email: ");
         }
 
         List<String> tagList = person.getPrintableTags();
