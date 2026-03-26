@@ -11,13 +11,13 @@
     "phone" : "98765432",
     "email" : "johnd@example.com",
     "address" : "311, Clementi Ave 2, #02-25",
-    "tags" : [ "status:scammed", "income:$100,000" ]
+    "tags" : [ "status:scammed", "income:$100,000", "job:manager" ]
   }, {
     "name" : "Carl Kurz",
     "phone" : "95352563",
     "email" : "heinz@example.com",
     "address" : "wall street",
-    "tags" : [ ]
+    "tags" : [ "job:manager" ]
   }, {
     "name" : "Daniel Meier",
     "phone" : "87652533",

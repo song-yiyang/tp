@@ -13,12 +13,15 @@ import java.util.function.Predicate;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.predicates.NameContainsKeywordsPredicate;
+import seedu.address.model.person.predicates.EmailContainsPredicate;
+import seedu.address.model.person.predicates.NameContainsPredicate;
 import seedu.address.model.person.predicates.PhoneEqualsPredicate;
+import seedu.address.model.person.predicates.TagContainsPredicate;
+import seedu.address.model.tag.Tag;
 
 /**
  * Filters the list of profiles by specified criteria.
- * Supports filtering by name, phone, and email parameters.
+ * Supports filtering by name, phone, email, and tag parameters.
  */
 public class FilterCommand extends Command {
 
@@ -26,7 +29,7 @@ public class FilterCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters profiles by the specified parameters.\n"
             + "Parameters: [" + PARAM_ID_NAME + " <name>]* [" + PARAM_ID_PHONE + " <phone>]* "
-            + "[" + PARAM_ID_EMAIL + " <email>]*\n"
+            + "[" + PARAM_ID_EMAIL + " <email>]* [--<tagName>:<tagValue>]*\n"
             + "Example: " + COMMAND_WORD + " " + PARAM_ID_NAME + " Tom " + PARAM_ID_PHONE + " 88345678 ";
 
     public static final String MESSAGE_SUCCESS = "Filtered victim profiles.";
@@ -35,20 +38,25 @@ public class FilterCommand extends Command {
      * Represents the supported categories of filter criteria for {@link FilterCommand}.
      */
     public enum FilterType {
-        NAME, PHONE
+        NAME, PHONE, EMAIL
     }
-    private final Map<FilterType, List<String>> filterCriterion;
+    private final Map<FilterType, List<String>> paramFilters;
+    private final List<Tag> tagFilters;
 
     /**
      * Creates a FilterCommand with the given filter criteria.
-     * Supports filtering by name and phone parameters.
+     * Supports filtering by name, phone, email, and tag parameters.
      * If no criteria are provided (empty map), all profiles are shown.
      *
-     * @param filterCriterion a map from filter type (NAME, PHONE) to filter value
+     * @param paramFilters a map from filter type (NAME, PHONE) to filter value
+     * @param tagFilters a list of tags to filter by
      */
-    public FilterCommand(Map<FilterType, List<String>> filterCriterion) {
-        requireNonNull(filterCriterion);
-        this.filterCriterion = filterCriterion;
+    public FilterCommand(Map<FilterType, List<String>> paramFilters, List<Tag> tagFilters) {
+        requireNonNull(paramFilters);
+        requireNonNull(tagFilters);
+
+        this.paramFilters = paramFilters;
+        this.tagFilters = tagFilters;
     }
 
     @Override
@@ -69,18 +77,29 @@ public class FilterCommand extends Command {
     private Predicate<Person> buildPredicate() {
         Predicate<Person> predicate = PREDICATE_SHOW_ALL_PERSONS;
 
-        if (filterCriterion.containsKey(FilterType.NAME)) {
-            List<String> nameFilters = filterCriterion.get(FilterType.NAME);
+        if (paramFilters.containsKey(FilterType.NAME)) {
+            List<String> nameFilters = paramFilters.get(FilterType.NAME);
             if (nameFilters != null && !nameFilters.isEmpty()) {
-                predicate = predicate.and(new NameContainsKeywordsPredicate(nameFilters));
+                predicate = predicate.and(new NameContainsPredicate(nameFilters));
             }
         }
 
-        if (filterCriterion.containsKey(FilterType.PHONE)) {
-            List<String> phoneFilters = filterCriterion.get(FilterType.PHONE);
+        if (paramFilters.containsKey(FilterType.PHONE)) {
+            List<String> phoneFilters = paramFilters.get(FilterType.PHONE);
             if (phoneFilters != null && !phoneFilters.isEmpty()) {
                 predicate = predicate.and(new PhoneEqualsPredicate(phoneFilters));
             }
+        }
+
+        if (paramFilters.containsKey(FilterType.EMAIL)) {
+            List<String> emailFilters = paramFilters.get(FilterType.EMAIL);
+            if (emailFilters != null && !emailFilters.isEmpty()) {
+                predicate = predicate.and(new EmailContainsPredicate(emailFilters));
+            }
+        }
+
+        if (tagFilters != null && !tagFilters.isEmpty()) {
+            predicate = predicate.and(new TagContainsPredicate(tagFilters));
         }
 
         return predicate;
@@ -95,13 +114,15 @@ public class FilterCommand extends Command {
             return false;
         }
         FilterCommand otherFilterCommand = (FilterCommand) other;
-        return filterCriterion.equals(otherFilterCommand.filterCriterion);
+        return paramFilters.equals(otherFilterCommand.paramFilters)
+            && tagFilters.equals(otherFilterCommand.tagFilters);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("filterCriteria", filterCriterion)
+                .add("filterCriteria", paramFilters)
+                .add("tagFilters", tagFilters)
                 .toString();
     }
 }

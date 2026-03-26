@@ -1,7 +1,9 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CliSyntax.PARAM_ID_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_NAME;
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,11 +13,14 @@ import java.util.Map;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FilterCommand.FilterType;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.inputpatterns.EmailParam;
 import seedu.address.logic.parser.inputpatterns.InputPattern;
 import seedu.address.logic.parser.inputpatterns.NameParam;
 import seedu.address.logic.parser.inputpatterns.Param;
 import seedu.address.logic.parser.inputpatterns.PhoneParam;
+import seedu.address.logic.parser.inputpatterns.TagParam;
 import seedu.address.logic.parser.inputpatterns.Token;
+import seedu.address.model.tag.Tag;
 
 /**
  * Parses input arguments and creates a new FilterCommand object.
@@ -34,7 +39,9 @@ public class FilterCommandParser extends Parser<FilterCommand> {
 
         ArrayList<Param> params = new ArrayList<>(List.of(
                 new NameParam(0, 100),
-                new PhoneParam(0, 100)
+                new PhoneParam(0, 100),
+                new EmailParam(0, 100),
+                new TagParam(0, 100)
         ));
 
         return new InputPattern("filter", tokens, params);
@@ -64,6 +71,16 @@ public class FilterCommandParser extends Parser<FilterCommand> {
             filterCriterion.put(FilterType.PHONE, phoneFilter);
         }
 
-        return new FilterCommand(filterCriterion);
+        Param emailParam = inputPattern.getParamWithId(PARAM_ID_EMAIL);
+        List<String> emailFilter = emailParam.getValues();
+        if (!emailFilter.isEmpty()) {
+            filterCriterion.put(FilterType.EMAIL, emailFilter);
+        }
+
+        Param tagParam = inputPattern.getParamWithId(PARAM_ID_TAG);
+        List<String> tagFilterStrings = tagParam.getValues();
+        List<Tag> tagFilter = tagFilterStrings.stream().map(Tag::new).toList();
+
+        return new FilterCommand(filterCriterion, tagFilter);
     }
 }

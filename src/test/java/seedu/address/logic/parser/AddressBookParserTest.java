@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
@@ -92,7 +93,7 @@ public class AddressBookParserTest {
         criteria.put(FilterType.NAME, java.util.List.of("Alice"));
         FilterCommand command = (FilterCommand) parser.parseCommand(
                 FilterCommand.COMMAND_WORD + " --name Alice");
-        assertEquals(new FilterCommand(criteria), command);
+        assertEquals(new FilterCommand(criteria, emptyList()), command);
     }
 
     @Test
