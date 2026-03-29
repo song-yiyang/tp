@@ -86,7 +86,7 @@ The `UI` component,
 
 **API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
 
-Here's a (partial) class diagram of the `Logic` component:
+The following is class diagram of the `Logic` component:
 
 <puml src="diagrams/LogicClassDiagram.puml" width="550"/>
 
@@ -99,21 +99,37 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </box>
 
-How the `Logic` component works:
+When `Logic` is called to execute a command, the following happens:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
+1. The command is passed to an `AddressBookParser` object. It checks the first word of the command (known as the **command word**), and based on that, creates a parser that matches the command (e.g., DeleteCommandParser) and uses it to parse the command
 1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
 1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
-Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
+### Parsing & Input Patterns
+
+The following is a (partial) class diagram for the parser
 
 <puml src="diagrams/ParserClasses.puml" width="600"/>
 
-How the parsing works:
-* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+Each `Parser` contains an `InputPattern`, which is a specification for the pattern of arguments & parameters this command accepts.
+
+An `InputPattern` consists of a list of `Token` and a list of `Param`.
+
+The list of `Token` represent the compulsory arguments that come after the command word. The list of tokens are ordered.
+Different Tokens accept different inputs, such as Strings, Integers, etc.
+
+The list of `Param` represent optional arguments that come after the compulsory argument. 
+These are specified by a param name starting with `--`.
+
+
+For example, the `add` command has the following format `add NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`. 
+The command has one `Token`: which takes in the name. It also has 3 `Param`, which represent the phone, email and name respectively.
+
+Note that `Param` has the functionality to specify how many times it can appear in a valid input. 
+In this case, `--phone` and `--email` can appear between 0 and 1 times, while `--tag` can appear any number of times.
+
 
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
