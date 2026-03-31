@@ -104,4 +104,9 @@ public class TagList {
 
         return this.toString().equals(other.toString());
     }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
 }
