@@ -33,9 +33,9 @@ public class TagCommandParserTest {
     @Test
     public void parse_nonIntegerIndex_failure() {
         assertParseFailure(parser, "first",
-                "Your input of 'first' does not match an expected value of the form [1...100]");
+                "Your input of 'first' does not match an expected value of the form [1...2147483647]");
         assertParseFailure(parser, "one",
-                "Your input of 'one' does not match an expected value of the form [1...100]");
+                "Your input of 'one' does not match an expected value of the form [1...2147483647]");
     }
 
     @Test
