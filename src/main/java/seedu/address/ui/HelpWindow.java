@@ -25,30 +25,20 @@ public class HelpWindow extends UiPart<Stage> {
 
         Commands:
           add           NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...
-                            e.g. add John Doe --phone 98765432 --email johnd@example.com --tag school:NUS
           tag           INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...
-                            e.g. tag 1 --add school:NUS --edit salary:10000 --delete age
           edit          INDEX [--name NAME] [--phone PHONE] [--email EMAIL]...
-                            e.g. edit 1 --name Jane Doe --phone 91234567 --email newemail@example.com
           filter        filter [--name NAME]... [--phone PHONE]...
-                            e.g. filter --name John --phone 98765432
           sort          [FIELD] [--asc|--desc] [--number|--alpha]
-                            e.g. sort phone --desc --number
           clearstatus   INDEX
-                            e.g. clearstatus 1
           target        INDEX
-                            e.g. target 1
           scammed       INDEX
-                            e.g. scammed 1
           ignore        INDEX
-                            e.g. ignore 1
-          list          List all contacts
           delete        INDEX
-                            e.g. delete 1
-          clear         Delete all contacts
-          nuke          Delete this app and all locally stored data
-          help          Show this help message
-          exit          Exit the application
+          list
+          clear
+          exit
+          nuke
+          help
 
         Notes:
           Parameters in UPPER_CASE are user-supplied values.
