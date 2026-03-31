@@ -32,7 +32,7 @@ public class ParserUtilTest {
     private static final String VALID_ADDRESS = "123 Main Street #0505";
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_TAG_1 = "status:called";
-    private static final String VALID_TAG_2 = "status:scammed";
+    private static final String VALID_TAG_2 = "status:scam";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -190,7 +190,7 @@ public class ParserUtilTest {
     public void parseTags_collectionWithValidTags_returnsTagSet() throws Exception {
         Set<Tag> actualTagSet = ParserUtil.parseTags(Arrays.asList(VALID_TAG_1, VALID_TAG_2));
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag("status:called"),
-                new Tag("status:scammed")));
+                new Tag("status:scam")));
 
         assertEquals(expectedTagSet, actualTagSet);
     }

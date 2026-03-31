@@ -31,7 +31,7 @@ public class HelpWindow extends UiPart<Stage> {
           sort          [FIELD] [--asc|--desc] [--number|--alpha]
           clearstatus   INDEX
           target        INDEX
-          scammed       INDEX
+          scam          INDEX
           ignore        INDEX
           delete        INDEX
           list

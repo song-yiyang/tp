@@ -4,18 +4,18 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.model.person.Status;
 
 /**
- * Sets the associated status with a given person to {@code Status.SCAMMED}
+ * Sets the associated status with a given person to {@code Status.SCAM}
  */
-public class ScammedStatusCommand extends SetStatusCommand {
-    public static final String COMMAND_WORD = "scammed";
+public class ScamStatusCommand extends SetStatusCommand {
+    public static final String COMMAND_WORD = "scam";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Sets the status to be SCAMMED for the person at the given index.\n"
+            + ": Sets the status to be SCAM for the person at the given index.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
 
-    public ScammedStatusCommand(Index targetIndex) {
-        super(Status.SCAMMED, targetIndex);
+    public ScamStatusCommand(Index targetIndex) {
+        super(Status.SCAM, targetIndex);
     }
 
     @Override

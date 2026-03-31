@@ -48,7 +48,7 @@ public class TagCommandTest {
             .withTags("job:professor", "school:NUS").build();
     private static final Person BENSON = new PersonBuilder().withName("Benson Meier")
             .withEmail("johnd@example.com").withPhone("98765432")
-            .withTags("status:scammed", "income:$100,000").build();
+            .withTags("rich:yes", "income:$100,000").build();
 
     private static Model newModelWithPerson(Person person) {
         Model model = new ModelManager();

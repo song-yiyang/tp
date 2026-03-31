@@ -14,7 +14,7 @@ public enum Status {
         public String getStatusRepresentation() {
             return "🎯";
         }
-    }, SCAMMED {
+    }, SCAM {
         @Override
         public String getStatusRepresentation() {
             return "✅";

@@ -117,8 +117,8 @@ public class FilterCommandParserTest {
     @Test
     public void parse_multipleTagCriteria_returnsFilterCommand() throws Exception {
         FilterCommand expected = createExpectedFilterCommand(new HashMap<>(),
-                Arrays.asList(new Tag("job:manager"), new Tag("status:scammed")));
-        assertParseSuccess(parser, " --tag job:manager --tag status:scammed", expected);
+                Arrays.asList(new Tag("job:manager"), new Tag("rich:yes")));
+        assertParseSuccess(parser, " --tag job:manager --tag rich:yes", expected);
     }
 
     @Test
@@ -161,9 +161,9 @@ public class FilterCommandParserTest {
         Map<FilterType, List<String>> criteria = new HashMap<>();
         criteria.put(FilterType.PHONE, List.of("98765432"));
         criteria.put(FilterType.EMAIL, List.of("johnd@example.com"));
-        List<Tag> tags = List.of(new Tag("status:scammed"));
+        List<Tag> tags = List.of(new Tag("rich:yes"));
         FilterCommand expected = createExpectedFilterCommand(criteria, tags);
-        assertParseSuccess(parser, " --phone 98765432 --email johnd@example.com --tag status:scammed", expected);
+        assertParseSuccess(parser, " --phone 98765432 --email johnd@example.com --tag rich:yes", expected);
     }
 
     @Test
@@ -172,13 +172,13 @@ public class FilterCommandParserTest {
         criteria.put(FilterType.NAME, Arrays.asList("Alice", "Benson"));
         criteria.put(FilterType.PHONE, Arrays.asList("94351253", "98765432"));
         criteria.put(FilterType.EMAIL, Arrays.asList("alice@example.com", "johnd@example.com"));
-        List<Tag> tags = Arrays.asList(new Tag("job:manager"), new Tag("status:scammed"));
+        List<Tag> tags = Arrays.asList(new Tag("job:manager"), new Tag("rich:yes"));
         FilterCommand expected = createExpectedFilterCommand(criteria, tags);
         assertParseSuccess(parser,
                 " --name Alice --name Benson"
                         + " --phone 94351253 --phone 98765432"
                         + " --email alice@example.com --email johnd@example.com"
-                        + " --tag job:manager --tag status:scammed",
+                        + " --tag job:manager --tag rich:yes",
                 expected);
     }
 

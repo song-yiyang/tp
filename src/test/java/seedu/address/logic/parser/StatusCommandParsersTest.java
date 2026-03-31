@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.ClearStatusCommand;
 import seedu.address.logic.commands.IgnoreStatusCommand;
-import seedu.address.logic.commands.ScammedStatusCommand;
+import seedu.address.logic.commands.ScamStatusCommand;
 import seedu.address.logic.commands.TargetStatusCommand;
 
 /**
@@ -20,7 +20,7 @@ public class StatusCommandParsersTest {
     public void invalid_arguments() {
         ClearStatusCommandParser csParser = new ClearStatusCommandParser();
         TargetStatusCommandParser tParser = new TargetStatusCommandParser();
-        ScammedStatusCommandParser sParser = new ScammedStatusCommandParser();
+        ScamStatusCommandParser sParser = new ScamStatusCommandParser();
         IgnoreStatusCommandParser iParser = new IgnoreStatusCommandParser();
 
         assertParseFailure(csParser, "",
@@ -32,9 +32,9 @@ public class StatusCommandParsersTest {
         assertParseFailure(tParser, "1 1 1",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, TargetStatusCommand.MESSAGE_USAGE));
         assertParseFailure(sParser, "",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ScammedStatusCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ScamStatusCommand.MESSAGE_USAGE));
         assertParseFailure(sParser, "1 1 1",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ScammedStatusCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ScamStatusCommand.MESSAGE_USAGE));
         assertParseFailure(iParser, "",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, IgnoreStatusCommand.MESSAGE_USAGE));
         assertParseFailure(iParser, "1 1 1",
@@ -45,12 +45,12 @@ public class StatusCommandParsersTest {
     public void success() {
         ClearStatusCommandParser csParser = new ClearStatusCommandParser();
         TargetStatusCommandParser tParser = new TargetStatusCommandParser();
-        ScammedStatusCommandParser sParser = new ScammedStatusCommandParser();
+        ScamStatusCommandParser sParser = new ScamStatusCommandParser();
         IgnoreStatusCommandParser iParser = new IgnoreStatusCommandParser();
 
         assertParseSuccess(csParser, "1", new ClearStatusCommand(INDEX_FIRST_PERSON));
         assertParseSuccess(tParser, "1", new TargetStatusCommand(INDEX_FIRST_PERSON));
-        assertParseSuccess(sParser, "1", new ScammedStatusCommand(INDEX_FIRST_PERSON));
+        assertParseSuccess(sParser, "1", new ScamStatusCommand(INDEX_FIRST_PERSON));
         assertParseSuccess(iParser, "1", new IgnoreStatusCommand(INDEX_FIRST_PERSON));
     }
 }
