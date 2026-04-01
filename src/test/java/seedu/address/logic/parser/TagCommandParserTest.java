@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.TagCommand;
-import seedu.address.logic.parser.inputpatterns.InputPattern;
 import seedu.address.logic.parser.inputpatterns.IntegerToken;
 import seedu.address.model.tag.Tag;
 

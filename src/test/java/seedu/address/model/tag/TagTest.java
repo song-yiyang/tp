@@ -80,8 +80,8 @@ public class TagTest {
 
         // too long
         helperAssertThrows(() -> Tag.isValidTagName("a".repeat(100)),
-                "a".repeat(100) + " is too long, it should not exceed " +
-                        Tag.MAX_LENGTH + " characters.");
+                "a".repeat(100) + " is too long, it should not exceed "
+                        + Tag.MAX_LENGTH + " characters.");
 
         // contains "name", "phone" or "email"
         helperAssertThrows(() -> Tag.isValidTagName("name"), Tag.ILLEGAL_NAME_CONSTRAINTS);
@@ -108,8 +108,8 @@ public class TagTest {
 
         // too long
         helperAssertThrows(() -> Tag.isValidTagValue("a".repeat(100)),
-                "a".repeat(100) + " is too long, it should not exceed " +
-                        Tag.MAX_LENGTH + " characters.");
+                "a".repeat(100) + " is too long, it should not exceed "
+                        + Tag.MAX_LENGTH + " characters.");
 
         // non-whitespace with no delimiter
         assertTrue(Tag.isValidTagValue("engineer"));

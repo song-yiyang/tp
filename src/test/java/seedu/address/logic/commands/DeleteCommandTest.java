@@ -50,8 +50,8 @@ public class DeleteCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX +
-                "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.");
+        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                + "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.");
     }
 
     @Test
@@ -101,8 +101,8 @@ public class DeleteCommandTest {
 
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX +
-                "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.");
+        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                + "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.");
     }
 
     @Test

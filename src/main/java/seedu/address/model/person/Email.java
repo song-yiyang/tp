@@ -1,7 +1,6 @@
 package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 
@@ -10,6 +9,9 @@ import seedu.address.commons.exceptions.IllegalValueException;
  * Guarantees: immutable; is valid as declared in {@link #isValidEmail(String)}
  */
 public class Email {
+
+    public static final String INVALID_STRING = " is not a valid email.\n"
+            + "Refer to the user guide for all the constraints an email should satisfy.";
 
     private static final String SPECIAL_CHARACTERS = "+_.-";
     public static final String MESSAGE_CONSTRAINTS = "Emails should be of the format local-part@domain "
@@ -23,8 +25,6 @@ public class Email {
             + "    - end with a domain label at least 2 characters long\n"
             + "    - have each domain label start and end with alphanumeric characters\n"
             + "    - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.";
-    public static final String INVALID_STRING = " is not a valid email.\n" +
-            "Refer to the user guide for all the constraints an email should satisfy.";
 
     // alphanumeric and special characters
     private static final String ALPHANUMERIC_NO_UNDERSCORE = "[^\\W_]+"; // alphanumeric characters except underscore

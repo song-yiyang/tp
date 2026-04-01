@@ -214,7 +214,9 @@ public class InputPattern {
                             if (nextToken.matches(nextSegment)) {
                                 break;
                             }
-                        } catch (IllegalValueException ignored) { }
+                        } catch (IllegalValueException ignored) {
+                            // Nothing is supposed to happen
+                        }
 
                         segmentsToJoin.add(nextSegment);
                         segmentPointer += 1;
