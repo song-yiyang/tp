@@ -60,7 +60,7 @@ public class Email {
         if (test.matches(VALIDATION_REGEX)) {
             return true;
         } else {
-            throw new IllegalValueException(test + INVALID_STRING);
+            throw new IllegalValueException('"' + test + '"' + INVALID_STRING);
         }
     }
 

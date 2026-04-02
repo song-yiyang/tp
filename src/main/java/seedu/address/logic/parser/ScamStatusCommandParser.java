@@ -22,7 +22,7 @@ public class ScamStatusCommandParser extends Parser<ScamStatusCommand> {
                 new IntegerToken("index" , 1)
         ));
 
-        return new InputPattern("scam", tokens);
+        return new InputPattern(ScamStatusCommand.COMMAND_WORD, tokens);
     }
 
     @Override

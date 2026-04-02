@@ -6,6 +6,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.CommandRegistry;
 import seedu.address.logic.commands.ClearStatusCommand;
 import seedu.address.logic.commands.IgnoreStatusCommand;
 import seedu.address.logic.commands.ScamStatusCommand;
@@ -23,14 +24,22 @@ public class StatusCommandParsersTest {
         ScamStatusCommandParser sParser = new ScamStatusCommandParser();
         IgnoreStatusCommandParser iParser = new IgnoreStatusCommandParser();
 
-        assertParseFailure(csParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS);
-        assertParseFailure(csParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(tParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS);
-        assertParseFailure(tParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(sParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS);
-        assertParseFailure(sParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(iParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS);
-        assertParseFailure(iParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS);
+        assertParseFailure(csParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("clearstatus").get().getDescription());
+        assertParseFailure(csParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("clearstatus").get().getDescription());
+        assertParseFailure(tParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("target").get().getDescription());
+        assertParseFailure(tParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("target").get().getDescription());
+        assertParseFailure(sParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("scam").get().getDescription());
+        assertParseFailure(sParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("scam").get().getDescription());
+        assertParseFailure(iParser, "", InputPattern.MESSAGE_TOO_FEW_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("ignore").get().getDescription());
+        assertParseFailure(iParser, "1 1 1", InputPattern.MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("ignore").get().getDescription());
     }
 
     @Test

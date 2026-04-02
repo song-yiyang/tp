@@ -31,7 +31,8 @@ public class PhoneTest {
         // empty string, spaces only, less than 3 numbers, non-numeric, alphabets within digits, spaces within digits
         for (String phone : new String[]{"", " ", "91", "phone", "9011p041", "9312 1534"}) {
             Exception e = assertThrows(IllegalValueException.class, () -> Phone.validatePhone(phone));
-            assertEquals(phone + " is not a valid phone number.\n" + Phone.MESSAGE_CONSTRAINTS, e.getMessage());
+            assertEquals('"' + phone + '"' + " is not a valid phone number.\n"
+                    + Phone.MESSAGE_CONSTRAINTS, e.getMessage());
         }
 
         // valid phone numbers

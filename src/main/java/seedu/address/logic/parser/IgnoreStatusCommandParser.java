@@ -22,7 +22,7 @@ public class IgnoreStatusCommandParser extends Parser<IgnoreStatusCommand> {
                 new IntegerToken("index" , 1)
         ));
 
-        return new InputPattern("ignore", tokens);
+        return new InputPattern(IgnoreStatusCommand.COMMAND_WORD, tokens);
     }
 
     @Override

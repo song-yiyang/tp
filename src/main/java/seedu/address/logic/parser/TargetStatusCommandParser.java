@@ -22,7 +22,7 @@ public class TargetStatusCommandParser extends Parser<TargetStatusCommand> {
                 new IntegerToken("index" , 1)
         ));
 
-        return new InputPattern("target", tokens);
+        return new InputPattern(TargetStatusCommand.COMMAND_WORD, tokens);
     }
 
     @Override

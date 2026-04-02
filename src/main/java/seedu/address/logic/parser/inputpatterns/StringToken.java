@@ -6,7 +6,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
  * A Token that takes in any non-empty String as an input
  */
 public class StringToken extends Token {
-    private String tokenPreview;
+    private final String tokenPreview;
 
     /**
      * @param tokenPreview the description of what this string should be

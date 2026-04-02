@@ -23,7 +23,7 @@ public class DeleteCommandParser extends Parser<DeleteCommand> {
                 new IntegerToken("index" , 1)
         ));
 
-        return new InputPattern("delete", tokens);
+        return new InputPattern(DeleteCommand.COMMAND_WORD, tokens);
     }
 
     /**

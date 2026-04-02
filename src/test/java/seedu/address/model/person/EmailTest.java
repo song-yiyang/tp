@@ -24,7 +24,7 @@ public class EmailTest {
 
     public void helperAssertThrows(String test) {
         Exception e = assertThrows(IllegalValueException.class, () -> Email.validateEmail(test));
-        assertEquals(test + Email.INVALID_STRING, e.getMessage());
+        assertEquals('"' + test + '"' + Email.INVALID_STRING, e.getMessage());
     }
 
     @Test

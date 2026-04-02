@@ -39,7 +39,7 @@ public class EditCommandParser extends Parser<EditCommand> {
             new EmailParam(0, 1)
         ));
 
-        return new InputPattern("edit", tokens, params);
+        return new InputPattern(EditCommand.COMMAND_WORD, tokens, params);
     }
 
     /**

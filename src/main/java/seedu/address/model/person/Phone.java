@@ -38,7 +38,7 @@ public class Phone {
         if (test.matches(VALIDATION_REGEX)) {
             return true;
         } else {
-            throw new IllegalValueException(test + " is not a valid phone number.\n" + MESSAGE_CONSTRAINTS);
+            throw new IllegalValueException('"' + test + '"' + " is not a valid phone number.\n" + MESSAGE_CONSTRAINTS);
         }
     }
 

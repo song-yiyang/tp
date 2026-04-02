@@ -43,7 +43,7 @@ public class TagCommandParser extends Parser<TagCommand> {
                 new TagDeleteParam(0, 100)
         ));
 
-        return new InputPattern("tag", tokens, params);
+        return new InputPattern(TagCommand.COMMAND_WORD, tokens, params);
     }
 
     /**

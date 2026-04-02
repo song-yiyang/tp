@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.CommandRegistry;
 import seedu.address.logic.commands.TagCommand;
 import seedu.address.logic.parser.inputpatterns.IntegerToken;
 import seedu.address.model.tag.Tag;
@@ -20,15 +21,18 @@ public class TagCommandParserTest {
 
     @Test
     public void parse_emptyParameters_failure() {
-        assertParseFailure(parser, "", MESSAGE_TOO_FEW_FIELDS);
-        assertParseFailure(parser, "  \t\t\n\n", MESSAGE_TOO_FEW_FIELDS);
+        assertParseFailure(parser, "", MESSAGE_TOO_FEW_FIELDS
+            + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
+        assertParseFailure(parser, "  \t\t\n\n", MESSAGE_TOO_FEW_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
     }
 
     @Test
     public void parse_tooManyParameters_failure() {
-        assertParseFailure(parser, "1 2", MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(parser, "1 2 3", MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(parser, "--new name:value", MESSAGE_TOO_MANY_FIELDS);
+        assertParseFailure(parser, "1 2", MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
+        assertParseFailure(parser, "1 2 3", MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
     }
 
     @Test
@@ -42,11 +46,12 @@ public class TagCommandParserTest {
     @Test
     public void parse_tooLong_failure() {
         String m = " is too long, it should not exceed " + Tag.MAX_LENGTH + " characters.";
-        assertParseFailure(parser, "1 --add " + tooLong + ":a", tooLong + m);
-        assertParseFailure(parser, "1 --add a:" + tooLong, tooLong + m);
-        assertParseFailure(parser, "1 --edit " + tooLong + ":a", tooLong + m);
-        assertParseFailure(parser, "1 --edit a:" + tooLong, tooLong + m);
-        assertParseFailure(parser, "1 --delete " + tooLong, tooLong + m);
+        String tooLongQuotes = '"' + tooLong + '"';
+        assertParseFailure(parser, "1 --add " + tooLong + ":a", tooLongQuotes + m);
+        assertParseFailure(parser, "1 --add a:" + tooLong, tooLongQuotes + m);
+        assertParseFailure(parser, "1 --edit " + tooLong + ":a", tooLongQuotes + m);
+        assertParseFailure(parser, "1 --edit a:" + tooLong, tooLongQuotes + m);
+        assertParseFailure(parser, "1 --delete " + tooLong, tooLongQuotes + m);
     }
 
     @Test

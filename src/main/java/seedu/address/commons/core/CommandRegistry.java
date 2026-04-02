@@ -36,8 +36,6 @@ public class CommandRegistry {
 
     private static final Map<String, CommandInfo> COMMANDS = new LinkedHashMap<>();
 
-
-
     private CommandRegistry() {} // prevent instantiation
 
     static {

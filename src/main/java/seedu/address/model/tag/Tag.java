@@ -95,7 +95,8 @@ public class Tag {
      */
     public static boolean validateLength(String test) throws IllegalValueException {
         if (test.length() > Tag.MAX_LENGTH) {
-            throw new IllegalValueException(test + " is too long, it should not exceed " + MAX_LENGTH + " characters.");
+            throw new IllegalValueException('"' + test + '"' + " is too long, it should not exceed "
+                    + MAX_LENGTH + " characters.");
         }
         return true;
     }

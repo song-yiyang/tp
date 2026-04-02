@@ -22,7 +22,7 @@ public class ClearStatusCommandParser extends Parser<ClearStatusCommand> {
                 new IntegerToken("index" , 1)
         ));
 
-        return new InputPattern("clearstatus", tokens);
+        return new InputPattern(ClearStatusCommand.COMMAND_WORD, tokens);
     }
 
     @Override

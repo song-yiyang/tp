@@ -44,7 +44,7 @@ public class FilterCommandParser extends Parser<FilterCommand> {
                 new TagParam(0, 100)
         ));
 
-        return new InputPattern("filter", tokens, params);
+        return new InputPattern(FilterCommand.COMMAND_WORD, tokens, params);
     }
 
     /**
