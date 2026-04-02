@@ -14,11 +14,11 @@ import java.util.Map;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FilterCommand.FilterType;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.logic.parser.inputpatterns.EmailParam;
+import seedu.address.logic.parser.inputpatterns.FilterEmailParam;
+import seedu.address.logic.parser.inputpatterns.FilterPhoneParam;
 import seedu.address.logic.parser.inputpatterns.InputPattern;
 import seedu.address.logic.parser.inputpatterns.NameParam;
 import seedu.address.logic.parser.inputpatterns.Param;
-import seedu.address.logic.parser.inputpatterns.PhoneParam;
 import seedu.address.logic.parser.inputpatterns.StatusParam;
 import seedu.address.logic.parser.inputpatterns.TagParam;
 import seedu.address.logic.parser.inputpatterns.Token;
@@ -41,8 +41,8 @@ public class FilterCommandParser extends Parser<FilterCommand> {
 
         ArrayList<Param> params = new ArrayList<>(List.of(
                 new NameParam(0, 100),
-                new PhoneParam(0, 100),
-                new EmailParam(0, 100),
+                new FilterPhoneParam(0, 100),
+                new FilterEmailParam(0, 100),
                 new StatusParam(0, 100),
                 new TagParam(0, 100)
         ));

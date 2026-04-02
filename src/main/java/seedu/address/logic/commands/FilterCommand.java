@@ -20,14 +20,15 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Status;
 import seedu.address.model.person.predicates.EmailContainsPredicate;
 import seedu.address.model.person.predicates.NameContainsPredicate;
-import seedu.address.model.person.predicates.PhoneEqualsPredicate;
+import seedu.address.model.person.predicates.PhoneContainsPredicate;
 import seedu.address.model.person.predicates.StatusEqualsPredicate;
 import seedu.address.model.person.predicates.TagContainsPredicate;
 import seedu.address.model.tag.Tag;
 
 /**
  * Filters the list of profiles by specified criteria.
- * Supports filtering by name, phone, email, status, and tag parameters.
+ * Supports filtering by name substrings, partial phone numbers, partial email
+ * addresses, status, and tag parameters.
  */
 public class FilterCommand extends Command {
 
@@ -59,10 +60,10 @@ public class FilterCommand extends Command {
 
     /**
      * Creates a FilterCommand with the given filter criteria.
-     * Supports filtering by name, phone, email, and tag parameters.
+     * Supports filtering by name, phone, email, status, and tag parameters.
      * If no criteria are provided (empty map), all profiles are shown.
      *
-     * @param paramFilters a map from filter type (NAME, PHONE) to filter value
+     * @param paramFilters a map from filter type (NAME, PHONE, EMAIL, STATUS) to filter value
      * @param tagFilters a list of tags to filter by
      */
     public FilterCommand(Map<FilterType, List<String>> paramFilters, List<Tag> tagFilters) {
@@ -101,7 +102,7 @@ public class FilterCommand extends Command {
         if (paramFilters.containsKey(FilterType.PHONE)) {
             List<String> phoneFilters = paramFilters.get(FilterType.PHONE);
             if (phoneFilters != null && !phoneFilters.isEmpty()) {
-                predicate = predicate.and(new PhoneEqualsPredicate(phoneFilters));
+                predicate = predicate.and(new PhoneContainsPredicate(phoneFilters));
             }
         }
 

@@ -40,13 +40,16 @@ public class PhoneEqualsPredicateTest {
         PhoneEqualsPredicate predicate = new PhoneEqualsPredicate(List.of("12345678"));
         assertTrue(predicate.test(new PersonBuilder().withPhone("12345678").build()));
 
-        predicate = new PhoneEqualsPredicate(Arrays.asList("00000000", "12345678"));
+        predicate = new PhoneEqualsPredicate(List.of("3456"));
+        assertTrue(predicate.test(new PersonBuilder().withPhone("12345678").build()));
+
+        predicate = new PhoneEqualsPredicate(Arrays.asList("00000000", "3456"));
         assertTrue(predicate.test(new PersonBuilder().withPhone("12345678").build()));
     }
 
     @Test
     public void test_phoneDoesNotMatch_returnsFalse() {
-        PhoneEqualsPredicate predicate = new PhoneEqualsPredicate(List.of("12345678"));
+        PhoneEqualsPredicate predicate = new PhoneEqualsPredicate(List.of("9999"));
 
         // Different phone
         assertFalse(predicate.test(new PersonBuilder().withPhone("87654321").build()));
@@ -58,7 +61,7 @@ public class PhoneEqualsPredicateTest {
     @Test
     public void toStringMethod() {
         PhoneEqualsPredicate predicate = new PhoneEqualsPredicate(List.of("12345678"));
-        String expected = PhoneEqualsPredicate.class.getCanonicalName() + "{phone=[12345678]}";
+        String expected = PhoneEqualsPredicate.class.getCanonicalName() + "{phoneSubstrings=[12345678]}";
         assertEquals(expected, predicate.toString());
     }
 }
