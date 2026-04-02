@@ -117,6 +117,7 @@
         "overview": "Overview",
         "basic-commands": "Basic commands",
         "features": "Features",
+        "constraints-on-input-values": "Constraints on input values",
         "adding-a-person-add": "Adding a person: add",
         "editing-a-person-edit": "Editing a person : edit",
         "deleting-a-person-delete": "Deleting a person : delete",
