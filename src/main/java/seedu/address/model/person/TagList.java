@@ -86,6 +86,20 @@ public class TagList {
                 .map(entry -> entry.getKey() + ":" + entry.getValue()).toList();
     }
 
+    /**
+     * Returns a string representation of the tags in a table format.
+     * @return A string containing the tags in a table format.
+     */
+    public String viewTagsTable() {
+        StringBuilder builder = new StringBuilder();
+        this.tags.entrySet().forEach(entry -> builder.append("  ")
+                .append(entry.getKey())
+                .append(":")
+                .append(entry.getValue())
+                .append("\n"));
+        return builder.toString();
+    }
+
     @Override
     public String toString() {
         return this.viewTags().toString();
@@ -103,5 +117,10 @@ public class TagList {
         }
 
         return this.toString().equals(other.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 }

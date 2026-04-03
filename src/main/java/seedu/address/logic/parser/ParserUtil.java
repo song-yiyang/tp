@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
@@ -44,7 +44,9 @@ public class ParserUtil {
     public static Name parseName(String name) throws ParseException {
         requireNonNull(name);
         String trimmedName = name.trim();
-        if (!Name.isValidName(trimmedName)) {
+        try {
+            Name.validateName(trimmedName);
+        } catch (IllegalValueException e) {
             throw new ParseException(Name.MESSAGE_CONSTRAINTS);
         }
         return new Name(trimmedName);
@@ -59,25 +61,12 @@ public class ParserUtil {
     public static Phone parsePhone(String phone) throws ParseException {
         requireNonNull(phone);
         String trimmedPhone = phone.trim();
-        if (!Phone.isValidPhone(trimmedPhone)) {
+        try {
+            Phone.validatePhone(trimmedPhone);
+        } catch (IllegalValueException e) {
             throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
         }
         return new Phone(trimmedPhone);
-    }
-
-    /**
-     * Parses a {@code String address} into an {@code Address}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code address} is invalid.
-     */
-    public static Address parseAddress(String address) throws ParseException {
-        requireNonNull(address);
-        String trimmedAddress = address.trim();
-        if (!Address.isValidAddress(trimmedAddress)) {
-            throw new ParseException(Address.MESSAGE_CONSTRAINTS);
-        }
-        return new Address(trimmedAddress);
     }
 
     /**
@@ -89,7 +78,9 @@ public class ParserUtil {
     public static Email parseEmail(String email) throws ParseException {
         requireNonNull(email);
         String trimmedEmail = email.trim();
-        if (!Email.isValidEmail(trimmedEmail)) {
+        try {
+            Email.validateEmail(trimmedEmail);
+        } catch (IllegalValueException e) {
             throw new ParseException(Email.MESSAGE_CONSTRAINTS);
         }
         return new Email(trimmedEmail);
@@ -104,21 +95,18 @@ public class ParserUtil {
     public static Tag parseTag(String tag) throws ParseException {
         requireNonNull(tag);
 
-        if (!Tag.isValidTagString(tag)) {
-            throw new ParseException(Tag.FORMAT_MESSAGE_CONSTRAINTS);
-        }
-        String tagName = Tag.getNameFromRaw(tag);
-        String tagValue = Tag.getValueFromRaw(tag);
+        try {
+            Tag.validateTagString(tag);
+            String tagName = Tag.getNameFromRaw(tag);
+            String tagValue = Tag.getValueFromRaw(tag);
 
-        if (!Tag.isValidTagName(tagName)) {
-            throw new ParseException(Tag.NAME_MESSAGE_CONSTRAINTS);
-        }
+            Tag.validateTagName(tagName);
+            Tag.validateTagValue(tagValue);
 
-        if (!Tag.isValidTagValue(tagValue)) {
-            throw new ParseException(Tag.VALUE_MESSAGE_CONSTRAINTS);
+            return new Tag(tag);
+        } catch (IllegalValueException e) {
+            throw new ParseException(e.getMessage());
         }
-
-        return new Tag(tag);
     }
 
     /**

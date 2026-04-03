@@ -34,11 +34,11 @@ public class StatusCommandsTest {
             .withTags("job:banker")
             .withStatus(Status.TARGET).build();
 
-    private static final Person ALICE_SCAMMED = new PersonBuilder().withName("Alice Pauline")
+    private static final Person ALICE_SCAM = new PersonBuilder().withName("Alice Pauline")
             .withEmail("alice@example.com")
             .withPhone("94351253")
             .withTags("job:banker")
-            .withStatus(Status.SCAMMED).build();
+            .withStatus(Status.SCAM).build();
 
     private static final Person ALICE_IGNORE = new PersonBuilder().withName("Alice Pauline")
             .withEmail("alice@example.com")
@@ -62,18 +62,18 @@ public class StatusCommandsTest {
 
     @Test
     public void execute_targetStatus_success() {
-        Model model = newModelWithPerson(ALICE_SCAMMED);
+        Model model = newModelWithPerson(ALICE_SCAM);
         Model expectedModel = newModelWithPerson(ALICE_TARGET);
         TargetStatusCommand targetStatusCommand = new TargetStatusCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(targetStatusCommand, model, TargetStatusCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     @Test
-    public void execute_scammedStatus_success() {
+    public void execute_scamStatus_success() {
         Model model = newModelWithPerson(ALICE_IGNORE);
-        Model expectedModel = newModelWithPerson(ALICE_SCAMMED);
-        ScammedStatusCommand scammedStatusCommand = new ScammedStatusCommand(INDEX_FIRST_PERSON);
-        assertCommandSuccess(scammedStatusCommand, model, ScammedStatusCommand.MESSAGE_SUCCESS, expectedModel);
+        Model expectedModel = newModelWithPerson(ALICE_SCAM);
+        ScamStatusCommand scamStatusCommand = new ScamStatusCommand(INDEX_FIRST_PERSON);
+        assertCommandSuccess(scamStatusCommand, model, ScamStatusCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     @Test
@@ -95,7 +95,8 @@ public class StatusCommandsTest {
     public void execute_outOfBoundsIndex_failure() {
         Model model = newModelWithPerson(ALICE_TARGET);
         ClearStatusCommand clearStatusCommand = new ClearStatusCommand(INDEX_SECOND_PERSON);
-        assertCommandFailure(clearStatusCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX);
+        assertCommandFailure(clearStatusCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                + "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.");
     }
 
     @Test
@@ -114,8 +115,9 @@ public class StatusCommandsTest {
         model.setSelectedPerson(ALICE_TARGET);
         ClearStatusCommand clearStatusCommand = new ClearStatusCommand(INDEX_SECOND_PERSON);
 
-        assertThrows(CommandException.class,
-                Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX, () -> clearStatusCommand.execute(model));
+        String expectedMessage = Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                + "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.";
+        assertThrows(CommandException.class, expectedMessage, () -> clearStatusCommand.execute(model));
         assertEquals(ALICE_TARGET, model.getSelectedPerson().getValue()); // unchanged
     }
 
@@ -152,9 +154,9 @@ public class StatusCommandsTest {
                         + ", targetIndex=" + INDEX_FIRST_PERSON + "}",
                         tCommand.toString());
 
-        ScammedStatusCommand sCommand = new ScammedStatusCommand(INDEX_FIRST_PERSON);
-        assertEquals(ScammedStatusCommand.class.getCanonicalName()
-                        + "{targetStatus=" + Status.SCAMMED
+        ScamStatusCommand sCommand = new ScamStatusCommand(INDEX_FIRST_PERSON);
+        assertEquals(ScamStatusCommand.class.getCanonicalName()
+                        + "{targetStatus=" + Status.SCAM
                         + ", targetIndex=" + INDEX_FIRST_PERSON + "}",
                         sCommand.toString());
 

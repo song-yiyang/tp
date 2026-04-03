@@ -1,7 +1,6 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +19,20 @@ public class TargetStatusCommandParser extends Parser<TargetStatusCommand> {
     @Override
     InputPattern createInputPattern() {
         ArrayList<Token> tokens = new ArrayList<Token>(List.of(
-                new IntegerToken("index" , 1, 100)
+                new IntegerToken("index" , 1)
         ));
 
-        return new InputPattern("target", tokens);
+        return new InputPattern(TargetStatusCommand.COMMAND_WORD, tokens);
     }
 
     @Override
     TargetStatusCommand parse(String args) throws ParseException {
-        try {
-            requireNonNull(args);
-            InputPattern inputPattern = createInputPattern();
-            inputPattern.assignSegmentsFromArgs(args.strip());
+        requireNonNull(args);
+        InputPattern inputPattern = createInputPattern();
+        inputPattern.assignSegmentsFromArgs(args.strip());
 
-            Token indexToken = inputPattern.getTokenWithId("index");
-            Index index = ParserUtil.parseIndex(indexToken.getAssignedSegment());
-            return new TargetStatusCommand(index);
-        } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, TargetStatusCommand.MESSAGE_USAGE), pe);
-        }
+        Token indexToken = inputPattern.getTokenWithId("index");
+        Index index = ParserUtil.parseIndex(indexToken.getAssignedSegment());
+        return new TargetStatusCommand(index);
     }
 }

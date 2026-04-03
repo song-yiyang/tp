@@ -25,7 +25,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.IgnoreStatusCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.NukeCommand;
-import seedu.address.logic.commands.ScammedStatusCommand;
+import seedu.address.logic.commands.ScamStatusCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.TagCommand;
 import seedu.address.logic.commands.TargetStatusCommand;
@@ -137,9 +137,9 @@ public class AddressBookParserTest {
                 ClearStatusCommand.COMMAND_WORD + " 1");
         assertEquals(cParsed, cCommand);
 
-        ScammedStatusCommand sCommand = new ScammedStatusCommand(INDEX_FIRST_PERSON);
-        ScammedStatusCommand sParsed = (ScammedStatusCommand) parser.parseCommand(
-                ScammedStatusCommand.COMMAND_WORD + " 1");
+        ScamStatusCommand sCommand = new ScamStatusCommand(INDEX_FIRST_PERSON);
+        ScamStatusCommand sParsed = (ScamStatusCommand) parser.parseCommand(
+                ScamStatusCommand.COMMAND_WORD + " 1");
         assertEquals(sParsed, sCommand);
 
         IgnoreStatusCommand iCommand = new IgnoreStatusCommand(INDEX_FIRST_PERSON);

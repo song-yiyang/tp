@@ -1,18 +1,22 @@
 package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.commons.util.AppUtil.checkArgument;
+
+import seedu.address.commons.exceptions.IllegalValueException;
 
 /**
  * Represents a Person's phone number in the address book.
- * Guarantees: immutable; is valid as declared in {@link #isValidPhone(String)}
+ * Guarantees: immutable; is valid as declared in {@link #validatePhone(String)}
  */
 public class Phone {
 
+    public static final int MIN_LENGTH = 3;
+    public static final int MAX_LENGTH = 20;
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should only contain numbers, and it should be at least 3 digits long";
-    public static final String VALIDATION_REGEX = "\\d{3,}";
+            "Phone numbers should only contain numbers (no spaces!), and it should be "
+            + MIN_LENGTH + " to " + MAX_LENGTH + " digits long.";
+    public static final String VALIDATION_REGEX = "\\d{" + MIN_LENGTH + "," + MAX_LENGTH + "}";
     public final String value;
 
     /**
@@ -22,15 +26,23 @@ public class Phone {
      */
     public Phone(String phone) {
         requireNonNull(phone);
-        checkArgument(isValidPhone(phone), MESSAGE_CONSTRAINTS);
+        try {
+            validatePhone(phone);
+        } catch (IllegalValueException e) {
+            throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
+        }
         value = phone;
     }
 
     /**
      * Returns true if a given string is a valid phone number.
      */
-    public static boolean isValidPhone(String test) {
-        return test.matches(VALIDATION_REGEX);
+    public static boolean validatePhone(String test) throws IllegalValueException {
+        if (test.matches(VALIDATION_REGEX)) {
+            return true;
+        } else {
+            throw new IllegalValueException('"' + test + '"' + " is not a valid phone number.\n" + MESSAGE_CONSTRAINTS);
+        }
     }
 
     @Override

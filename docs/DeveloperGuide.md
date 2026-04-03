@@ -35,7 +35,7 @@ Given below is a quick overview of main components and how they interact with ea
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -67,13 +67,13 @@ The sections below give more details of each component.
 
 ### UI component
 
-The **API** of this component is specified in [`Ui.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/Ui.java)
+The **API** of this component is specified in [`Ui.java`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/ui/Ui.java)
 
 <puml src="diagrams/UiClassDiagram.puml" alt="Structure of the UI Component"/>
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
-The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
+The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component,
 
@@ -84,9 +84,9 @@ The `UI` component,
 
 ### Logic component
 
-**API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
+**API** : [`Logic.java`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/logic/Logic.java)
 
-Here's a (partial) class diagram of the `Logic` component:
+Below is a class diagram of the `Logic` component:
 
 <puml src="diagrams/LogicClassDiagram.puml" width="550"/>
 
@@ -99,52 +99,58 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </box>
 
-How the `Logic` component works:
+When `Logic` is called to execute a command, the following happens:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
+1. The command is passed to an `AddressBookParser` object. It checks the first word of the command (known as the **command word**), and based on that, creates a parser that matches the command (e.g., DeleteCommandParser) and uses it to parse the command.
 1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
 1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
-Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
+#### Parsing & Input Patterns
+
+The following is a (partial) class diagram for the parser
 
 <puml src="diagrams/ParserClasses.puml" width="600"/>
 
-How the parsing works:
-* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+Each `Parser` contains an `InputPattern`, which is a specification for the pattern of arguments & parameters this command accepts.
 
+An `InputPattern` consists of a list of `Token` and a list of `Param`.
+
+The list of `Token` represents the compulsory arguments that come after the command word. The list of tokens is ordered.
+Different Tokens accept different inputs, such as `String`s, `Integer`s, etc.
+
+The list of `Param` represents optional arguments that come after the compulsory argument. 
+These are specified by a param id starting with `--`. These can be provided in any order.
+
+
+For example, the `add` command has the following format `add NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`. 
+The command has one `Token`: which takes in the name. It also has 3 `Param`, which represent the phone, email and tag respectively.
+
+Note that `Param` has the functionality to specify how many times it can appear in a valid input. 
+In this case, `--phone` and `--email` can appear between 0 and 1 times, while `--tag` can appear between 0 and 100 times.
 ### Model component
-**API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
+**API** : [`Model.java`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/model/Model.java)
 
 <puml src="diagrams/ModelClassDiagram.puml" width="450" />
 
 
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the ScamBook data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
-<box type="info" seamless>
-
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
-
-<puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
-
-</box>
-
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2526S2-CS2103T-T16-1/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
 <puml src="diagrams/StorageClassDiagram.puml" width="550" />
 
 The `Storage` component,
-* can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
+* can save both ScamBook data and user preference data in JSON format, and read them back into corresponding objects.
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
@@ -158,102 +164,68 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### \[Proposed\] Undo/redo feature
+### Input Pattern Parsing
 
-#### Proposed Implementation
+Once the command is received, we denote `args` as the string that comes after the command word.
 
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
+Subsequently, we find the first occurrence of a `Param` id. For example, in the `add` command,
+we find the first occurrence of `--phone`, `--email` or `--tag` as these are the 3 `Param` it accepts.
 
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
+If nothing is found, then it is assumed that the entire input contains zero params. From the first occurrence,
+we split the `args` into `tokenArgs` and `paramArgs`. These are then parsed separately.
 
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
+For `tokenArgs`, we split it into a number of segments by spaces.
+Each `Token` has a function `allowSpaces` which specifies if it allows spaces or not. 
+For each token in order, if it does not allow spaces, we assign it to the next segment. 
+If it allows spaces, we find the first segment that matches the next token, and then assign segments in between to this token.
 
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
+If during the assigning there are too many or too few tokens, or if any segment does not match
+the requirements of a token, a `ParseException` is thrown.
 
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
+Note: tokens that allow spaces can lead to ambiguous parsing. It is advised to keep such tokens as the very last token in general.
+In particular, avoid two tokens that allow spaces beside each other.
 
-<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
+For the `paramArgs`, they are split by the string `<space>--` and then assigned one by one.
+If a `--` does not match the id of any Params, a `ParseException` is thrown.
 
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+### Sort feature
 
-<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
+The sort mechanism allows users to sort the person list by various fields (name, phone, email, or tag values) in ascending or descending order, with support for numeric or alphabetic comparison modes.
+Note that the `sort` command does NOT use the input pattern methods as mentioned above, since its parameter values are different.
 
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
+#### Implementation
 
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
+The sort feature is implemented through the following key classes:
+* `SortCommandParser` — Parses user input and creates a `SortSpec` containing the sort parameters
+* `SortCommand` — Builds a `Comparator<Person>` and applies it to the model
+* `SortSpec` — Value object encapsulating sort parameters (target field, order, mode)
 
-<box type="info" seamless>
+The following sequence diagram shows how a sort operation is executed:
 
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+<puml src="diagrams/SortSequenceDiagram.puml" alt="SortSequenceDiagram" />
 
-</box>
+How the sort command works:
 
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+1. The user issues a sort command (e.g., `sort phone --desc`).
+2. `SortCommandParser` parses the arguments and creates a `SortSpec` with the target field (`PHONE`), order (`DESC`), and mode (`NUMBER` by default).
+3. `SortCommand` is created with the `SortSpec` and executed.
+4. During execution, `SortCommand` builds a `Comparator<Person>` based on the `SortSpec`.
+5. The comparator is applied to the view via `Model#updateSortedPersonList()`.
+6. The `list` command resets both the filter and the sort order via `Model#resetSortedPersonList()`, restoring the original insertion order.
 
-<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
+#### Design considerations
 
+**Aspect: How sort handles null/missing values:**
 
-<box type="info" seamless>
+* **Current choice:** Nulls always sort last, regardless of ascending/descending order.
+    * Pros: Predictable behavior; missing data doesn't clutter results.
+    * Cons: Less flexible for users who want nulls first.
 
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
+**Aspect: View-only sorting:**
 
-</box>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
-
-<box type="info" seamless>
-
-**Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</box>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</box>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
-
-<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
-
-<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
+* **Current choice:** Sort only affects the view layer (`SortedList`), not the underlying data.
+    * Pros: Original insertion order is preserved and can be restored with `list` command.
+    * Cons: Sort order does not persist across sessions.
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -283,10 +255,10 @@ Phone-call based scam caller who
 
 **Value proposition**:
 * Manages large volumes of scam caller victims' contact information in Singapore
-* Possible identification, and visualisation of victim social networks
+* Flexibility in allowing arbitrary user-defined information to be stored for each victim
 * Filter/sort for high-risk / low-reward victims
-* Reminders to follow-up on certain higher potential victims
 * Single-user application for security and anonymity
+* Full data wipe in case of emergency situations
 
 
 ### User stories
@@ -300,7 +272,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | scam caller                    | list potential victim profiles                                                               | I can see all potential victims                                                  |
 | `* * *`  | scam caller                    | quickly append new information about someone I'm calling                                     | I can use that information in the future against that person                     |
 | `* * *`  | scam caller                    | quickly search up personal information about someone I'm calling                             | I can use that information to gain their credibility                             |
-| `* * *`  | sometimes-offline scam caller  | access the address book offline                                                              | I can work reliably on the go                                                    |
+| `* * *`  | sometimes-offline scam caller  | access the ScamBook offline                                                                  | I can work reliably on the go                                                    |
 | `* * *`  | organised scam caller          | filter and sort contacts by attributes                                                       | I can focus on the best next calls                                               |
 | `* * *`  | expert user                    | specify optional parameters with command flags                                               | I have more flexibility when using commands                                      |
 | `* *`    | new user                       | view a help menu                                                                             | I understand what I can do with the product                                      |
@@ -323,7 +295,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `ScamBook` and the **Actor** is the `user`, unless specified otherwise)
 
 **Use case: UC01 - Create potential victim profile**
 
@@ -343,7 +315,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 * 2a. Specified attribute(s) is/are invalid.
-    * 2a1. System shows an error message with the expected format.
+    * 2a1. System shows an error message indicating the issue with the first invalid attribute.
 
       Use case ends.
 
@@ -388,7 +360,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Use case ends.
 
 * 2a. No profiles match the query.
-    * 2a1. System shows a message indicating no results found.
+    * 2a1. System shows an empty list of profiles.
 
       Use case ends.
 
@@ -405,8 +377,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions:**
 
-* 2a. No profile has the specified tag, or the tag name is invalid.
-    * 2a1. System shows an error listing example valid tags.
+* 2a. Some profiles do not have the specified tags.
+    * 2a1. System moves these profiles to the bottom of the displayed list.
 
       Use case ends.
 
@@ -466,44 +438,28 @@ testers are expected to do more *exploratory* testing.
 
 </box>
 
-### Launch and shutdown
+Please follow the setup instructions in the [user guide](UserGuide.html#installation) to install and run the app. Assuming no commands have been entered yet, and that the default sample data is loaded, here is a list of commands one could follow, which emulates a realistic scenario of using the app that uses (almost) all commands. All commands should be successful and should result in a success message displayed.
+1. `help`
+2. `add Bernado --phone 87019942 --tag job: manager`
+3. `edit 4 --email davidli@u.nus.edu`
+4. `delete 6`
+5. `tag 3 --add monthly income: 12000 --edit children:5 --delete language`
+6. `scam 1`
+7. `ignore 2`
+8. `clearstatus 3`
+9. `filter --tag job:manager`
+10. `sort monthly income`
+11. `target 2`
+12. `list`
+13. `clear`
+14. `exit`
 
-1. Initial launch
+<br>
 
-   1. Download the jar file and copy into an empty folder
+## **Appendix: Effort**
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
 
-1. Saving window preferences
 
-   1. Resize the window to an optimum size. Move the window to a different location. Close the window.
+<br>
 
-   1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
-
-1. _{ more test cases …​ }_
-
-### Deleting a person
-
-1. Deleting a person while all persons are being shown
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
-
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
-
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
-
-1. _{ more test cases …​ }_
-
-### Saving data
-
-1. Dealing with missing/corrupted data files
-
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
+## **Appendix: Planned enhancements**

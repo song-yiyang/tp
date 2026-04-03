@@ -100,6 +100,35 @@ public class FilterCommandParserTest {
     }
 
     @Test
+    public void parse_partialPhoneCriteria_returnsFilterCommand() throws Exception {
+        FilterCommand expected = createExpectedFilterCommand(singleParamFilter(FilterType.PHONE, "3512"),
+                Collections.emptyList());
+        assertParseSuccess(parser, " --phone 3512", expected);
+    }
+
+    @Test
+    public void parse_partialEmailCriteria_returnsFilterCommand() throws Exception {
+        FilterCommand expected = createExpectedFilterCommand(singleParamFilter(FilterType.EMAIL, "@example"),
+                Collections.emptyList());
+        assertParseSuccess(parser, " --email @example", expected);
+    }
+
+    @Test
+    public void parse_singleStatusCriteria_returnsFilterCommand() throws Exception {
+        FilterCommand expected = createExpectedFilterCommand(singleParamFilter(FilterType.STATUS, "TARGET"),
+                Collections.emptyList());
+        assertParseSuccess(parser, " --status TARGET", expected);
+    }
+
+    @Test
+    public void parse_multipleStatusCriteria_returnsFilterCommand() throws Exception {
+        FilterCommand expected = createExpectedFilterCommand(
+                singleParamFilter(FilterType.STATUS, "TARGET", "IGNORE"),
+                Collections.emptyList());
+        assertParseSuccess(parser, " --status TARGET --status IGNORE", expected);
+    }
+
+    @Test
     public void parse_multipleEmailCriteria_returnsFilterCommand() throws Exception {
         FilterCommand expected = createExpectedFilterCommand(
                 singleParamFilter(FilterType.EMAIL, "alice@example.com", "benson@example.com"),
@@ -117,8 +146,8 @@ public class FilterCommandParserTest {
     @Test
     public void parse_multipleTagCriteria_returnsFilterCommand() throws Exception {
         FilterCommand expected = createExpectedFilterCommand(new HashMap<>(),
-                Arrays.asList(new Tag("job:manager"), new Tag("status:scammed")));
-        assertParseSuccess(parser, " --tag job:manager --tag status:scammed", expected);
+                Arrays.asList(new Tag("job:manager"), new Tag("rich:yes")));
+        assertParseSuccess(parser, " --tag job:manager --tag rich:yes", expected);
     }
 
     @Test
@@ -148,6 +177,15 @@ public class FilterCommandParserTest {
     }
 
     @Test
+    public void parse_nameAndStatusCriteria_returnsFilterCommand() throws Exception {
+        Map<FilterType, List<String>> criteria = new HashMap<>();
+        criteria.put(FilterType.NAME, List.of("Alice"));
+        criteria.put(FilterType.STATUS, List.of("TARGET"));
+        FilterCommand expected = createExpectedFilterCommand(criteria, Collections.emptyList());
+        assertParseSuccess(parser, " --name Alice --status TARGET", expected);
+    }
+
+    @Test
     public void parse_nameAndTagCriteria_returnsFilterCommand() throws Exception {
         Map<FilterType, List<String>> criteria = new HashMap<>();
         criteria.put(FilterType.NAME, List.of("Benson"));
@@ -161,9 +199,9 @@ public class FilterCommandParserTest {
         Map<FilterType, List<String>> criteria = new HashMap<>();
         criteria.put(FilterType.PHONE, List.of("98765432"));
         criteria.put(FilterType.EMAIL, List.of("johnd@example.com"));
-        List<Tag> tags = List.of(new Tag("status:scammed"));
+        List<Tag> tags = List.of(new Tag("rich:yes"));
         FilterCommand expected = createExpectedFilterCommand(criteria, tags);
-        assertParseSuccess(parser, " --phone 98765432 --email johnd@example.com --tag status:scammed", expected);
+        assertParseSuccess(parser, " --phone 98765432 --email johnd@example.com --tag rich:yes", expected);
     }
 
     @Test
@@ -172,13 +210,15 @@ public class FilterCommandParserTest {
         criteria.put(FilterType.NAME, Arrays.asList("Alice", "Benson"));
         criteria.put(FilterType.PHONE, Arrays.asList("94351253", "98765432"));
         criteria.put(FilterType.EMAIL, Arrays.asList("alice@example.com", "johnd@example.com"));
-        List<Tag> tags = Arrays.asList(new Tag("job:manager"), new Tag("status:scammed"));
+        criteria.put(FilterType.STATUS, Arrays.asList("TARGET", "SCAM"));
+        List<Tag> tags = Arrays.asList(new Tag("job:manager"), new Tag("rich:yes"));
         FilterCommand expected = createExpectedFilterCommand(criteria, tags);
         assertParseSuccess(parser,
                 " --name Alice --name Benson"
                         + " --phone 94351253 --phone 98765432"
                         + " --email alice@example.com --email johnd@example.com"
-                        + " --tag job:manager --tag status:scammed",
+                        + " --status TARGET --status SCAM"
+                        + " --tag job:manager --tag rich:yes",
                 expected);
     }
 

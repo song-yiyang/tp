@@ -10,7 +10,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.CommandRegistry;
 import seedu.address.logic.commands.TagCommand;
+import seedu.address.logic.parser.inputpatterns.IntegerToken;
 import seedu.address.model.tag.Tag;
 
 public class TagCommandParserTest {
@@ -19,32 +21,37 @@ public class TagCommandParserTest {
 
     @Test
     public void parse_emptyParameters_failure() {
-        assertParseFailure(parser, "", MESSAGE_TOO_FEW_FIELDS);
-        assertParseFailure(parser, "  \t\t\n\n", MESSAGE_TOO_FEW_FIELDS);
+        assertParseFailure(parser, "", MESSAGE_TOO_FEW_FIELDS
+            + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
+        assertParseFailure(parser, "  \t\t\n\n", MESSAGE_TOO_FEW_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
     }
 
     @Test
     public void parse_tooManyParameters_failure() {
-        assertParseFailure(parser, "1 2", MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(parser, "1 2 3", MESSAGE_TOO_MANY_FIELDS);
-        assertParseFailure(parser, "--new name:value", MESSAGE_TOO_MANY_FIELDS);
+        assertParseFailure(parser, "1 2", MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
+        assertParseFailure(parser, "1 2 3", MESSAGE_TOO_MANY_FIELDS
+                + "\n" + CommandRegistry.getCommandInfo("tag").get().getDescription());
     }
 
     @Test
     public void parse_nonIntegerIndex_failure() {
         assertParseFailure(parser, "first",
-                "Your input of 'first' does not match an expected value of the form [1...100]");
+                "first" + IntegerToken.INVALID_STRING);
         assertParseFailure(parser, "one",
-                "Your input of 'one' does not match an expected value of the form [1...100]");
+                "one" + IntegerToken.INVALID_STRING);
     }
 
     @Test
     public void parse_tooLong_failure() {
-        assertParseFailure(parser, "1 --add " + tooLong + ":a", Tag.NAME_LENGTH_MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 --add a:" + tooLong, Tag.VALUE_LENGTH_MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 --edit " + tooLong + ":a", Tag.NAME_LENGTH_MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 --edit a:" + tooLong, Tag.VALUE_LENGTH_MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 --delete " + tooLong, Tag.NAME_LENGTH_MESSAGE_CONSTRAINTS);
+        String m = " is too long, it should not exceed " + Tag.MAX_LENGTH + " characters.";
+        String tooLongQuotes = '"' + tooLong + '"';
+        assertParseFailure(parser, "1 --add " + tooLong + ":a", tooLongQuotes + m);
+        assertParseFailure(parser, "1 --add a:" + tooLong, tooLongQuotes + m);
+        assertParseFailure(parser, "1 --edit " + tooLong + ":a", tooLongQuotes + m);
+        assertParseFailure(parser, "1 --edit a:" + tooLong, tooLongQuotes + m);
+        assertParseFailure(parser, "1 --delete " + tooLong, tooLongQuotes + m);
     }
 
     @Test
@@ -118,8 +125,8 @@ public class TagCommandParserTest {
 
     @Test
     public void parse_invalidTagFormat_failure() {
-        assertParseFailure(parser, "1 --add no_delimiter", Tag.DELIMITER_MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 --add invalid:tag:string", Tag.DELIMITER_MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 --delete extra:delimiter", Tag.DELIMITER_MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "1 --add no_delimiter", Tag.ONE_DELIMITER_CONSTRAINT);
+        assertParseFailure(parser, "1 --add invalid:tag:string", Tag.ONE_DELIMITER_CONSTRAINT);
+        assertParseFailure(parser, "1 --delete extra:delimiter", Tag.DELETE_TAG_NAME_ONLY);
     }
 }

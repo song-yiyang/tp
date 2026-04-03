@@ -59,9 +59,9 @@ public class ListCommandTest {
 
     @Test
     public void execute_emptyList_selectedPersonIsNull() throws CommandException {
-        Model model_with_empty_addressbook = new ModelManager(new AddressBook(), new UserPrefs());
+        Model modelWithEmptyAddressBook = new ModelManager(new AddressBook(), new UserPrefs());
         Command command = new ListCommand();
-        command.execute(model_with_empty_addressbook);
-        assertNull(model_with_empty_addressbook.getSelectedPerson().getValue());
+        command.execute(modelWithEmptyAddressBook);
+        assertNull(modelWithEmptyAddressBook.getSelectedPerson().getValue());
     }
 }

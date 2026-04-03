@@ -18,20 +18,18 @@ public class AddCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
 
+    public static final String EXAMPLE = COMMAND_WORD + " John Doe " + PARAM_ID_PHONE + " 98765432 "
+            + PARAM_ID_EMAIL + " johnd@example.com " + PARAM_ID_TAG + " school:NUS";
+
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a person to the address book. "
             + "Parameters: "
             + "NAME "
             + PARAM_ID_PHONE + " PHONE "
             + PARAM_ID_EMAIL + " EMAIL "
             + "[" + PARAM_ID_TAG + "TAG]...\n"
-            + "Example: " + COMMAND_WORD + " "
-            + "John Doe "
-            + PARAM_ID_PHONE + " 98765432 "
-            + PARAM_ID_EMAIL + " johnd@example.com "
-            + PARAM_ID_TAG + " school:NUS";
+            + "Example: " + EXAMPLE;
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
 
     private final Person toAdd;
 
@@ -46,10 +44,6 @@ public class AddCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-
-        if (model.hasPerson(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
-        }
 
         model.addPerson(toAdd);
 

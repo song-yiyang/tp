@@ -3,7 +3,9 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -20,6 +22,8 @@ public class SetStatusCommand extends Command {
 
     private final Index targetIndex;
     private final Status targetStatus;
+
+    private final Logger logger = LogsCenter.getLogger(SetStatusCommand.class);
 
     /**
      * Initializes a new {@code SetStatusCommand} with target status and index.
@@ -38,7 +42,8 @@ public class SetStatusCommand extends Command {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX);
+            throw new CommandException(Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                    + "\nThere is/are only " + lastShownList.size() + " person(s) in the list.");
         }
 
         Person person = lastShownList.get(targetIndex.getZeroBased());
@@ -49,6 +54,9 @@ public class SetStatusCommand extends Command {
                 targetStatus);
         model.setPerson(person, updatedPerson);
         model.setSelectedPerson(updatedPerson);
+
+        logger.info("Status updated to " + targetStatus.toString());
+
         return new CommandResult(MESSAGE_SUCCESS);
     }
 

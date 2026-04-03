@@ -3,36 +3,44 @@ package seedu.address.model.tag;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+
+import seedu.address.commons.exceptions.IllegalValueException;
 
 public class TagTest {
 
+    // EP: null tag
     @Test
     public void constructor_tagIsNull_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new Tag(null));
     }
 
+    // EP: no delimiter
     @Test
     public void constructor_invalidTagString_throwsIllegalArgumentException() {
         String invalidTagString = "no_delimiter_tag";
         assertThrows(IllegalArgumentException.class, () -> new Tag(invalidTagString));
     }
 
+    // EP: empty tag name
     @Test
     public void constructor_invalidTagName_throwsIllegalArgumentException() {
         String invalidTagName = "  ";
         assertThrows(IllegalArgumentException.class, () -> new Tag(invalidTagName + ":investment banker"));
     }
 
+    // EP: empty tag value
     @Test
     public void constructor_invalidTagValue_throwsIllegalArgumentException() {
         String invalidTagValue = "  ";
         assertThrows(IllegalArgumentException.class, () -> new Tag("job:" + invalidTagValue));
     }
 
+    // EP: valid tag, with multiple "sub-EP"s
     @Test
     public void constructor_validInputs_success() {
         // alphanumeric name and value
@@ -56,66 +64,78 @@ public class TagTest {
         assertEquals("and many spaces", tagWithWhitespace.tagValue);
     }
 
-    @Test
-    public void validity_of_tagName() {
-        // null tag name
-        assertThrows(NullPointerException.class, () -> Tag.isValidTagName(null));
-
-        // all whitespace
-        assertFalse(Tag.isValidTagName(" \t\n"));
-
-        // all whitespace with delimiter
-        assertFalse(Tag.isValidTagName(" \t:\n"));
-
-        // non-whitespace but has delimiter
-        assertFalse(Tag.isValidTagName("tab\t:newline\n"));
-
-        // too long
-        assertFalse(Tag.isValidTagName("a".repeat(100)));
-
-        // contains "phone" or "email"
-        assertFalse(Tag.isValidTagName("name:John Doe"));
-        assertFalse(Tag.isValidTagName("phone:87654321"));
-        assertFalse(Tag.isValidTagName("email:hello@gmail.com"));
-
-        // non-whitespace with no delimiter
-        assertTrue(Tag.isValidTagName("job"));
+    public void helperAssertThrows(Executable executable, String expectedMessage) {
+        Exception e = assertThrows(IllegalValueException.class, executable);
+        assertEquals(expectedMessage, e.getMessage());
     }
 
     @Test
-    public void validity_of_tagValue() {
-        // null tag value
-        assertThrows(NullPointerException.class, () -> Tag.isValidTagValue(null));
+    public void validityTagName() throws IllegalValueException {
+        // EP: null tag name
+        assertThrows(NullPointerException.class, () -> Tag.validateTagName(null));
 
-        // all whitespace
-        assertFalse(Tag.isValidTagValue(" \t\n"));
+        // EP: all whitespace
+        helperAssertThrows(() -> Tag.validateTagName(" \t\n"), Tag.WHITESPACE_NAME_CONSTRAINTS);
 
-        // all whitespace with delimiter
-        assertFalse(Tag.isValidTagValue(" \t:\n"));
+        // EP: all whitespace with delimiter
+        helperAssertThrows(() -> Tag.validateTagName(" \t:\n"), Tag.NAME_NO_DELIMITER_CONSTRAINT);
 
-        // non-whitespace but has delimiter
-        assertFalse(Tag.isValidTagValue("tab\t:newline\n"));
+        // EP: non-whitespace but has delimiter
+        helperAssertThrows(() -> Tag.validateTagName("tab\t:newline\n"), Tag.NAME_NO_DELIMITER_CONSTRAINT);
 
-        // too long
-        assertFalse(Tag.isValidTagValue("a".repeat(100)));
+        // EP: too long
+        helperAssertThrows(() -> Tag.validateTagName("a".repeat(100)),
+                '"' + "a".repeat(100) + '"'
+                        + " is too long, it should not exceed "
+                        + Tag.MAX_LENGTH + " characters.");
 
-        // non-whitespace with no delimiter
-        assertTrue(Tag.isValidTagValue("engineer"));
+        // EP: contains "name", "phone" or "email"
+        helperAssertThrows(() -> Tag.validateTagName("name"), Tag.ILLEGAL_NAME_CONSTRAINTS);
+        helperAssertThrows(() -> Tag.validateTagName("phone"), Tag.ILLEGAL_NAME_CONSTRAINTS);
+        helperAssertThrows(() -> Tag.validateTagName("email"), Tag.ILLEGAL_NAME_CONSTRAINTS);
+
+        // EP: Valid, non-whitespace with no delimiter
+        assertTrue(Tag.validateTagName("job"));
     }
 
     @Test
-    public void invalidTagPair() {
-        // invalid tag string
-        assertFalse(Tag.isValidTagPair("too:many:delimiters"));
+    public void validityTagValue() throws IllegalValueException {
+        // EP: null tag value
+        assertThrows(NullPointerException.class, () -> Tag.validateTagValue(null));
 
-        // invalid tag name
-        assertFalse(Tag.isValidTagPair("\t\n :valid value"));
+        // EP: all whitespace
+        helperAssertThrows(() -> Tag.validateTagValue(" \t\n"), Tag.WHITESPACE_VALUE_CONSTRAINTS);
 
-        // valid tag name, invalid tag value
-        assertFalse(Tag.isValidTagPair("valid name:\n\t "));
+        // EP: all whitespace with delimiter
+        helperAssertThrows(() -> Tag.validateTagValue(" \t:\n"), Tag.VALUE_NO_DELIMITER_CONSTRAINT);
 
-        // valid tag name and value
-        assertTrue(Tag.isValidTagPair("valid name:valid value"));
+        // EP: non-whitespace but has delimiter
+        helperAssertThrows(() -> Tag.validateTagValue("tab\t:newline\n"), Tag.VALUE_NO_DELIMITER_CONSTRAINT);
+
+        // EP: too long
+        helperAssertThrows(() -> Tag.validateTagValue("a".repeat(100)),
+                '"' + "a".repeat(100) + '"'
+                        + " is too long, it should not exceed "
+                        + Tag.MAX_LENGTH + " characters.");
+
+        // EP: Valid, non-whitespace with no delimiter
+        assertTrue(Tag.validateTagValue("engineer"));
+    }
+
+    // EP: Invalid tag pair
+    @Test
+    public void invalidTagPair() throws IllegalValueException {
+        // EP: invalid tag string
+        helperAssertThrows(() -> Tag.validateTagPair("too:many:delimiters"), Tag.ONE_DELIMITER_CONSTRAINT);
+
+        // EP: invalid tag name
+        helperAssertThrows(() -> Tag.validateTagPair("\t\n :valid value"), Tag.WHITESPACE_NAME_CONSTRAINTS);
+
+        // EP: valid tag name, invalid tag value
+        helperAssertThrows(() -> Tag.validateTagPair("valid name:\n\t "), Tag.WHITESPACE_VALUE_CONSTRAINTS);
+
+        // EP: valid tag name and value
+        assertTrue(Tag.validateTagPair("valid name:valid value"));
     }
 
     @Test
