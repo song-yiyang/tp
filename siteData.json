@@ -113,7 +113,6 @@
         "who-is-scambook-for": "Who is ScamBook for?",
         "quick-start": "Quick start",
         "installation": "Installation",
-        "important-notes": "Important notes",
         "overview": "Overview",
         "basic-commands": "Basic commands",
         "features": "Features",
@@ -133,7 +132,6 @@
         "saving-the-data": "Saving the data",
         "editing-the-data-file": "Editing the data file",
         "future-work": "Future work",
-        "faq": "FAQ",
         "commands-summary": "Commands summary"
       },
       "headingKeywords": {}
