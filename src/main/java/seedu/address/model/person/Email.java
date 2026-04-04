@@ -6,7 +6,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 
 /**
  * Represents a Person's email in the address book.
- * Guarantees: immutable; is valid as declared in {@link #isValidEmail(String)}
+ * Guarantees: immutable; is valid as declared in {@link #isValidEmail(String)}.
  */
 public class Email {
 

@@ -26,7 +26,8 @@ public class IntegerToken extends Token {
 
     /**
      * Initializes an {@code IntegerToken} with maximum value of {@code Integer.MAX_VALUE}.
-     * @param minValue the minimum possible integer in this field
+     *
+     * @param minValue The minimum possible integer in this field.
      */
     public IntegerToken(String id, int minValue) {
         this(id, minValue, Integer.MAX_VALUE);
