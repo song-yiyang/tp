@@ -261,19 +261,38 @@ Examples:
 
 Filters the list of persons in the ScamBook to show only those that match the specified parameters.
 
-If multiple parameters of the same type are specified, only persons that match all the specified parameters will be shown. If multiple parameters of different types are specified, persons that match at least one of the specified parameters will be shown.
+Each use of `filter` replaces the current filtered view instead of further narrowing the existing one. To clear the current filter and show all persons again, use `filter` with no parameters.
 
-Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--tag NAME:VALUE]...`
+Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status STATUS]... [--tag TAGNAME[:TAGVALUE]]...`
 
-- `filter --name John --phone 98765432`
-  Shows all persons whose name contains `John` and phone number is `98765432`.
-- `filter --name John --name Jane`
+* Multiple values of the same parameter type are combined using OR.
+  e.g. `--name John --name Jane` matches persons whose name contains `John` or `Jane`.
+* Different parameter types are combined using AND.
+  e.g. `--name John --phone 9876` matches only persons whose name contains `John` and whose phone number contains `9876`.
+* `NAME`, `EMAIL`, and `TAGVALUE` are matched by case-insensitive partial match.
+* `PHONE` is matched by partial match.
+* `STATUS` must be one of `NONE`, `TARGET`, `SCAM`, or `IGNORE`.
+* `--tag job` matches persons with a tag named `job`, while `--tag job:manager` matches persons with a `job` tag whose value contains `manager`.
+* Multiple tag filters are combined using AND.
+
+Examples:
+* `filter --name John`
+  Shows all persons whose name contains `John`.
+* `filter --name John --name Jane`
   Shows all persons whose name contains `John` or `Jane`.
-- `filter --name John --name Jane --phone 98765432`
-  Shows all persons whose name contains `John` or `Jane`, and phone number is `98765432`.
+* `filter --status TARGET --status SCAM`
+  Shows all persons whose status is either `TARGET` or `SCAM`.
+* `filter --phone 9876 --email gmail.com`
+  Shows all persons whose phone number contains `9876` **and** whose email contains `gmail.com`.
+* `filter --tag job`
+  Shows all persons who have a tag named `job`, regardless of its value.
+* `filter --tag job:manager --tag region:west`
+  Shows all persons who have both a `job` tag containing `manager` and a `region` tag containing `west`.
+* `filter --name Tan --status TARGET --tag source:telegram`
+  Shows all persons whose name contains `Tan`, whose status is `TARGET`, and whose `source` tag contains `telegram`.
 
 <box type="tip" seamless>
-The filter command filters the displayed list of persons, and other commands will refer to the index of the filtered list.
+The `filter` command changes the displayed list of persons, and other commands will refer to the index of the currently displayed list.
 </box>
 
 

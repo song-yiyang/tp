@@ -36,7 +36,7 @@ import seedu.address.model.person.predicates.NameContainsPredicate;
 import seedu.address.model.person.predicates.PhoneContainsPredicate;
 import seedu.address.model.person.predicates.StatusEqualsPredicate;
 import seedu.address.model.person.predicates.TagContainsPredicate;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.TagFilter;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for FilterCommand.
@@ -59,7 +59,7 @@ public class FilterCommandTest {
      * Creates a FilterCommand with the given parameter filters and tag filters.
      */
     private FilterCommand createFilterCommand(Map<FilterType, List<String>> paramFilters,
-                                              List<Tag> tagFilters) {
+                                              List<TagFilter> tagFilters) {
         return new FilterCommand(paramFilters, tagFilters);
     }
 
@@ -327,7 +327,7 @@ public class FilterCommandTest {
 
     @Test
     public void execute_singleTagCriteria_filtersCorrectly() {
-        List<Tag> tagFilters = List.of(new Tag("job:manager"));
+        List<TagFilter> tagFilters = List.of(new TagFilter("job:manager"));
         FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
 
         expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
@@ -337,7 +337,7 @@ public class FilterCommandTest {
     @Test
     public void execute_multipleTagFilters_filtersMatchingAll() {
         // TagContainsPredicate uses AND logic: person must have ALL specified tags
-        List<Tag> tagFilters = List.of(new Tag("rich:yes"), new Tag("job:manager"));
+        List<TagFilter> tagFilters = List.of(new TagFilter("rich:yes"), new TagFilter("job:manager"));
         FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
 
         expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
@@ -347,7 +347,7 @@ public class FilterCommandTest {
 
     @Test
     public void execute_tagMatchesNoOne_emptyList() {
-        List<Tag> tagFilters = List.of(new Tag("nonexistent:tag"));
+        List<TagFilter> tagFilters = List.of(new TagFilter("nonexistent:tag"));
         FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
 
         expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
@@ -356,7 +356,25 @@ public class FilterCommandTest {
 
     @Test
     public void execute_statusTagCriteria_filtersCorrectly() {
-        List<Tag> tagFilters = List.of(new Tag("rich:yes"));
+        List<TagFilter> tagFilters = List.of(new TagFilter("rich:yes"));
+        FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
+
+        expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
+        assertFilterResult(command, model, List.of(BENSON));
+    }
+
+    @Test
+    public void execute_tagNameOnly_filtersByTagExistence() {
+        List<TagFilter> tagFilters = List.of(new TagFilter("job"));
+        FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
+
+        expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
+        assertFilterResult(command, model, Arrays.asList(ALICE, BENSON, CARL));
+    }
+
+    @Test
+    public void execute_mixedTagNameAndValue_filtersByBoth() {
+        List<TagFilter> tagFilters = List.of(new TagFilter("job"), new TagFilter("rich:yes"));
         FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
 
         expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
@@ -393,7 +411,7 @@ public class FilterCommandTest {
     public void execute_emailAndTagCriteria_filtersByBoth() {
         Map<FilterType, List<String>> criteria = new HashMap<>();
         criteria.put(FilterType.EMAIL, List.of("johnd@example.com"));
-        List<Tag> tagFilters = List.of(new Tag("job:manager"));
+        List<TagFilter> tagFilters = List.of(new TagFilter("job:manager"));
         FilterCommand command = createFilterCommand(criteria, tagFilters);
 
         expectedModel.updateFilteredPersonList(
@@ -421,7 +439,7 @@ public class FilterCommandTest {
         criteria.put(FilterType.NAME, List.of("Benson"));
         criteria.put(FilterType.PHONE, List.of("98765432"));
         criteria.put(FilterType.EMAIL, List.of("johnd@example.com"));
-        List<Tag> tagFilters = List.of(new Tag("job:manager"));
+        List<TagFilter> tagFilters = List.of(new TagFilter("job:manager"));
         FilterCommand command = createFilterCommand(criteria, tagFilters);
 
         expectedModel.updateFilteredPersonList(
@@ -482,7 +500,7 @@ public class FilterCommandTest {
     @Test
     public void equals_sameValues_returnsTrue() {
         Map<FilterType, List<String>> criteria = singleParamFilter(FilterType.NAME, "Alice");
-        List<Tag> tags = Collections.emptyList();
+        List<TagFilter> tags = Collections.emptyList();
 
         FilterCommand command1 = createFilterCommand(criteria, tags);
         FilterCommand command2 = createFilterCommand(criteria, tags);
@@ -520,9 +538,9 @@ public class FilterCommandTest {
     @Test
     public void equals_differentTagFilters_returnsFalse() {
         FilterCommand command1 = createFilterCommand(new HashMap<>(),
-                List.of(new Tag("job:manager")));
+                List.of(new TagFilter("job:manager")));
         FilterCommand command2 = createFilterCommand(new HashMap<>(),
-                List.of(new Tag("status:called")));
+                List.of(new TagFilter("status:called")));
 
         assertFalse(command1.equals(command2));
     }
@@ -553,7 +571,7 @@ public class FilterCommandTest {
     @Test
     public void toString_containsFilterInformation() {
         Map<FilterType, List<String>> criteria = singleParamFilter(FilterType.NAME, "Alice");
-        List<Tag> tags = List.of(new Tag("job:manager"));
+        List<TagFilter> tags = List.of(new TagFilter("job:manager"));
         FilterCommand command = createFilterCommand(criteria, tags);
         String result = command.toString();
 

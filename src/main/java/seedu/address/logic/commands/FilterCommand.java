@@ -23,7 +23,7 @@ import seedu.address.model.person.predicates.NameContainsPredicate;
 import seedu.address.model.person.predicates.PhoneContainsPredicate;
 import seedu.address.model.person.predicates.StatusEqualsPredicate;
 import seedu.address.model.person.predicates.TagContainsPredicate;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.TagFilter;
 
 /**
  * Filters the list of profiles by specified criteria.
@@ -39,12 +39,15 @@ public class FilterCommand extends Command {
             + PARAM_ID_PHONE + " 98765432 "
             + PARAM_ID_EMAIL + " johnd@example.com "
             + PARAM_ID_STATUS + " target "
-            + PARAM_ID_TAG + " school:NUS ";
+            + PARAM_ID_TAG + " school:NUS "
+            + PARAM_ID_TAG + " job ";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters profiles by the specified parameters.\n"
-            + "Parameters: [" + PARAM_ID_NAME + " <name>]* [" + PARAM_ID_PHONE + " <phone>]* "
-            + "[" + PARAM_ID_EMAIL + " <email>]* [" + PARAM_ID_STATUS + " <status>]* "
-            + "[--<tagName>:<tagValue>]*\n"
+            + "Parameters: [" + PARAM_ID_NAME + " <name>]... "
+            + "[" + PARAM_ID_PHONE + " <phone>]... "
+            + "[" + PARAM_ID_EMAIL + " <email>]... "
+            + "[" + PARAM_ID_STATUS + " <status>]... "
+            + "[" + PARAM_ID_TAG + " <tagName>[:<tagValue>]]...\n"
             + "Example: " + EXAMPLE;
 
     public static final String MESSAGE_SUCCESS = "Filtered victim profiles.";
@@ -56,17 +59,17 @@ public class FilterCommand extends Command {
         NAME, PHONE, EMAIL, STATUS
     }
     private final Map<FilterType, List<String>> paramFilters;
-    private final List<Tag> tagFilters;
+    private final List<TagFilter> tagFilters;
 
     /**
      * Creates a FilterCommand with the given filter criteria.
      * Supports filtering by name, phone, email, status, and tag parameters.
      * If no criteria are provided (empty map), all profiles are shown.
      *
-     * @param paramFilters a map from filter type (NAME, PHONE, EMAIL, STATUS) to filter value
-     * @param tagFilters a list of tags to filter by
+     * @param paramFilters a map from filter type (NAME, PHONE, EMAIL, STATUS) to a list of filters
+     * @param tagFilters a list of tag filters to filter by
      */
-    public FilterCommand(Map<FilterType, List<String>> paramFilters, List<Tag> tagFilters) {
+    public FilterCommand(Map<FilterType, List<String>> paramFilters, List<TagFilter> tagFilters) {
         requireNonNull(paramFilters);
         requireNonNull(tagFilters);
 
@@ -90,10 +93,19 @@ public class FilterCommand extends Command {
     }
 
     /**
-     * Builds a combined predicate from all filter criteria using AND logic.
-     * Supports filtering by name, phone, email, and status parameters.
+     * Builds the predicate used to filter persons for this command.
      *
-     * @return a predicate that combines all filter criteria
+     * Each non-empty filter category contributes one predicate, and these
+     * predicates are combined using AND logic.
+     *
+     * A person must satisfy every supplied category such as name, phone, email,
+     * status, and tags to be included.
+     *
+     * Empty or null filter lists are ignored. Invalid status values are skipped,
+     * and if no usable criteria are supplied, the returned predicate matches all
+     * persons.
+     *
+     * @return a predicate representing the active filter criteria
      */
     private Predicate<Person> buildPredicate() {
         Predicate<Person> predicate = PREDICATE_SHOW_ALL_PERSONS;
