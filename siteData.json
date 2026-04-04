@@ -104,6 +104,7 @@
     },
     {
       "src": "UserGuide.md",
+      "title": "User Guide",
       "headings": {
         "scambook-user-guide": "ScamBook User Guide",
         "introduction": "Introduction",
@@ -115,6 +116,7 @@
         "entering-a-command": "Entering a Command",
         "command-format-information": "Command Format Information",
         "commands": "Commands",
+        "viewing-command-history": "Viewing command history",
         "adding-a-person-add": "Adding a person: add",
         "editing-a-person-edit": "Editing a person : edit",
         "deleting-a-person-delete": "Deleting a person : delete",
