@@ -121,6 +121,7 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand, resultDisplay::setFormatTooltipFromPartialCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+        commandBox.requestFocus();
     }
 
     /**
@@ -185,6 +186,9 @@ public class MainWindow extends UiPart<Stage> {
             if (commandResult.isExit()) {
                 handleExit();
             }
+
+            // Scroll to selected person on explicit command execution
+            personListPanel.scrollToAndSelect(logic.getSelectedPerson().getValue());
 
             return commandResult;
         } catch (CommandException | ParseException e) {

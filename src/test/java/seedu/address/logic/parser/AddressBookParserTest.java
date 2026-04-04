@@ -2,7 +2,6 @@ package seedu.address.logic.parser;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -49,8 +48,8 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_clear() throws Exception {
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
+        ClearCommand command = (ClearCommand) parser.parseCommand(ClearCommand.COMMAND_WORD);
+        assertEquals(new ClearCommand(), command);
     }
 
     @Test
@@ -71,20 +70,26 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_exit() throws Exception {
-        assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
-        assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3") instanceof ExitCommand);
+        ExitCommand command = (ExitCommand) parser.parseCommand(ExitCommand.COMMAND_WORD);
+        assertEquals(new ExitCommand(), command);
     }
 
     @Test
     public void parseCommand_help() throws Exception {
-        assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
-        assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
+        HelpCommand command = (HelpCommand) parser.parseCommand(HelpCommand.COMMAND_WORD);
+        assertEquals(new HelpCommand(), command);
     }
 
     @Test
     public void parseCommand_list() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+        ListCommand command = (ListCommand) parser.parseCommand(ListCommand.COMMAND_WORD);
+        assertEquals(new ListCommand(), command);
+    }
+
+    @Test
+    public void parseCommand_nuke() throws Exception {
+        NukeCommand command = (NukeCommand) parser.parseCommand(NukeCommand.COMMAND_WORD);
+        assertEquals(new NukeCommand(), command);
     }
 
     @Test
@@ -94,12 +99,6 @@ public class AddressBookParserTest {
         FilterCommand command = (FilterCommand) parser.parseCommand(
                 FilterCommand.COMMAND_WORD + " --name Alice");
         assertEquals(new FilterCommand(criteria, emptyList()), command);
-    }
-
-    @Test
-    public void parseCommand_nuke() throws Exception {
-        assertTrue(parser.parseCommand(NukeCommand.COMMAND_WORD) instanceof NukeCommand);
-        assertTrue(parser.parseCommand(NukeCommand.COMMAND_WORD + " now") instanceof NukeCommand);
     }
 
     @Test

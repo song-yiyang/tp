@@ -22,7 +22,7 @@ import seedu.address.logic.parser.inputpatterns.Param;
 import seedu.address.logic.parser.inputpatterns.StatusParam;
 import seedu.address.logic.parser.inputpatterns.TagParam;
 import seedu.address.logic.parser.inputpatterns.Token;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.TagFilter;
 
 /**
  * Parses input arguments and creates a new FilterCommand object.
@@ -88,7 +88,7 @@ public class FilterCommandParser extends Parser<FilterCommand> {
 
         Param tagParam = inputPattern.getParamWithId(PARAM_ID_TAG);
         List<String> tagFilterStrings = tagParam.getValues();
-        List<Tag> tagFilter = tagFilterStrings.stream().map(Tag::new).toList();
+        List<TagFilter> tagFilter = tagFilterStrings.stream().map(TagFilter::new).toList();
 
         return new FilterCommand(filterCriterion, tagFilter);
     }

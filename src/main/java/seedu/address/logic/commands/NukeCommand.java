@@ -85,4 +85,9 @@ public class NukeCommand extends Command {
             Files.deleteIfExists(jarPath);
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof NukeCommand;
+    }
 }

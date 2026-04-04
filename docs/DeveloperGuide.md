@@ -13,7 +13,14 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+- ScamBook was adapted from Address Book 3 (https://github.com/NUS-CS2103-AY2526-S2/tp)
+
+- All members used Co-pilot for auto-complete tool during coding
+
+- All members used Claude for generating tests
+
+- The `InputPattern` system was adapted from one of our member's [Individual Project](https://github.com/oolimry/ip)
+
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -263,7 +270,7 @@ Phone-call based scam caller who
 
 ### User stories
 
-Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
+Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`. The features marked as `^` are not implemented at the moment
 
 | Priority | As a …​                        | I want to …​                                                                                 | So that I can…​                                                                  |
 |----------|--------------------------------|----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
@@ -281,17 +288,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | scam caller                    | edit potential victim profile                                                                | I can update victim profile as more information gets known                       |
 | `* *`    | beginner user                  | get help on the commands                                                                     | I can familiarise myself with the various tools at my disposal                   |
 | `* *`    | scam caller                    | filter by high risk demographics such as old age & high reward demographics like high income | prioritize who I should call                                                     |
-| `* *`    | scam caller                    | draw and label a relationship from one person to another person                              | when I scam someone, I can use personal information about another person as bait |
+| `* * ^`  | scam caller                    | draw and label a relationship from one person to another person                              | when I scam someone, I can use personal information about another person as bait |
 | `* *`    | successful scam caller         | import and manage a large contact list                                                       | I can work with a larger number of victims                                       |
-| `* *`    | busy scam caller               | see and quickly type auto-filled commands                                                    | I can avoid typing repetitive commands and quickly add new victims               |
+| `* *  `  | busy scam caller               | navigate past commands                                                                       | I can avoid typing repetitive commands and quickly add new victims               |
+| `* *  `  | busy scam caller               | see command formats while typing commands                                                    | I can quickly and correctly type commands without errors                         |
 | `* *`    | beginner scam caller           | load and interact with sample data                                                           | I have the freedom to try commands without having access to a large victim base  |
-| `* *`    | scam caller                    | set reminders to follow up calls on victims                                                  | I can review which targets need to be called again                               |
-| `* *`    | scam caller                    | view a detailed dashboard of a specific victim                                               | refer to that victim's information during a scam call                            |
+| `* * ^`  | scam caller                    | set reminders to follow up calls on victims                                                  | I can review which targets need to be called again                               |
+| `* * ^`  | scam caller                    | view a detailed dashboard of a specific victim                                               | refer to that victim's information during a scam call                            |
 | `* *`    | high-volume scam caller        | obtain search results quickly even with large numbers of contacts                            | I am not slowed down during operations                                           |
-| `* *`    | security-conscious scam caller | have encrypted local storage and auto-lock                                                   | sensitive data is protected and secure                                           |
-| `* *`    | security-conscious scam caller | require logging in for the app                                                               | sensitive data is protected and secure                                           |
+| `* * ^`  | security-conscious scam caller | have encrypted local storage and auto-lock                                                   | sensitive data is protected and secure                                           |
+| `* * ^`  | security-conscious scam caller | require logging in for the app                                                               | sensitive data is protected and secure                                           |
 | `*`      | scam caller                    | purge data immediately                                                                       | I can wipe my hard disk if I get raided by the police                            |
-| `*`      | new user                       | follow a tutorial                                                                            | I am guided through the onboarding process                                       |
+| `* ^`    | new user                       | follow a tutorial                                                                            | I am guided through the onboarding process                                       |
 
 ### Use cases
 

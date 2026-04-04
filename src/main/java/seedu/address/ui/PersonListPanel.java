@@ -2,6 +2,7 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
@@ -9,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
+import javafx.util.Duration;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.Logic;
 import seedu.address.model.person.Person;
@@ -33,11 +35,6 @@ public class PersonListPanel extends UiPart<Region> {
         personListView.setItems(personList);
         personListView.setCellFactory(listView -> new PersonListViewCell());
 
-        // Scrolls to and selects the person whenever there is an edit to that person
-        selectedPerson.addListener((obs, oldPerson, newPerson) -> {
-            scrollToAndSelect(newPerson);
-        });
-
     }
 
     /**
@@ -53,9 +50,16 @@ public class PersonListPanel extends UiPart<Region> {
                 personListView.getSelectionModel().clearSelection();
                 return;
             }
-            logger.info("Scrolling to: " + person.getName());
-            personListView.scrollTo(person);
-            personListView.getSelectionModel().select(person);
+            int index = personListView.getItems().indexOf(person);
+            if (index < 0) {
+                return;
+            }
+            personListView.getSelectionModel().select(index);
+
+            // Small delay to allow JavaFX layout pass to complete before scrolling
+            PauseTransition pause = new PauseTransition(Duration.millis(70));
+            pause.setOnFinished(event -> personListView.scrollTo(index));
+            pause.play();
         });
     }
 

@@ -69,11 +69,11 @@ public class AddressBookParser {
         case ScamStatusCommand.COMMAND_WORD -> new ScamStatusCommandParser().parse(arguments);
         case IgnoreStatusCommand.COMMAND_WORD -> new IgnoreStatusCommandParser().parse(arguments);
         case SortCommand.COMMAND_WORD -> new SortCommandParser().parse(arguments);
-        case ClearCommand.COMMAND_WORD -> new ClearCommand();
-        case ListCommand.COMMAND_WORD -> new ListCommand();
-        case ExitCommand.COMMAND_WORD -> new ExitCommand();
-        case NukeCommand.COMMAND_WORD -> new NukeCommand();
-        case HelpCommand.COMMAND_WORD -> new HelpCommand();
+        case ClearCommand.COMMAND_WORD -> new ClearCommandParser().parse(arguments);
+        case ListCommand.COMMAND_WORD -> new ListCommandParser().parse(arguments);
+        case ExitCommand.COMMAND_WORD -> new ExitCommandParser().parse(arguments);
+        case NukeCommand.COMMAND_WORD -> new NukeCommandParser().parse(arguments);
+        case HelpCommand.COMMAND_WORD -> new HelpCommandParser().parse(arguments);
         default -> {
             logger.finer("This user input caused a ParseException: " + userInput);
             throw new ParseException(MESSAGE_UNKNOWN_COMMAND);

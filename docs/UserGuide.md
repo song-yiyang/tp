@@ -1,7 +1,7 @@
 ---
   layout: default.md
-  title: "User Guide"
-  pageNav: 3
+    title: "User Guide"
+    pageNav: 3
 ---
 
 ScamBook User Guide
@@ -22,17 +22,14 @@ ScamBook is a **desktop contact management app** optimised for use via a Command
 
 ScamBook is designed for **Singapore-based investment and financial scam callers** managing a high volume of victim contacts daily. If you are a scammer who:
 * is **tech-savvy** and prefer typing to clicking, and comfortable with
-a command line interfaces (CLI);
+  command line interfaces (CLI);
 * operates as a **solo caller** and need a private, single-user system to
-manage your contacts;
+  manage your contacts;
 * handles **hundreds to thousands of contacts** and need a system that can
-scale to your needs;
+  scale to your needs;
 * needs to manage and update contacts **on-the-go during live calls**;
 
 ScamBook is the app for you!
-
-<!-- TODO: Potentially include a table of problems solved, value
-proposition, etc. -->
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -42,9 +39,8 @@ proposition, etc. -->
 <!-- Quickstart: Installation instructions -->
 ### Installation
 1. Ensure you have Java `17` or above installed in your Computer.<br>
-   **Mac users:** Ensure you have the precise JDK version prescribed
+   **Mac users:** Ensure you have the precise JDK version found
    [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
-   <!-- TODO: Add detailed checking/installation instructions for JDK -->
 
 1. Download the latest `.jar` file from
    [here](https://github.com/AY2526S2-CS2103T-T16-1/tp/releases).
@@ -53,58 +49,70 @@ proposition, etc. -->
    your ScamBook.
 
 1. Double-click on the `.jar` file to run the application. If the application does not launch,
-refer to [FAQ](#Troubleshooting) for alternate ways to launch the application.
+refer to [troubleshooting](#troubleshooting) for alternate ways to launch the application.
 
 <!-- Quickstart: Overview of UI -->
 ### Overview
-A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
+A GUI similar to the below should appear in a few seconds. The app contains some sample data for you to use.<br>
 
-![Ui](images/Ui.png) <!-- TODO: annotated screenshot of the UI -->
+![Ui](images/Ui.png) 
 <small>*<center>Image credits for status icons: Downloaded from https://emoji.aranja.com/.</center>*</small>
 
-1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
-   Some example commands you can try:
+The top part of the application is the contact list - you can view contacts there.
 
-   * `list` : Lists all contacts.
+The box at the bottom that reads "Enter command here..." is where you enter commands. This is where you get to interact with ScamBook!
 
-   * `add John Doe --phone 98765432 --email johnd@example.com --tag address:John street, block 123, #01-01` : Adds a contact named `John Doe` to ScamBook.
+### Entering a Command
 
-   * `tag 2 --add income:100000 --edit address:Tom street` : Adds the tag `income:100000` to the 2nd contact shown in the current list, and edits the `address` tag of that contact to be `Tom street`.
+Suppose our contact list has 6 people in it. This example will show how to add a 7th contact.
 
-   * `delete 3` : Deletes the 3rd contact shown in the current list.
+We can use the `add` command to create a new contact. In the box at the bottom, type `add`.
 
-   * `clear` : Deletes all contacts.
+![AddExample2.png](images/AddExample1.png)
 
-   * `exit` : Exits the app.
+Upon typing `add`, the format for the rest of the command will appear.
+The command's format is `add NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`.
 
-<!-- Quickstart: Adding, editing, deleting, basic general workflow -->
+Each command's format is given as a sequence of compulsory parameters, and optional parameters denoted in square brackets `[]`.
+In this command, `NAME` is a compulsory parameter, while phone, email and tags are optional parameters.
 
-### Basic commands
+Suppose we want to add a contact with the following information:
+- Name: John Doe
+- Phone: 88463679
+- Extra information:
+    - Job: teacher
 
-Refer to the [Features](#features) section below for details of each command, or the [Commands Summary](#commands-summary) section for a quick summary of all commands and their formats.
+We can enter the command `add John Doe --phone 88463679 --tag job : teacher` and press enter.
+
+![AddExample3.png](images/AddExample2.png)
+
+We can see that we have created a new contact John Doe.
+
+To understand more about how to interpret the command formats, refer to [Command Format Information](#command-format-information).
+
+Refer to the [Command List](#commands) below for details of each command, or the [Commands Summary](#commands-summary) section for a quick summary of all commands and their formats.
 
 --------------------------------------------------------------------------------------------------------------------
-
-## Features
-
-Upon successful execution of a command, a corresponding success message will be displayed.
-
-The `filter` command will only display a subset of filtered profiles in ScamBook. In general, after successful execution of any command, if the modified profile(s) still fulfill the most recent filter applied, the displayed list will remain as the filtered list. Otherwise, the displayed list will revert to show all profiles.
 
 <!-- Disclaimer for command format, applicable to all commands -->
 <box type="info" seamless>
 
-**Notes about the command format:**<br>
+## Command Format Information
 
-* Words in `UPPER_CASE` are the parameters to be supplied by the user. They can contain spaces and special characters (except `index`, which expects a single positive integer). <br>
+* Words in `UPPER_CASE` are the parameters to be supplied by the user. They can contain spaces and special characters (except `INDEX`, which expects a single positive integer). <br>
   e.g. in `add NAME`, `NAME` is a parameter which can be used as `add John Doe`.
 
-* Items in `[square brackets]` are optional.<br>
+* Parameters in `[square brackets]` are optional.<br>
   e.g `NAME [--phone PHONE]` can be used as `John Doe --phone 88463679` or as `John Doe`.
 
-* Items with `…`​ after them can be used multiple times (including zero times).<br>
+* The Parameter `INDEX` refers to the number on the left side of the address book.
+    * For example, the delete command has the format `delete INDEX`. If we type `delete 4`, ScamBook will delete David Li's entry in the below example:
+      ![DeleteExample.png](images/DeleteExample.png)
+
+* Parameters with `…`​ after them can be used multiple times (including zero times).<br>
   e.g. `[--tag NAME:VALUE]…​` can be used as ` ` (i.e. 0 times), `--tag school:NUS`, `--tag school:NUS --tag salary:10000` etc.
-  * A limit of 100 occurrences of each distinct type of multi-occurrence parameters is enforced for each command (after which behaviour is undefined). It is unlikely that this limit will ever be encountered with reasonable use.
+    * For each parameter that can be used multiple times, each command should contain up to 100 of such parameters.
+    * In the above command of `[--tag NAME:VALUE]…​`, the command should have up to 100 occurrences of `--tag`. Above this, the behaviour is undefined.
 
 * Mandatory parameters must come before optional parameters.<br>
   e.g. if the command specifies `NAME [--phone PHONE]`, `--phone 88091246 John` is not acceptable.
@@ -112,10 +120,9 @@ The `filter` command will only display a subset of filtered profiles in ScamBook
 * Optional parameters can be in any order.<br>
   e.g. if the command specifies `[--phone PHONE] [--email EMAIL]`, `--email john@example.com --phone 91842739` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br> e.g. if the command input is `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-</box>
+  </box>
 
 <!--
 Command User guide format:
@@ -151,18 +158,8 @@ Tips about the command, e.g. how to use it more effectively, etc.
 
 -->
 
-<br>
 
-### Constraints on input values
-Emails should be of the format `local-part@domain` and adhere to the following constraints:
-1. The `local-part` should only contain alphanumeric characters and these special characters: `+_.-`. The `local-part` may not start or end with any special characters.
-2. This is followed by a `@` and then a domain name. The domain name is made up of domain labels separated by periods.
-   The domain name must:
-    - end with a domain label at least 2 characters long
-    - have each domain label start and end with alphanumeric characters
-   - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
-
-<br>
+## Commands
 
 ### Adding a person: `add`
 
@@ -170,25 +167,23 @@ Adds a person to the ScamBook.
 
 Format: `add NAME [--phone PHONE] [--email EMAIL] [--tag TAGNAME:TAGVALUE]...`
 
-* There is NO duplicate checking, since it is likely one might encounter multiple people with the same (first) names. Hence, ScamBook supports having multiple people with the same name.
+* Duplicate names are allowed, since it is likely one might encounter multiple people with the same (first) names. Hence, ScamBook supports having multiple people with the same name.
 * If multiple tag name-value pairs have the same tag name (see section on [Tag](#tagging-a-person--tag) below regarding tag name equality), the last value will be used.
 
 <box type="tip" seamless>
-
-**Tip:** A person can have any number of tags (including 0)
-
+<b>Tip:</b> A person can have any number of tags (including 0)
 </box>
 
 Examples:
 * `add John Doe --phone 98765432 --email johnd@example.com --tag address:John street, block 123, #01-01`
-* `add Besty Croew --tag income:$100000 --tag bank:OCBC`
+* `add Besty Crower --tag income:$100000 --tag bank:OCBC`
 
 
 <br>
 
 ### Editing a person : `edit`
 
-Edits an existing person in the ScamBook.
+Edits an existing person's name, phone number or email. For editing tags, see the [Tag Command](#tagging-a-person--tag).
 
 Format: `edit INDEX [--name NAME] [--phone PHONE] [--email EMAIL]`
 
@@ -210,8 +205,7 @@ Deletes the specified person from the ScamBook.
 Format: `delete INDEX`
 
 * Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
-* The index **must be a positive integer** 1, 2, 3, …​
+
 
 Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the ScamBook.
@@ -221,8 +215,6 @@ Examples:
 <br>
 
 ### Tagging a person : `tag`
-
-<!-- TODO: add visuals -->
 
 A tag is a name-value pair that allows the user to record any arbitrary information so desired about a profile. This is achieved by this command, which modifies (add, edit or delete) the tags of an existing person in the ScamBook. In the image below of an example profile in the app, each blue box represents a tag-value pair capturing some useful information about the person.
 
@@ -234,16 +226,14 @@ A tag is a name-value pair that allows the user to record any arbitrary informat
 Format: `tag INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...​`
 
 <box type="warning" seamless>
-
-**Caution:** `NAME`, `VALUE`, `TAGNAME`  must NOT contain colons (`:`). Otherwise, an error will be displayed. Users are advised not to include double dashes as well (`--`), otherwise behaviour is undefined.
-
+<b>Caution:</b> <code>NAME</code>, <code>VALUE</code>, <code>TAGNAME</code> must NOT contain colons (<code>:</code>). Otherwise, an error will be displayed. Users are advised not to use <code>--</code> as part of the tag name or tag value, as this may lead to undefined behaviour.
 </box>
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided, if not, nothing will happen upon execution (and success message will be displayed).
-* Optional fields beginning with `--add` represents tags to be added to the person. The tag name must NOT already exist.
-* Optional fields beginning with `--edit` represents tags to be modified of the person. The tag with the corresponding name must already exist.
-* Optional fields beginning with `--delete` represents tags to be deleted. The tag with the corresponding name must already exist.
+* Optional fields beginning with `--add` represent tags to be added to the person. The tag name must NOT already exist.
+* Optional fields beginning with `--edit` represent tags to be modified of the person. The tag with the corresponding name must already exist.
+* Optional fields beginning with `--delete` represent tags to be deleted. The tag with the corresponding name must already exist.
 
 <box type="warning" seamless>
 If the same tag name appears across multiple optional fields, behaviour is undefined. 2 tag names are considered equivalent if they are exactly equal character for character after removing leading and trailing whitespace.
@@ -261,19 +251,43 @@ Examples:
 
 Filters the list of persons in the ScamBook to show only those that match the specified parameters.
 
-If multiple parameters of the same type are specified, only persons that match all the specified parameters will be shown. If multiple parameters of different types are specified, persons that match at least one of the specified parameters will be shown.
+Each use of `filter` replaces the current filtered view instead of further narrowing the existing one. To clear the current filter and show all persons again, use `filter` with no parameters.
 
-Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--tag NAME:VALUE]...`
+Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status STATUS]... [--tag TAGNAME[:TAGVALUE]]...`
 
-- `filter --name John --phone 98765432`
-  Shows all persons whose name contains `John` and phone number is `98765432`.
-- `filter --name John --name Jane`
+* Multiple values of the same parameter type are combined using OR.
+  e.g. `--name John --name Jane` matches persons whose name contains `John` or `Jane`.
+* Different parameter types are combined using AND.
+  e.g. `--name John --phone 9876` matches only persons whose name contains `John` and whose phone number contains `9876`.
+* `NAME`, `EMAIL`, and `TAGVALUE` are matched by case-insensitive partial match.
+* `PHONE` is matched by partial match.
+* `STATUS` must be one of `NONE`, `TARGET`, `SCAM`, or `IGNORE`.
+* `--tag job` matches persons with a tag named `job`, while `--tag job:manager` matches persons with a `job` tag whose value contains `manager`.
+* Multiple tag filters are combined using AND.
+
+Examples:
+* `filter --name John`
+  Shows all persons whose name contains `John`.
+* `filter --name John --name Jane`
   Shows all persons whose name contains `John` or `Jane`.
-- `filter --name John --name Jane --phone 98765432`
-  Shows all persons whose name contains `John` or `Jane`, and phone number is `98765432`.
+* `filter --status TARGET --status SCAM`
+  Shows all persons whose status is either `TARGET` or `SCAM`.
+* `filter --phone 9876 --email gmail.com`
+  Shows all persons whose phone number contains `9876` **and** whose email contains `gmail.com`.
+* `filter --tag job`
+  Shows all persons who have a tag named `job`, regardless of its value.
+* `filter --tag job:manager --tag region:west`
+  Shows all persons who have both a `job` tag containing `manager` and a `region` tag containing `west`.
+* `filter --name Tan --status TARGET --tag source:telegram`
+  Shows all persons whose name contains `Tan`, whose status is `TARGET`, and whose `source` tag contains `telegram`.
 
 <box type="tip" seamless>
-The filter command filters the displayed list of persons, and other commands will refer to the index of the filtered list.
+The filter command affects the indices of the contacts. When using commands that take in <code>INDEX</code> as a parameter, note the index seen on the list.
+</box>
+
+<box type="tip" seamless>
+When after running another command (e.g. <code>edit</code>),
+if the modified person(s) still fulfill the most recent filter applied, the displayed list will remain as the filtered list. Otherwise, the displayed list will revert to show all persons.
 </box>
 
 
@@ -308,50 +322,48 @@ Sets the status of a specific person. We currently support 4 common statuses, ea
 
 ![Example screenshot of status commands](images/status_command.png)
 
-Format: `status_command INDEX`
+In the above image, the people have the status of no status, `target`, `scam`, and `ignore`  respectively.
 
 * `status_command` should be replaced by either one of `clearstatus`, `target`, `scam`, or `ignore`.
 * Sets the status of the person at the specified `INDEX`.
 * The new status overwrites any previously existing status, i.e. each person can have exactly 1 status at any time (no status is also a status).
 * Setting a particular status for a person that already has the corresponding status will do nothing (and success message will be displayed).
-* The index refers to the index number shown in the displayed person list.
-* The index **must be a positive integer** 1, 2, 3, …​
+
 
 Examples:
-* `scam 2` marks the second person to have been scammed.
-* `ignore 4` marks the fourth person to be ignored (e.g. if you think the fourth person is unlikely to be a victim and you should not pursue this further).
-* `target 3` marks the third person as a potential target.
 * `clearstatus 1` clears the first person of any indicated status.
+* `target 2` marks the second person as a potential target.
+* `scam 3` marks the third person to have been scammed.
+* `ignore 4` marks the fourth person to be ignored (e.g. if you think the fourth person is unlikely to be a victim and you should not pursue this further).
 
-
-<br>
 
 ### Listing all persons : `list`
 
-Shows a list of all persons in the ScamBook.
+Shows a list of ALL persons in the ScamBook. This command can be used after `sort` or `filter` to revert ScamBook to its original state.
 
 Format: `list`
 
 
-<br>
+### Clearing all persons : `clear`
 
-### Clearing all entries : `clear`
-
-Clears all entries from the ScamBook.
+Clears all persons from the ScamBook.
 
 Format: `clear`
 
+<box type="warning" seamless>
+<b>Caution:</b> This action is irreversible. Use with caution.
+</box>
 
 <br>
 
 ### Deleting the app and all data: `nuke`
 
-Deletes the app and the data file containing victim profiles.
+Deletes the app and all locally stored data.
 
 Format: `nuke`
 
-<box type="important" seamless>
-<b>Caution</b>: This action is irreversible. Use with caution.
+<box type="warning" seamless>
+<b>Caution:</b> This action is irreversible. Use with caution.
 </box>
 
 
@@ -375,7 +387,26 @@ Exits the program.
 
 Format: `exit`
 
+### Constraints on input values
 
+#### Name Constraints
+
+Names can contain any alphanumeric characters, spaces, and the following special characters <code>,.()\`'/\-</code>.
+
+Names should also contain at least one character
+
+#### Phone Constraints
+
+Phones should be a number between 3 and 20 digits in length. It should not contain spaces, or the `+` sign.
+
+#### Email Constraints
+Emails should be of the format `local-part@domain` and adhere to the following constraints:
+1. The `local-part` should only contain alphanumeric characters and these special characters: `+_.-`. The `local-part` may not start or end with any special characters.
+2. This is followed by a `@` and then a domain name. The domain name is made up of domain labels separated by periods.
+   The domain name must:
+    - end with a domain label at least 2 characters long
+    - have each domain label start and end with alphanumeric characters
+    - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
 
 
 <br>
@@ -392,12 +423,37 @@ ScamBook data are saved in the hard disk automatically after any command that ch
 ScamBook data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <box type="warning" seamless>
-
-**Caution:**
+<b>Caution:</b>
 If your changes to the data file makes its format invalid, ScamBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause the ScamBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
-
 </box>
+
+
+
+
+## FAQ
+
+### Troubleshooting
+
+**Q**: My application does not launch when double-clicking on it. What should I do? <br>
+**A**: The most reliable alternative is to launch it via the command line. To do so, navigate to the folder that
+you have placed ScamBook in. Right click and open a terminal there.
+
+![HowToOpenTerminal.png](images/HowToOpenTerminal.png)
+
+From the terminal, type `java -jar <filename>.jar`. In the above example, you can type `java -jar ScamBook-v1.4.jar`
+and press enter. This will launch the application.
+
+On a Mac, if the option to open a terminal at the folder does not exist, refer to [this video guide](https://www.youtube.com/watch?v=wsI4Iast978) to enable the option.
+
+**Q**: When I opened ScamBook, my previous session's changes weren't saved. Why? <br>
+**A**: If ScamBook is in a write-protected folder, the program cannot save your data. Try checking your folder's properties, or moving ScamBook to another location.
+
+### Miscellaneous
+
+**Q**: I have a question that is not answered here. Where can I ask it?<br>
+**A**: You can ask your question by creating a new issue in the [ScamBook
+repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 
 <!-- Upcoming features -->
 
@@ -412,16 +468,6 @@ Furthermore, certain edits can cause the ScamBook to behave in unexpected ways (
 4. A scammer might have different personas when operating, such as pretending to be personnel from different banks. A possible future direction is to allow users to create multiple sets of ScamBooks, each with their own separate details, so every distinct persona can have its own list of contacts.
 
 5. Another significant area for future implementation is better integer parsing. Currently, tag values are parsed as is, so values such as `$100000` and `$200,000` are not recognised as numbers. This feature will allow more flexible interpretation of numbers, allowing the `sort` command to work on tags such as `savings: $1,000,000`.
-
---------------------------------------------------------------------------------------------------------------------
-
-## FAQ
-
-### Troubleshooting
-**Q:** I encounter an error when I double-click on the `.jar` file to run the application.<br>
-**A:** Open a terminal window at the location of the application. This can be done by right-clicking on the file explorer, as shown in the image below, then clicking on the button `Open in Terminal`. (The image is for Windows, other operating systems have a similar feature). Type the following command: `java -jar <name of the jar file>`. In the example of the image below, this would be `java -jar ScamBook-v1.4.jar`.
-
-![Example screenshot in Windows of how to open terminal](images/HowToOpenTerminal.png)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -442,15 +488,15 @@ command output -->
 | Command           | Functionality and Parameters                                                                                                                                                                 |
 |-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **`add`**         | Adds a new person<br>`NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`<br> e.g., `add John Doe --phone 98765432 --email jognd@example.com --tag school:NUS`                       |
-| **`tag`**         | Updates tags of an existing person<br>`INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...`<br> e.g., `tag 1 --add school:NUS --edit salary:10000 --delete age`         |
 | **`edit`**        | Updates the name/phone/email of an existing person<br>`INDEX [--name NAME] [--phone PHONE] [--email EMAIL]`<br> e.g., `edit 1 --name Jane Doe --phone 91234567 --email newemail@example.com` |
-| **`filter`**      | Filters the master list<br>`[--name NAME]... [--phone PHONE]`<br> e.g., `filter --name John --phone 98765432`                                                                                |
+| **`delete`**      | Deletes an existing person<br>`INDEX`<br> e.g., `delete 5`                                                                                                                                   |
+| **`tag`**         | Updates tags of an existing person<br>`INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...`<br> e.g., `tag 1 --add school:NUS --edit salary:10000 --delete age`         |
+| **`filter`**      | Filters the master list<br>`[--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status STATUS]... [--tag TAGNAME[:TAGVALUE]]...`<br> e.g., `filter --name John --phone 98765432`       |
 | **`sort`**        | Sorts the currently displayed list<br>`[FIELD] [--asc\|--desc] [--number\|--alpha]`<br> e.g., `sort phone --desc --number`                                                                   |
 | **`clearstatus`** | Clears the status of an existing person<br>`INDEX`<br> e.g., `clearstatus 1`                                                                                                                 |
 | **`target`**      | Marks an existing person as a target<br>`INDEX`<br> e.g., `target 2`                                                                                                                         |
 | **`scam`**        | Marks an existing person as a scammer<br>`INDEX`<br> e.g., `scam 3`                                                                                                                          |
 | **`ignore`**      | Marks an existing person as ignored<br>`INDEX`<br> e.g., `ignore 4`                                                                                                                          |
-| **`delete`**      | Deletes an existing person<br>`INDEX`<br> e.g., `delete 5`                                                                                                                                   |
 | **`list`**        | Lists all contacts                                                                                                                                                                           |
 | **`clear`**       | Deletes all contacts                                                                                                                                                                         |
 | **`nuke`**        | Deletes this app and all locally stored data                                                                                                                                                 |

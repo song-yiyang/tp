@@ -48,6 +48,13 @@ public class CommandBox extends UiPart<Region> {
     }
 
     /**
+     * Requests focus on the command text field.
+     */
+    public void requestFocus() {
+        commandTextField.requestFocus();
+    }
+
+    /**
      * Handles key press events for command history navigation.
      */
     private void handleKeyPressed(KeyEvent event) {

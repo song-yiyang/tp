@@ -6,25 +6,29 @@ import java.util.function.Predicate;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.TagList;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.TagFilter;
 
 /**
- * Tests that a {@code Person}'s {@code TagList} contains any of the given tag strings.
+ * Tests that a {@code Person}'s {@code TagList} contains all of the given tag filters.
  */
 public class TagContainsPredicate implements Predicate<Person> {
-    private final List<Tag> tags;
+    private final List<TagFilter> tagFilters;
 
-    public TagContainsPredicate(List<Tag> tags) {
-        this.tags = tags;
+    public TagContainsPredicate(List<TagFilter> tagFilters) {
+        this.tagFilters = tagFilters;
     }
 
     @Override
     public boolean test(Person person) {
+        // A person matches the tag filters if for each tag filter, the person's tags contain a tag with the same name
+        // and a value that contains the filter's value (if specified).
         TagList personTags = person.getTags();
-        return tags.stream()
-                   .allMatch(tag -> personTags.filterTagCaseInsensitive(tag.tagName)
-                                              .filter(t -> t.toLowerCase().contains(tag.tagValue.toLowerCase()))
-                                              .isPresent());
+        return tagFilters.stream().allMatch(tagFilter -> personTags.filterTagCaseInsensitive(tagFilter.tagName)
+            .filter(tagValue -> tagFilter.getTagValue()
+                                         .map(expectedValue -> tagValue.toLowerCase()
+                                                                       .contains(expectedValue.toLowerCase()))
+                                         .orElse(true))
+            .isPresent());
     }
 
     @Override
@@ -38,11 +42,11 @@ public class TagContainsPredicate implements Predicate<Person> {
         }
 
         TagContainsPredicate otherTagEqualsPredicate = (TagContainsPredicate) other;
-        return tags.equals(otherTagEqualsPredicate.tags);
+        return tagFilters.equals(otherTagEqualsPredicate.tagFilters);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).add("tags", tags).toString();
+        return new ToStringBuilder(this).add("tagFilters", tagFilters).toString();
     }
 }

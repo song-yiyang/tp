@@ -108,6 +108,13 @@ public class SortCommand extends Command {
 
         model.updateSortedPersonList(comparator);
 
+        // Scroll to and select first person in list
+        if (model.getFilteredPersonList().isEmpty()) {
+            model.setSelectedPerson(null);
+        } else {
+            model.setSelectedPerson(model.getFilteredPersonList().get(0));
+        }
+
         return new CommandResult(String.format("Sorted %d person(s).", model.getFilteredPersonList().size()));
     }
 
