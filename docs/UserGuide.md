@@ -68,13 +68,11 @@ The box at the bottom that reads "Enter command here..." is where you enter comm
 
 ### Entering a Command
 
-![AddExample1.png](images/AddExample1.png)
-
-Our sample data contains six people. This example will show how to add a 7th contact.
+Suppose our contact list has 6 people in it. This example will show how to add a 7th contact.
 
 We can use the `add` command to create a new contact. In the box at the bottom, type `add`.
 
-![AddExample2.png](images/AddExample2.png)
+![AddExample2.png](images/AddExample1.png)
 
 Upon typing `add`, the format for the rest of the command will appear.
 The command's format is `add NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`.
@@ -90,11 +88,11 @@ Suppose we want to add a contact with the following information:
 
 We can enter the command `add John Doe --phone 88463679 --tag job : teacher` and press enter.
 
-![AddExample3.png](images/AddExample3.png)
+![AddExample3.png](images/AddExample2.png)
 
 We can see that we have created a new contact John Doe.
 
-To understand more about how to interpret the command formats, refer to [Command Format Information](#command-format-information)
+To understand more about how to interpret the command formats, refer to [Command Format Information](#command-format-information).
 
 Refer to the [Command List](#commands) below for details of each command, or the [Commands Summary](#commands-summary) section for a quick summary of all commands and their formats.
 
@@ -113,7 +111,7 @@ Refer to the [Command List](#commands) below for details of each command, or the
 
 * The Parameter `INDEX` refers to the number on the left side of the address book.
     * For example, the delete command has the format `delete INDEX`. If we type `delete 4`, ScamBook will delete David Li's entry in the below example:
-      ![AddExample3.png](images/AddExample3.png)
+      ![AddExample3.png](images/AddExample2.png)
 
 * Parameters with `…`​ after them can be used multiple times (including zero times).<br>
   e.g. `[--tag NAME:VALUE]…​` can be used as ` ` (i.e. 0 times), `--tag school:NUS`, `--tag school:NUS --tag salary:10000` etc.
@@ -457,8 +455,8 @@ and press enter. This will launch the application.
 
 On a Mac, if the option to open a terminal at the folder does not exist, refer to [this video guide](https://www.youtube.com/watch?v=wsI4Iast978) to enable the option.
 
-**Q**: When I opened ScamBook, my previous session's changes weren't saved. Why?
-**A**: If ScamBook is in a write-protected folder, the program cannot save your data. Try checking your folder's properties, or moving it to another location.
+**Q**: When I opened ScamBook, my previous session's changes weren't saved. Why? <br>
+**A**: If ScamBook is in a write-protected folder, the program cannot save your data. Try checking your folder's properties, or moving ScamBook to another location.
 
 ### Miscellaneous
 
@@ -479,16 +477,6 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 4. A scammer might have different personas when operating, such as pretending to be personnel from different banks. A possible future direction is to allow users to create multiple sets of ScamBooks, each with their own separate details, so every distinct persona can have its own list of contacts.
 
 5. Another significant area for future implementation is better integer parsing. Currently, tag values are parsed as is, so values such as `$100000` and `$200,000` are not recognised as numbers. This feature will allow more flexible interpretation of numbers, allowing the `sort` command to work on tags such as `savings: $1,000,000`.
-
---------------------------------------------------------------------------------------------------------------------
-
-## FAQ
-
-### Troubleshooting
-**Q:** I encounter an error when I double-click on the `.jar` file to run the application.<br>
-**A:** Open a terminal window at the location of the application. This can be done by right-clicking on the file explorer, as shown in the image below, then clicking on the button `Open in Terminal`. (The image is for Windows, other operating systems have a similar feature). Type the following command: `java -jar <name of the jar file>`. In the example of the image below, this would be `java -jar ScamBook-v1.4.jar`.
-
-![Example screenshot in Windows of how to open terminal](images/HowToOpenTerminal.png)
 
 --------------------------------------------------------------------------------------------------------------------
 
