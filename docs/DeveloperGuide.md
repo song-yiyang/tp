@@ -428,10 +428,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
-1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+1. Should work on any _[mainstream OS](#glossary)_ as long as it has Java `17` or above installed.
 2. Should be able to hold up to 200 victims without a noticeable sluggishness in performance for typical usage.
-3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be
-   able to accomplish most of the tasks faster using commands than using the mouse.
+3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using a traditional mouse-based Graphical User Interface.
 4. Should be fully functional without an internet connection.
 5. Should accept only ASCII characters in user input, and display all stored information in ASCII characters.
 
