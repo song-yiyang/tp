@@ -55,9 +55,11 @@ refer to [troubleshooting](#troubleshooting) for alternate ways to launch the ap
 ### Overview
 A GUI similar to the below should appear in a few seconds. The app contains some sample data for you to use.<br>
 
-![Ui](images/Ui.png) 
-<small>*<center>Image credits for status icons: Downloaded from https://emoji.aranja.com/.</center>*</small>
-
+![Ui](images/Ui.png)
+<div style="text-align: center; font-style: italic">
+    <small>Image credits for status icons: Downloaded from https://emoji.aranja.com/.</small>
+</div>
+<br>
 The top part of the application is the contact list - you can view contacts there.
 
 The box at the bottom that reads "Enter command here..." is where you enter commands. This is where you get to interact with ScamBook!
@@ -82,7 +84,7 @@ Suppose we want to add a contact with the following information:
 - Extra information:
     - Job: teacher
 
-We can enter the command `add John Doe --phone 88463679 --tag job : teacher` and press enter.
+We can enter the command `add John Doe --phone 88463679 --tag job:teacher` and press enter.
 
 ![AddExample3.png](images/AddExample2.png)
 
@@ -124,7 +126,8 @@ Refer to the [Command List](#commands) below for details of each command, or the
 
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-  </box>
+
+</box>
 
 <!--
 Command User guide format:
@@ -185,7 +188,7 @@ Format: `add NAME [--phone PHONE] [--email EMAIL] [--tag TAGNAME:TAGVALUE]...`
 
 Examples:
 * `add John Doe --phone 98765432 --email johnd@example.com --tag address:John street, block 123, #01-01`
-* `add Besty Crower --tag income:$100000 --tag bank:OCBC`
+* `add Betsy Crower --tag income:$100000 --tag bank:OCBC`
 
 
 <br>
@@ -218,7 +221,7 @@ Format: `delete INDEX`
 
 Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the ScamBook.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `filter --name Betsy` followed by `delete 1` deletes the 1st person in the results of the `filter` command.
 
 
 <br>
@@ -398,6 +401,7 @@ Exits the program.
 
 Format: `exit`
 
+<br>
 
 --------------------------------------------------------------------
 
@@ -444,6 +448,18 @@ If your changes to the data file makes its format invalid, ScamBook will discard
 Furthermore, certain edits can cause the ScamBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
+<br>
+
+---------------------------------------------------
+
+### Autoscroll
+- After making modifications to a contact, the app will scroll to and select the relevant contact. This behaviour
+  occurs for these commands: `add`, `edit`, `tag`, `clearstatus`, `target`, `scam`, `ignore`.
+- For these commands, the app will scroll to and select the first contact in the address book: `filter`, `sort`, `list`.
+
+![Autoscroll example](images/AutoscrollExample.png)
+
+<br>
 
 ----------------------------------------------------------------------
 
@@ -471,7 +487,7 @@ On a Mac, if the option to open a terminal at the folder does not exist, refer t
 **A**: You can ask your question by creating a new issue in the [ScamBook
 repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 
-<!-- Upcoming features -->
+<br>
 
 --------------------------------------------------------------------------------------------------------------------
 ## Future work
@@ -485,6 +501,8 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 
 5. Another significant area for future implementation is better integer parsing. Currently, tag values are parsed as is, so values such as `$100000` and `$200,000` are not recognised as numbers. This feature will allow more flexible interpretation of numbers, allowing the `sort` command to work on tags such as `savings: $1,000,000`.
 
+<br>
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
@@ -495,6 +513,8 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 
 3. `nuke` command does not delete the application on Windows OS, due to a limitation of the OS disabling deletion by the app itself.
 
+<br>
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Commands summary
@@ -503,7 +523,7 @@ command output -->
 
 | Command           | Functionality and Parameters                                                                                                                                                                 |
 |-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **`add`**         | Adds a new person<br>`NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`<br> e.g., `add John Doe --phone 98765432 --email jognd@example.com --tag school:NUS`                       |
+| **`add`**         | Adds a new person<br>`NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`<br> e.g., `add John Doe --phone 98765432 --email johndoe@example.com --tag school:NUS`                     |
 | **`edit`**        | Updates the name/phone/email of an existing person<br>`INDEX [--name NAME] [--phone PHONE] [--email EMAIL]`<br> e.g., `edit 1 --name Jane Doe --phone 91234567 --email newemail@example.com` |
 | **`delete`**      | Deletes an existing person<br>`INDEX`<br> e.g., `delete 5`                                                                                                                                   |
 | **`tag`**         | Updates tags of an existing person<br>`INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...`<br> e.g., `tag 1 --add school:NUS --edit salary:10000 --delete age`         |
@@ -511,7 +531,7 @@ command output -->
 | **`sort`**        | Sorts the currently displayed list<br>`[FIELD] [--asc\|--desc] [--number\|--alpha]`<br> e.g., `sort phone --desc --number`                                                                   |
 | **`clearstatus`** | Clears the status of an existing person<br>`INDEX`<br> e.g., `clearstatus 1`                                                                                                                 |
 | **`target`**      | Marks an existing person as a target<br>`INDEX`<br> e.g., `target 2`                                                                                                                         |
-| **`scam`**        | Marks an existing person as a scammer<br>`INDEX`<br> e.g., `scam 3`                                                                                                                          |
+| **`scam`**        | Marks an existing person as scammed<br>`INDEX`<br> e.g., `scam 3`                                                                                                                            |
 | **`ignore`**      | Marks an existing person as ignored<br>`INDEX`<br> e.g., `ignore 4`                                                                                                                          |
 | **`list`**        | Lists all contacts                                                                                                                                                                           |
 | **`clear`**       | Deletes all contacts                                                                                                                                                                         |

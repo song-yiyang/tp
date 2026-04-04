@@ -15,7 +15,7 @@
 
 - ScamBook was adapted from Address Book 3 (https://github.com/NUS-CS2103-AY2526-S2/tp).
 
-- All members used Co-pilot for auto-complete tool during coding.
+- All members used Copilot for auto-complete tool during coding.
 
 - All members used Claude for generating tests.
 
@@ -234,7 +234,47 @@ How the sort command works:
     * Pros: Original insertion order is preserved and can be restored with `list` command.
     * Cons: Sort order does not persist across sessions.
 
+### Help Window
 
+The help text displayed in the help window is generated dynamically using `CommandRegistry`, which serves as
+a central registry of all commands supported by the application. Each command is registered as a `CommandInfo`
+object, which holds the command's name, description, and an optional example string.
+
+#### Implementation
+
+`CommandRegistry` stores commands in a `LinkedHashMap`, preserving insertion order so that commands appear
+in the help text in a consistent, developer-defined sequence. It is a non-instantiable utility class accessed
+statically, initialized once via a `static` block at class load time.
+
+`CommandInfo` wraps three fields:
+* `name` — the command word (e.g. `add`, `delete`)
+* `description` — the expected argument format (e.g. `INDEX [--name NAME]...`)
+* `example` — an optional usage example shown below the description
+
+When the help window is opened, `HelpWindow#buildHelpText()` iterates over `CommandRegistry#getCommands()`
+and formats each entry into a fixed-width table, aligning descriptions by padding command names to the
+width of the longest registered command. Examples, if present, are indented and prefixed with `e.g.`.
+
+This design means that adding a new command to the registry automatically propagates it to the help window
+without any changes to `HelpWindow` itself.
+
+`CommandRegistry` also supports the command tooltip feature — when a user types a partial command in the
+command box, `CommandRegistry#getCommandInfo(commandName)` is called to retrieve the corresponding
+`CommandInfo` and display its format as a tooltip (see [Entering a Command](UserGuide.md#entering-a-command) in the User Guide).
+
+<puml src="diagrams/CommandRegistryClassDiagram.puml" width="280" />
+
+#### Design considerations
+
+**Aspect: How commands are registered:**
+
+* **Current choice:** Commands are registered statically in `CommandRegistry` via a `static` block.
+    * Pros: Simple, centralized, and ordered. Easy to see all supported commands at a glance.
+    * Cons: Adding a new command requires manually updating `CommandRegistry` in addition to implementing the command itself.
+
+* **Alternative:** Each command self-registers by calling `CommandRegistry.register()` in its own static block.
+    * Pros: Keeps registration co-located with the command implementation.
+    * Cons: Registration order becomes non-deterministic, and commands that are never referenced may not register at all.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
@@ -294,8 +334,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | scam caller                    | filter by high risk demographics such as old age & high reward demographics like high income | prioritize who I should call                                                     |
 | `* * ^`  | scam caller                    | draw and label a relationship from one person to another person                              | when I scam someone, I can use personal information about another person as bait |
 | `* *`    | successful scam caller         | import and manage a large contact list                                                       | I can work with a larger number of victims                                       |
-| `* *  `  | busy scam caller               | navigate past commands                                                                       | I can avoid typing repetitive commands and quickly add new victims               |
-| `* *  `  | busy scam caller               | see command formats while typing commands                                                    | I can quickly and correctly type commands without errors                         |
+| `* *`    | busy scam caller               | navigate past commands                                                                       | I can avoid typing repetitive commands and quickly add new victims               |
+| `* *`    | busy scam caller               | see command formats while typing commands                                                    | I can quickly and correctly type commands without errors                         |
 | `* *`    | beginner scam caller           | load and interact with sample data                                                           | I have the freedom to try commands without having access to a large victim base  |
 | `* * ^`  | scam caller                    | set reminders to follow up calls on victims                                                  | I can review which targets need to be called again                               |
 | `* * ^`  | scam caller                    | view a detailed dashboard of a specific victim                                               | refer to that victim's information during a scam call                            |
@@ -439,7 +479,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Glossary
 
 * **Victim Profile**: A contact entry representing a potential scam target, containing name, phone, email and custom tags
-* **Tag**: A key-value pair of information attached to a victim profile, e.g., `job : investment banker`, `yearly income : $100000`
+* **Tag**: A key-value pair of information attached to a victim profile, e.g., `job:investment banker`, `yearly income:$100000`
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 
 --------------------------------------------------------------------------------------------------------------------
@@ -457,10 +497,10 @@ testers are expected to do more *exploratory* testing.
 
 Please follow the setup instructions in the [user guide](UserGuide.html#installation) to install and run the app. Assuming no commands have been entered yet, and that the default sample data is loaded, here is a list of commands one could follow, which emulates a realistic scenario of using the app that uses (almost) all commands. All commands should be successful and should result in a success message displayed.
 1. `help`
-2. `add Bernado --phone 87019942 --tag job: manager`
+2. `add Bernado --phone 87019942 --tag job:manager`
 3. `edit 4 --email davidli@u.nus.edu`
 4. `delete 6`
-5. `tag 3 --add monthly income: 12000 --edit children:5 --delete language`
+5. `tag 3 --add monthly income:12000 --edit children:5 --delete language`
 6. `scam 1`
 7. `ignore 2`
 8. `clearstatus 3`
