@@ -75,6 +75,20 @@ public class TagContainsPredicateTest {
         // Bare tag name checks for existence only
         predicate = new TagContainsPredicate(Collections.singletonList(new TagFilter("department")));
         assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+
+        // Filters with the same tag name are OR-ed together
+        predicate = new TagContainsPredicate(Arrays.asList(
+                new TagFilter("department:sales"),
+                new TagFilter("department:engineering")));
+        assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+
+        // Same-name filters are OR-ed, then AND-ed with other tag-name groups
+        predicate = new TagContainsPredicate(Arrays.asList(
+                new TagFilter("department:sales"),
+                new TagFilter("department:engineering"),
+                new TagFilter("level:senior")));
+        assertTrue(predicate.test(new PersonBuilder()
+                .withTags("department:engineering", "level:senior").build()));
     }
 
     @Test
@@ -119,6 +133,20 @@ public class TagContainsPredicateTest {
         // Bare tag name does not match when tag is absent
         predicate = new TagContainsPredicate(Collections.singletonList(new TagFilter("department")));
         assertFalse(predicate.test(new PersonBuilder().withTags("role:engineering").build()));
+
+        // Same-name filters still fail when none of them match
+        predicate = new TagContainsPredicate(Arrays.asList(
+                new TagFilter("department:sales"),
+                new TagFilter("department:finance")));
+        assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+
+        // A matching same-name group is not enough when another tag-name group fails
+        predicate = new TagContainsPredicate(Arrays.asList(
+                new TagFilter("department:sales"),
+                new TagFilter("department:engineering"),
+                new TagFilter("level:junior")));
+        assertFalse(predicate.test(new PersonBuilder()
+                .withTags("department:engineering", "level:senior").build()));
     }
 
     @Test
