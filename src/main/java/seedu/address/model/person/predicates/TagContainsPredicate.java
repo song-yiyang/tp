@@ -1,7 +1,9 @@
 package seedu.address.model.person.predicates;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Person;
@@ -9,7 +11,10 @@ import seedu.address.model.person.TagList;
 import seedu.address.model.tag.TagFilter;
 
 /**
- * Tests that a {@code Person}'s {@code TagList} contains all of the given tag filters.
+ * Tests that a {@code Person}'s {@code TagList} matches the given tag filters.
+ *
+ * Filters sharing the same tag name are grouped together and combined with OR logic.
+ * These groups are then combined with AND logic.
  */
 public class TagContainsPredicate implements Predicate<Person> {
     private final List<TagFilter> tagFilters;
@@ -20,15 +25,24 @@ public class TagContainsPredicate implements Predicate<Person> {
 
     @Override
     public boolean test(Person person) {
-        // A person matches the tag filters if for each tag filter, the person's tags contain a tag with the same name
-        // and a value that contains the filter's value (if specified).
         TagList personTags = person.getTags();
-        return tagFilters.stream().allMatch(tagFilter -> personTags.filterTagCaseInsensitive(tagFilter.tagName)
-            .filter(tagValue -> tagFilter.getTagValue()
-                                         .map(expectedValue -> tagValue.toLowerCase()
-                                                                       .contains(expectedValue.toLowerCase()))
-                                         .orElse(true))
-            .isPresent());
+
+        // Group tagFilters by tag name
+        Map<String, List<TagFilter>> tagFilterGroups = tagFilters.stream()
+                .collect(Collectors.groupingBy(tf -> tf.tagName));
+
+        // Check that for each tag filter group, at least one tag filter matches the person's tags
+        return tagFilterGroups.values().stream()
+                .allMatch(tagFilterGroup -> tagFilterGroup.stream()
+                        .anyMatch(tagFilter -> matchesTagFilter(personTags, tagFilter)));
+    }
+
+    private boolean matchesTagFilter(TagList personTags, TagFilter tagFilter) {
+        return personTags.filterTagCaseInsensitive(tagFilter.tagName)
+                .filter(tagValue -> tagFilter.getTagValue()
+                        .map(expectedValue -> tagValue.toLowerCase().contains(expectedValue.toLowerCase()))
+                        .orElse(true))
+                .isPresent();
     }
 
     @Override

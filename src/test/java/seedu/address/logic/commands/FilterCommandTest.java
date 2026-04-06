@@ -336,13 +336,20 @@ public class FilterCommandTest {
 
     @Test
     public void execute_multipleTagFilters_filtersMatchingAll() {
-        // TagContainsPredicate uses AND logic: person must have ALL specified tags
         List<TagFilter> tagFilters = List.of(new TagFilter("rich:yes"), new TagFilter("job:manager"));
         FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
 
         expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
-        // Only BENSON has both rich:yes AND job:manager
         assertFilterResult(command, model, List.of(BENSON));
+    }
+
+    @Test
+    public void execute_sameTagNameFilters_orsWithinGroup() {
+        List<TagFilter> tagFilters = List.of(new TagFilter("job:banker"), new TagFilter("job:manager"));
+        FilterCommand command = createFilterCommand(new HashMap<>(), tagFilters);
+
+        expectedModel.updateFilteredPersonList(new TagContainsPredicate(tagFilters));
+        assertFilterResult(command, model, Arrays.asList(ALICE, BENSON, CARL));
     }
 
     @Test

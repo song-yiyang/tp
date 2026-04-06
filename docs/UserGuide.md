@@ -271,30 +271,37 @@ Each use of `filter` replaces the current filtered view instead of further narro
 
 Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status STATUS]... [--tag TAGNAME[:TAGVALUE]]...`
 
-* Multiple values of the same parameter type are combined using OR.
-  e.g. `--name John --name Jane` matches persons whose name contains `John` or `Jane`.
-* Different parameter types are combined using AND.
+- Across different parameters, profiles match all conditions.
   e.g. `--name John --phone 9876` matches only persons whose name contains `John` and whose phone number contains `9876`.
-* `NAME`, `EMAIL`, and `TAGVALUE` are matched by case-insensitive partial match.
-* `PHONE` is matched by partial match.
-* `STATUS` must be one of `NONE`, `TARGET`, `SCAM`, or `IGNORE`.
-* `--tag job` matches persons with a tag named `job`, while `--tag job:manager` matches persons with a `job` tag whose value contains `manager`.
-* Multiple tag filters are combined using AND.
+- With repeated `--name`, `--phone`, `--email`, or `--status`, profiles match any of the specified values.
+  e.g. `--name John --name Jane` matches persons whose name contains `John` or `Jane`.
+- `NAME`, `EMAIL`, and `PHONE` conditions require case-insensitive partial match.
+- `STATUS` must be one of `NONE`, `TARGET`, `SCAM`, or `IGNORE` (case-insensitive).
+- `--tag TAGNAME` checks whether a person has a tag with that name.
+- `--tag TAGNAME:TAGVALUE` checks whether a person has a tag with that name whose value contains `TAGVALUE`.
+- `TAGNAME` requires the exact tag name (case-insensitive), while `TAGVALUE` only requires partial match (case-insensitive).
+- With repeated `--tag` filters with the same tag name, profiles match any of the specified values.
+- For `--tag` filters with different tag names, profiles must match all conditions.
 
 Examples:
-* `filter --name John`
+
+- `filter --name John`
   Shows all persons whose name contains `John`.
-* `filter --name John --name Jane`
+- `filter --name John --name Jane`
   Shows all persons whose name contains `John` or `Jane`.
-* `filter --status TARGET --status SCAM`
+- `filter --status TARGET --status SCAM`
   Shows all persons whose status is either `TARGET` or `SCAM`.
-* `filter --phone 9876 --email gmail.com`
-  Shows all persons whose phone number contains `9876` **and** whose email contains `gmail.com`.
-* `filter --tag job`
+- `filter --phone 9876 --email gmail.com`
+  Shows all persons whose phone number contains `9876` and whose email contains `gmail.com`.
+- `filter --tag job`
   Shows all persons who have a tag named `job`, regardless of its value.
-* `filter --tag job:manager --tag region:west`
-  Shows all persons who have both a `job` tag containing `manager` and a `region` tag containing `west`.
-* `filter --name Tan --status TARGET --tag source:telegram`
+- `filter --tag job:manager --tag job:director`
+  Shows all persons whose `job` tag contains `manager` or `director`.
+- `filter --tag job --tag region:west`
+  Shows all persons who have a tag named `job` (regardless of its value), and whose`region` tag contains `west`.
+- `filter --tag job:manager --tag region:west`
+  Shows all persons whose `job` tag contains `manager` and whose `region` tag contains `west`.
+- `filter --name Tan --status TARGET --tag source:telegram`
   Shows all persons whose name contains `Tan`, whose status is `TARGET`, and whose `source` tag contains `telegram`.
 
 <box type="tip" seamless>
