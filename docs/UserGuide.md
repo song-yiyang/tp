@@ -293,6 +293,8 @@ Examples:
   Shows all persons who have a tag named `job`, regardless of its value.
 - `filter --tag job:manager --tag job:director`
   Shows all persons whose `job` tag contains `manager` or `director`.
+- `filter --tag job --tag region:west`
+  Shows all persons who have a tag named `job` (regardless of its value), and whose`region` tag contains `west`.
 - `filter --tag job:manager --tag region:west`
   Shows all persons whose `job` tag contains `manager` and whose `region` tag contains `west`.
 - `filter --name Tan --status TARGET --tag source:telegram`
