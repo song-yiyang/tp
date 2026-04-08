@@ -4,7 +4,7 @@ skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
-Package Model as ModelPackage <<Rectangle>>{
+Package Model as ModelPackage <<Rectangle>> {
 Class "<<interface>>\nReadOnlyAddressBook" as ReadOnlyAddressBook
 Class "<<interface>>\nReadOnlyUserPrefs" as ReadOnlyUserPrefs
 Class "<<interface>>\nModel" as Model
@@ -14,16 +14,19 @@ Class UserPrefs
 
 Class UniquePersonList
 Class Person
-Class Address
 Class Email
 Class Name
 Class Phone
 Class TagList
-Class Tag
+Class Tag {
+    <color:white>- tagName : String</color>
+    <color:white>- tagValue : String</color>
+}
 Class Status
 
-Class I #FFFFFF
 }
+
+show Tag attributes
 
 Class HiddenOutside #FFFFFF
 HiddenOutside ..> Model
@@ -42,7 +45,6 @@ UniquePersonList -right-> "~* all" Person
 Person *--> Name
 Person *--> Phone
 Person *--> Email
-Person *--> Address
 Person *--> TagList
 Person *--> Status
 
@@ -52,8 +54,6 @@ TagList --> "*" Tag
 'UniquePersonList -[hidden]right-> Person
 
 Name -[hidden]right-> Phone
-Phone -[hidden]right-> Address
-Address -[hidden]right-> Email
 
 ModelManager --> "~* filtered" Person
 @enduml
