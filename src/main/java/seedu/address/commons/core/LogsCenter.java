@@ -67,6 +67,13 @@ public class LogsCenter {
     }
 
     /**
+     * Returns the log file name pattern used by the base file logger.
+     */
+    public static String getLogFileName() {
+        return LOG_FILE;
+    }
+
+    /**
      * Removes all handlers from the {@code logger}.
      */
     private static void removeHandlers(Logger logger) {

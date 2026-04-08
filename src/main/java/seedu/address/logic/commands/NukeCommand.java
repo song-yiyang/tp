@@ -4,15 +4,16 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.ModelManager;
 
 /**
  * Interface for testing of delete jar functionality
@@ -58,7 +59,9 @@ public class NukeCommand extends Command {
 
         try {
             deleteDataDirectory(model.getAddressBookFilePath());
-            deleteJar();
+            Path jarPath = resolveJarPath();
+            deleteLogFiles(jarPath);
+            deleteJar(jarPath);
         } catch (IOException | URISyntaxException e) {
             Logger logger = LogsCenter.getLogger(NukeCommand.class);
             logger.warning(MESSAGE_FAILURE + e.getMessage());
@@ -74,13 +77,36 @@ public class NukeCommand extends Command {
         Path parent = addressBookFilePath.getParent();
         Path dataDirectory = parent.toAbsolutePath().normalize();
         Files.delete(addressBookFilePath);
-        if (Files.list(dataDirectory).findAny().isEmpty()) {
-            Files.delete(dataDirectory);
+        // Delete the data directory if it is empty after deleting the address book file
+        try (Stream<Path> dataDirectoryEntries = Files.list(dataDirectory)) {
+            if (dataDirectoryEntries.findAny().isEmpty()) {
+                Files.delete(dataDirectory);
+            }
         }
     }
 
-    private void deleteJar() throws IOException, URISyntaxException {
-        Path jarPath = jarPathResolver.resolve();
+    private Path resolveJarPath() throws URISyntaxException {
+        return jarPathResolver.resolve();
+    }
+
+    private void deleteLogFiles(Path jarPath) throws IOException {
+        if (jarPath == null || jarPath.getParent() == null) {
+            return;
+        }
+
+        // Delete all files with the log file prefix in the same directory as the jar file
+        String logPrefix = LogsCenter.getLogFileName();
+        Path appDirectory = jarPath.getParent().toAbsolutePath().normalize();
+        try (DirectoryStream<Path> logFiles = Files.newDirectoryStream(appDirectory, logPrefix + "*")) {
+            for (Path logFile : logFiles) {
+                if (Files.isRegularFile(logFile)) {
+                    Files.deleteIfExists(logFile);
+                }
+            }
+        }
+    }
+
+    private void deleteJar(Path jarPath) throws IOException {
         if (jarPath != null) {
             Files.deleteIfExists(jarPath);
         }
