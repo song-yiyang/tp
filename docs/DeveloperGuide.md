@@ -296,7 +296,7 @@ command box, `CommandRegistry#getCommandInfo(commandName)` is called to retrieve
 **Target user profile**:
 
 Phone-call based scam caller who
-* is based in Singapore
+* targets Singapore residents as scam victims
 * executes financial scams
 * can type fast
 * prefers typing to mouse interactions

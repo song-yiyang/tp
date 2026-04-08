@@ -20,7 +20,7 @@ ScamBook is a **desktop contact management app** optimised for use via a Command
 
 ### Who is ScamBook for?
 
-ScamBook is designed for **Singapore-based investment and financial scam callers** managing a high volume of victim contacts daily. If you are a scammer who:
+ScamBook is designed for **investment and financial scam callers** targeting Singapore residents managing a high volume of victim contacts daily. If you are a scammer who:
 * is **tech-savvy** and prefer typing to clicking, and comfortable with
   command line interfaces (CLI);
 * operates as a **solo caller** and need a private, single-user system to
@@ -183,7 +183,7 @@ Adds a person to the ScamBook.
 
 Format: `add NAME [--phone PHONE] [--email EMAIL] [--tag TAGNAME:TAGVALUE]...`
 
-* Duplicate names are allowed, since it is likely one might encounter multiple people with the same (first) names. Hence, ScamBook supports having multiple people with the same name.
+* Duplicate names are allowed, since it is likely one might encounter multiple people with the same (first) names. Hence, ScamBook supports having multiple people with the same name, and no duplicate checking is performed.
 * If multiple tag name-value pairs have the same tag name (see section on [Tag](#tagging-a-person--tag) below regarding tag name equality), the last value will be used.
 
 <box type="tip" seamless>
