@@ -10,31 +10,33 @@ import seedu.address.commons.exceptions.IllegalValueException;
  */
 public class Email {
 
+    //@@author don-ko-reused
+    //The regex is reused from
+    // https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
+    public static final String VALIDATION_REGEX = "(?:[a-z0-9!#$%&'*+\\x2f=?^_`\\x7b-\\x7d~\\x2d]+(?:\\.[a-z0-9!#$%&'*"
+            + "+\\x2f=?^_`\\x7b-\\x7d~\\x2d]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\"
+            + "[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9\\x2d]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9"
+            + "\\x2d]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9]"
+            + ")|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9\\x2d]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-"
+            + "\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+    //@@author
+
     public static final String INVALID_STRING = " is not a valid email.\n"
             + "Refer to the user guide for all the constraints an email should satisfy.";
 
-    private static final String SPECIAL_CHARACTERS = "+_.-";
+    private static final String UNQUOTED_LOCAL_PART_SPECIAL_CHARACTERS = "!#$%&'*+/=?^_`{|}~-";
+
     public static final String MESSAGE_CONSTRAINTS = "Emails should be of the format local-part@domain "
             + "and adhere to the following constraints:\n"
-            + "1. The local-part should only contain alphanumeric characters and these special characters, excluding "
-            + "the parentheses, (" + SPECIAL_CHARACTERS + "). The local-part may not start or end with any special "
-            + "characters.\n"
-            + "2. This is followed by a '@' and then a domain name. The domain name is made up of domain labels "
-            + "separated by periods.\n"
-            + "The domain name must:\n"
-            + "    - end with a domain label at least 2 characters long\n"
-            + "    - have each domain label start and end with alphanumeric characters\n"
-            + "    - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.";
-
-    // alphanumeric and special characters
-    private static final String ALPHANUMERIC_NO_UNDERSCORE = "[^\\W_]+"; // alphanumeric characters except underscore
-    private static final String LOCAL_PART_REGEX = "^" + ALPHANUMERIC_NO_UNDERSCORE + "([" + SPECIAL_CHARACTERS + "]"
-            + ALPHANUMERIC_NO_UNDERSCORE + ")*";
-    private static final String DOMAIN_PART_REGEX = ALPHANUMERIC_NO_UNDERSCORE
-            + "(-" + ALPHANUMERIC_NO_UNDERSCORE + ")*";
-    private static final String DOMAIN_LAST_PART_REGEX = "(" + DOMAIN_PART_REGEX + "){2,}$"; // At least two chars
-    private static final String DOMAIN_REGEX = "(" + DOMAIN_PART_REGEX + "\\.)*" + DOMAIN_LAST_PART_REGEX;
-    public static final String VALIDATION_REGEX = LOCAL_PART_REGEX + "@" + DOMAIN_REGEX;
+            + "1. The local-part must be either:\n"
+            + "    - unquoted: lowercase alphanumeric characters and these special characters "
+            + "(" + UNQUOTED_LOCAL_PART_SPECIAL_CHARACTERS + "), with single periods allowed between segments only\n"
+            + "    - quoted: enclosed in double quotes, with escaped ASCII characters allowed\n"
+            + "2. This is followed by a '@' and then a domain which must be either:\n"
+            + "    - a standard domain name made up of labels separated by periods, where each label starts and ends "
+            + "with a lowercase alphanumeric character and may contain hyphens in between\n"
+            + "    - a bracketed domain-literal (for example, an IPv4 address like [192.168.0.1])\n"
+            + "3. Spaces are not allowed.";
 
     public final String value;
 
@@ -57,7 +59,7 @@ public class Email {
      * Checks if a given string is a valid email.
      */
     public static boolean isValidEmail(String test) throws IllegalValueException {
-        if (test.matches(VALIDATION_REGEX)) {
+        if (test.toLowerCase().matches(VALIDATION_REGEX)) {
             return true;
         } else {
             throw new IllegalValueException('"' + test + '"' + INVALID_STRING);
