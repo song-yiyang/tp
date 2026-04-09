@@ -383,9 +383,14 @@ Format: `clear`
 
 ### Deleting the app and all data: `nuke`
 
-Deletes the app and all locally stored data.
+Deletes local data and the app JAR, then exits.
 
 Format: `nuke`
+
+* `nuke` does not accept any additional arguments.
+* Deletes `[JAR file location]/data/addressbook.json`.
+* Deletes `[JAR file location]/data/` only if the folder is empty after deleting `addressbook.json`.
+* Attempts to delete the running application JAR file.
 
 <box type="warning" seamless>
 <b>Caution:</b> This action is irreversible. Use with caution.
@@ -430,12 +435,17 @@ Phones should be a number between 3 and 20 digits in length. It should not conta
 
 #### Email Constraints
 Emails should be of the format `local-part@domain` and adhere to the following constraints:
-1. The `local-part` should only contain alphanumeric characters and these special characters: `+_.-`. The `local-part` may not start or end with any special characters.
-2. This is followed by a `@` and then a domain name. The domain name is made up of domain labels separated by periods.
-   The domain name must:
-    - end with a domain label at least 2 characters long
-    - have each domain label start and end with alphanumeric characters
-    - have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
+1. The `local-part` must be either:
+   - unquoted: lowercase alphanumeric characters and these special characters: <code>!#$%&'*+/=?^_`{|}~-</code>, with single periods allowed between segments only
+   - quoted: enclosed in double quotes, with escaped ASCII characters allowed
+2. This is followed by `@` and then a domain, which must be either:
+   - a standard domain name made up of labels separated by periods, where each label starts and ends with a lowercase alphanumeric character and may contain hyphens in between
+   - a bracketed domain-literal (for example, an IPv4 address like `[192.168.0.1]`)
+3. Spaces are not allowed.
+
+<box type="tip" seamless>
+<b>Tip:</b> <code>filter --email</code> accepts any non-empty substring for matching and does not require a full valid email format.
+</box>
 
 
 <br>
@@ -522,7 +532,7 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 
 2. If you minimize the Help Window and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
 
-3. `nuke` command does not delete the application on Windows OS, due to a limitation of the OS disabling deletion by the app itself.
+3. On Windows OS, `nuke` may fail to delete the running application JAR due to file locking by the OS.
 
 <br>
 
@@ -546,6 +556,6 @@ command output -->
 | **`ignore`**      | Marks an existing person as ignored<br>`INDEX`<br> e.g., `ignore 4`                                                                                                                          |
 | **`list`**        | Lists all contacts                                                                                                                                                                           |
 | **`clear`**       | Deletes all contacts                                                                                                                                                                         |
-| **`nuke`**        | Deletes this app and all locally stored data                                                                                                                                                 |
+| **`nuke`**        | Deletes `addressbook.json`, removes `data/` if empty, attempts to delete the running app JAR, and exits                                                                                    |
 | **`help`**        | Shows the help message                                                                                                                                                                       |
 | **`exit`**        | Exits the application                                                                                                                                                                        |
