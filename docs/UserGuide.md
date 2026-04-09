@@ -434,14 +434,17 @@ Names should also contain at least one character
 Phones should be a number between 3 and 20 digits in length. It should not contain spaces, or the `+` sign.
 
 #### Email Constraints
-Emails should be of the format `local-part@domain` and adhere to the following constraints:
-1. The `local-part` must be either:
-   - unquoted: lowercase alphanumeric characters and these special characters: <code>!#$%&'*+/=?^_`{|}~-</code>, with single periods allowed between segments only
-   - quoted: enclosed in double quotes, with escaped ASCII characters allowed
-2. This is followed by `@` and then a domain, which must be either:
-   - a standard domain name made up of labels separated by periods, where each label starts and ends with a lowercase alphanumeric character and may contain hyphens in between
-   - a bracketed domain-literal (for example, an IPv4 address like `[192.168.0.1]`)
-3. Spaces are not allowed.
+Emails should follow the format `local-part@domain` (e.g. `john.doe@example.com`), with the following constraints:
+
+1. Email contains exactly one `@`.
+1. `local-part` and `domain` should each contain at least one character.
+1. `local-part` should contain alphanumeric characters and/or the special characters <code>!#$%&'*+/=?^_`{|}~.-</code>.
+1. `local-part` should not start or end with a dot (`.`) and should not have consecutive dots.
+1. `local-part` should not contain spaces.
+1. `domain` should contain alphanumeric characters, dots (`.`) and/or hyphens (`-`).
+1. `domain` should be a valid target hostname such as `gmail.com`, `example.com`.
+
+ScamBook accepts a broader set of [RFC 5322 standards-compliant email addresses](https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1).
 
 <box type="tip" seamless>
 <b>Tip:</b> <code>filter --email</code> accepts any non-empty substring for matching and does not require a full valid email format.
