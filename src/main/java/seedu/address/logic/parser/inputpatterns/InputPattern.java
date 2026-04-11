@@ -143,7 +143,7 @@ public class InputPattern {
         }
 
         /// settle the paramsArgs
-        String[] paramSegments = paramArgs.split(" --");
+        String[] paramSegments = paramArgs.split("--");
         for (int i = 0; i < paramSegments.length; i++) {
             String segment = paramSegments[i];
             if (segment.isEmpty()) {
