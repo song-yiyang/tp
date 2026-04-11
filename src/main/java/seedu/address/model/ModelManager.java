@@ -27,11 +27,9 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final SortedList<Person> sortedPersons;
-    private Predicate<Person> currentPredicate;
+    private Predicate<Person> currentPredicate = PREDICATE_SHOW_ALL_PERSONS;
 
     private final ObjectProperty<Person> selectedPerson = new SimpleObjectProperty<>();
-
-    private Predicate<Person> mostRecentPredicate = PREDICATE_SHOW_ALL_PERSONS;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -45,7 +43,6 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         sortedPersons = new SortedList<>(filteredPersons);
-        currentPredicate = PREDICATE_SHOW_ALL_PERSONS;
     }
 
     public ModelManager() {
@@ -100,8 +97,8 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public Predicate<Person> getMostRecentPredicate() {
-        return this.mostRecentPredicate;
+    public Predicate<Person> getCurrentPredicate() {
+        return this.currentPredicate;
     }
 
     @Override
@@ -146,7 +143,6 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
-        this.mostRecentPredicate = predicate;
         filteredPersons.setPredicate(predicate);
         currentPredicate = predicate;
     }

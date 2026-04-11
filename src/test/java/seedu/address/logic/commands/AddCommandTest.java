@@ -83,7 +83,7 @@ public class AddCommandTest {
      */
     private class ModelStub implements Model {
         @Override
-        public Predicate<Person> getMostRecentPredicate() {
+        public Predicate<Person> getCurrentPredicate() {
             return PREDICATE_SHOW_ALL_PERSONS;
         }
 

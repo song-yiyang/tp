@@ -113,7 +113,7 @@ public class TagCommand extends Command {
         model.setPerson(person, updatedPerson);
         model.setSelectedPerson(updatedPerson);
 
-        if (!model.getMostRecentPredicate().test(updatedPerson)) {
+        if (!model.getCurrentPredicate().test(updatedPerson)) {
             model.showAllPersons();
         }
 
