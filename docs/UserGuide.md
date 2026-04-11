@@ -73,7 +73,7 @@ We can use the `add` command to create a new contact. In the box at the bottom, 
 ![AddExample2.png](images/AddExample1.png)
 
 Upon typing `add`, the format for the rest of the command will appear.
-The command's format is `add NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`.
+The command's format is `add NAME [--phone PHONE] [--email EMAIL] [--tag TAGNAME:TAGVALUE]...`.
 
 Each command's format is given as a sequence of compulsory parameters, and optional parameters denoted in square brackets `[]`.
 In this command, `NAME` is a compulsory parameter, while phone, email and tags are optional parameters.
@@ -116,9 +116,9 @@ To understand more about how to interpret the command formats, refer to [Command
 <br>
 
 * Parameters with `…`​ after them can be used multiple times (including zero times).<br>
-  e.g. `[--tag NAME:VALUE]…​` can be used as ` ` (i.e. 0 times), `--tag school:NUS`, `--tag school:NUS --tag salary:10000` etc.
+  e.g. `[--tag TAGNAME:TAGVALUE]…​` can be used as ` ` (i.e. 0 times), `--tag school:NUS`, `--tag school:NUS --tag salary:10000` etc.
     * For each parameter that can be used multiple times, each command should contain up to 100 of such parameters. Above this, the command will be rejected.
-    * In the above example of `[--tag NAME:VALUE]…​`, the command should have up to 100 occurrences of `--tag`.
+    * In the above example of `[--tag TAGNAME:TAGVALUE]…​`, the command should have up to 100 occurrences of `--tag`.
 
 * Mandatory parameters must come before optional parameters.<br>
   e.g. if the command specifies `NAME [--phone PHONE]`, `--phone 88091246 John` is not acceptable.
@@ -248,7 +248,7 @@ In the image below of an example profile in the app, each blue box represents a 
 
 <br>
 
-Format: `tag INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...​`
+Format: `tag INDEX [--add TAGNAME:TAGVALUE]... [--edit TAGNAME:TAGVALUE]... [--delete TAGNAME]...​`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided, if not, the success message will be displayed with no visible changes. There will also be a disk write to save the (unchanged) ScamBook data. Refer to the [Saving the data](#saving-the-data) section for more details.
@@ -562,20 +562,20 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 <!-- A summary of all commands. Should be of same/similar format as help
 command output -->
 
-| Command           | Functionality and Parameters                                                                                                                                                                 |
-|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **`add`**         | Adds a new person<br>`NAME [--phone PHONE] [--email EMAIL] [--tag NAME:VALUE]...`<br> e.g., `add John Doe --phone 98765432 --email johndoe@example.com --tag school:NUS`                     |
-| **`edit`**        | Updates the name/phone/email of an existing person<br>`INDEX [--name NAME] [--phone PHONE] [--email EMAIL]`<br> e.g., `edit 1 --name Jane Doe --phone 91234567 --email newemail@example.com` |
-| **`delete`**      | Deletes an existing person<br>`INDEX`<br> e.g., `delete 5`                                                                                                                                   |
-| **`tag`**         | Updates tags of an existing person<br>`INDEX [--add NAME:VALUE]... [--edit NAME:VALUE]... [--delete TAGNAME]...`<br> e.g., `tag 1 --add school:NUS --edit salary:10000 --delete age`         |
-| **`filter`**      | Filters the master list<br>`[--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status STATUS]... [--tag TAGNAME[:TAGVALUE]]...`<br> e.g., `filter --name John --phone 98765432`       |
-| **`sort`**        | Sorts the currently displayed list<br>`[FIELD] [--asc\|--desc] [--number\|--alpha]`<br> e.g., `sort phone --desc --number`                                                                   |
-| **`clearstatus`** | Clears the status of an existing person<br>`INDEX`<br> e.g., `clearstatus 1`                                                                                                                 |
-| **`target`**      | Marks an existing person as a target<br>`INDEX`<br> e.g., `target 2`                                                                                                                         |
-| **`scam`**        | Marks an existing person as scammed<br>`INDEX`<br> e.g., `scam 3`                                                                                                                            |
-| **`ignore`**      | Marks an existing person as ignored<br>`INDEX`<br> e.g., `ignore 4`                                                                                                                          |
-| **`list`**        | Lists all contacts                                                                                                                                                                           |
-| **`clear`**       | Deletes all contacts                                                                                                                                                                         |
-| **`nuke`**        | Deletes `addressbook.json`, removes `data/` if empty, attempts to delete the running app JAR, and exits                                                                                    |
-| **`help`**        | Shows the help message                                                                                                                                                                       |
-| **`exit`**        | Exits the application                                                                                                                                                                        |
+| Command           | Functionality and Parameters                                                                                                                                                                     |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`add`**         | Adds a new person<br>`NAME [--phone PHONE] [--email EMAIL] [--tag TAGNAME:TAGVALUE]...`<br> e.g., `add John Doe --phone 98765432 --email johndoe@example.com --tag school:NUS`                   |
+| **`edit`**        | Updates the name/phone/email of an existing person<br>`INDEX [--name NAME] [--phone PHONE] [--email EMAIL]`<br> e.g., `edit 1 --name Jane Doe --phone 91234567 --email newemail@example.com`     |
+| **`delete`**      | Deletes an existing person<br>`INDEX`<br> e.g., `delete 5`                                                                                                                                       |
+| **`tag`**         | Updates tags of an existing person<br>`INDEX [--add TAGNAME:TAGVALUE]... [--edit TAGNAME:TAGVALUE]... [--delete TAGNAME]...`<br> e.g., `tag 1 --add school:NUS --edit salary:10000 --delete age` |
+| **`filter`**      | Filters the master list<br>`[--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status STATUS]... [--tag TAGNAME[:TAGVALUE]]...`<br> e.g., `filter --name John --phone 98765432`           |
+| **`sort`**        | Sorts the currently displayed list<br>`[FIELD] [--asc\|--desc] [--number\|--alpha]`<br> e.g., `sort phone --desc --number`                                                                       |
+| **`clearstatus`** | Clears the status of an existing person<br>`INDEX`<br> e.g., `clearstatus 1`                                                                                                                     |
+| **`target`**      | Marks an existing person as a target<br>`INDEX`<br> e.g., `target 2`                                                                                                                             |
+| **`scam`**        | Marks an existing person as scammed<br>`INDEX`<br> e.g., `scam 3`                                                                                                                                |
+| **`ignore`**      | Marks an existing person as ignored<br>`INDEX`<br> e.g., `ignore 4`                                                                                                                              |
+| **`list`**        | Lists all contacts                                                                                                                                                                               |
+| **`clear`**       | Deletes all contacts                                                                                                                                                                             |
+| **`nuke`**        | Deletes `addressbook.json`, removes `data/` if empty, attempts to delete the running app JAR, and exits                                                                                          |
+| **`help`**        | Shows the help message                                                                                                                                                                           |
+| **`exit`**        | Exits the application                                                                                                                                                                            |
