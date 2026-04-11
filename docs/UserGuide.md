@@ -101,6 +101,8 @@ To understand more about how to interpret the command formats, refer to [Command
 
 ## Command Format Information
 
+* All commands start with a single command word, which is case-sensitive and always in lowercase, followed by parameters if any.
+
 * Words in `UPPER_CASE` are the parameters to be supplied by the user. They can contain spaces and special characters (except `INDEX`, which expects a single positive integer). <br>
   e.g. in `add NAME`, `NAME` is a parameter which can be used as `add John Doe`.
 
@@ -345,7 +347,7 @@ The sorting persists even if multiple commands are run afterwards. For example, 
 
 ### Marking person status: `clearstatus`, `target`, `scam`, or `ignore`
 
-Sets the status of a specific person. We currently support 4 common statuses, each represented by its corresponding command name. Referring the image below (same image as in the [Overview](#overview) section, reproduced here for convenience), the emoji of each profile represents its status, as set by the four commands, in order.
+Sets the status of a specific person. We currently support 4 common statuses, each represented by its corresponding command name. Referring the image below (same image as in the [Overview](#overview) section, reproduced here for convenience), the emoji of each profile represents its status, as set by each of the four commands, in order.
 1. No status, via `clearstatus`.
 2. A potential target, via `target`.
 3. Already scammed, via `scam`.
@@ -353,7 +355,7 @@ Sets the status of a specific person. We currently support 4 common statuses, ea
 
 ![Example screenshot of status commands](images/status_command.png)
 
-In the above image, the people have the status of no status, `target`, `scam`, and `ignore`  respectively.
+Format: `status_command INDEX`
 
 * `status_command` should be replaced by either one of `clearstatus`, `target`, `scam`, or `ignore`.
 * Sets the status of the person at the specified `INDEX`.
