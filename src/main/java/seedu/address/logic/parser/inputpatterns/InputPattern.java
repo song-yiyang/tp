@@ -144,6 +144,11 @@ public class InputPattern {
 
         /// settle the paramsArgs
         String[] paramSegments = paramArgs.split("--");
+
+        if (paramArgs.strip().equals("--")) {
+            throw new ParseException("Unknown -- found with no parameter id provided");
+        }
+
         for (int i = 0; i < paramSegments.length; i++) {
             String segment = paramSegments[i];
             if (segment.isEmpty()) {

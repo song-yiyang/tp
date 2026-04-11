@@ -3,7 +3,6 @@ package seedu.address.model.person;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -24,6 +23,7 @@ public class Person {
     private final Status status;
 
     /**
+     * Initialises a new person.
      * Name and tag list must be present and not null (tag list can be empty).
      */
     public Person(Name name, Phone phone, Email email, TagList tags) {
@@ -31,6 +31,7 @@ public class Person {
     }
 
     /**
+     * Initialises a new person.
      * Name and tag list must be present and not null (tag list can be empty).
      */
     public Person(Name name, Phone phone, Email email, TagList tags, Status status) {
@@ -41,6 +42,18 @@ public class Person {
         this.email = Optional.ofNullable(email);
         this.tags = new TagList(tags);
         this.status = status;
+    }
+
+    /**
+     * Creates an identical copy of another person.
+     */
+    public Person(Person otherPerson) {
+        requireAllNonNull(otherPerson);
+        this.name = otherPerson.name;
+        this.phone = otherPerson.phone;
+        this.email = otherPerson.email;
+        this.tags = otherPerson.tags;
+        this.status = otherPerson.status;
     }
 
     public Name getName() {
@@ -96,30 +109,14 @@ public class Person {
     /**
      * Returns true if both persons have the same identity and data fields.
      * This defines a stronger notion of equality between two persons.
+     * Used for testing.
      */
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        // instanceof handles nulls
-        if (!(other instanceof Person)) {
-            return false;
-        }
-
-        Person otherPerson = (Person) other;
+    public boolean testEquals(Person otherPerson) {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && tags.equals(otherPerson.tags)
                 && status.equals(otherPerson.status);
-    }
-
-    @Override
-    public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, tags, status);
     }
 
     @Override

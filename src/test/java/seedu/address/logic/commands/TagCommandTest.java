@@ -21,6 +21,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TestPerson;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for TagCommand.
@@ -58,7 +59,7 @@ public class TagCommandTest {
 
     public void helper(Person initial, Person expected, List<Tag> add, List<Tag> edit, List<Tag> delete) {
         Model model = newModelWithPerson(initial);
-        Model expectedModel = newModelWithPerson(expected);
+        Model expectedModel = newModelWithPerson(new TestPerson(expected));
         TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, add, edit, delete);
         assertCommandSuccess(tagCommand, model, TagCommand.MESSAGE_SUCCESS, expectedModel);
     }
@@ -95,7 +96,7 @@ public class TagCommandTest {
 
         tagCommand.execute(model);
 
-        assertEquals(ALICE_ADDED, model.getSelectedPerson().getValue());
+        assertEquals(new TestPerson(ALICE_ADDED), model.getSelectedPerson().getValue());
     }
 
     @Test

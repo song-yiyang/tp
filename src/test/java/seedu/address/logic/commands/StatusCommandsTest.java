@@ -17,6 +17,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Status;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TestPerson;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for various StatusCommand.
@@ -55,7 +56,7 @@ public class StatusCommandsTest {
     @Test
     public void execute_clearStatus_success() {
         Model model = newModelWithPerson(ALICE_TARGET);
-        Model expectedModel = newModelWithPerson(ALICE_NONE);
+        Model expectedModel = newModelWithPerson(new TestPerson(ALICE_NONE));
         ClearStatusCommand clearStatusCommand = new ClearStatusCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(clearStatusCommand, model, ClearStatusCommand.MESSAGE_SUCCESS, expectedModel);
     }
@@ -63,7 +64,7 @@ public class StatusCommandsTest {
     @Test
     public void execute_targetStatus_success() {
         Model model = newModelWithPerson(ALICE_SCAM);
-        Model expectedModel = newModelWithPerson(ALICE_TARGET);
+        Model expectedModel = newModelWithPerson(new TestPerson(ALICE_TARGET));
         TargetStatusCommand targetStatusCommand = new TargetStatusCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(targetStatusCommand, model, TargetStatusCommand.MESSAGE_SUCCESS, expectedModel);
     }
@@ -71,7 +72,7 @@ public class StatusCommandsTest {
     @Test
     public void execute_scamStatus_success() {
         Model model = newModelWithPerson(ALICE_IGNORE);
-        Model expectedModel = newModelWithPerson(ALICE_SCAM);
+        Model expectedModel = newModelWithPerson(new TestPerson(ALICE_SCAM));
         ScamStatusCommand scamStatusCommand = new ScamStatusCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(scamStatusCommand, model, ScamStatusCommand.MESSAGE_SUCCESS, expectedModel);
     }
@@ -79,7 +80,7 @@ public class StatusCommandsTest {
     @Test
     public void execute_ignoreStatus_success() {
         Model model = newModelWithPerson(ALICE_TARGET);
-        Model expectedModel = newModelWithPerson(ALICE_IGNORE);
+        Model expectedModel = newModelWithPerson(new TestPerson(ALICE_IGNORE));
         IgnoreStatusCommand ignoreStatusCommand = new IgnoreStatusCommand(INDEX_FIRST_PERSON);
         assertCommandSuccess(ignoreStatusCommand, model, IgnoreStatusCommand.MESSAGE_SUCCESS, expectedModel);
     }
@@ -106,7 +107,7 @@ public class StatusCommandsTest {
 
         clearStatusCommand.execute(model);
 
-        assertEquals(ALICE_NONE, model.getSelectedPerson().getValue());
+        assertEquals(new TestPerson(ALICE_NONE), model.getSelectedPerson().getValue());
     }
 
     @Test

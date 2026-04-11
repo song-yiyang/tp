@@ -17,6 +17,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Status;
+import seedu.address.testutil.TestPerson;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
@@ -35,12 +36,12 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
         JsonAdaptedPerson person = new JsonAdaptedPerson(BENSON);
-        assertEquals(BENSON, person.toModelType());
+        assertEquals(new TestPerson(BENSON), person.toModelType());
     }
 
     @Test
     public void toModelType_nullPhoneEmail_returnsPerson() throws Exception {
-        Person person = new Person(BENSON.getName(), null, null, BENSON.getTags());
+        Person person = new TestPerson(new Person(BENSON.getName(), null, null, BENSON.getTags()));
         JsonAdaptedPerson adaptedPerson = new JsonAdaptedPerson(person);
         assertEquals(person, adaptedPerson.toModelType());
     }

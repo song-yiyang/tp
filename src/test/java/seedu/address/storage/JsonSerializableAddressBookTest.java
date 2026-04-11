@@ -13,6 +13,7 @@ import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TestPerson;
 import seedu.address.testutil.TypicalPersons;
 
 public class JsonSerializableAddressBookTest {
@@ -27,8 +28,8 @@ public class JsonSerializableAddressBookTest {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(TYPICAL_PERSONS_FILE,
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
-        AddressBook typicalPersonsAddressBook = TypicalPersons.getTypicalAddressBook();
-        assertEquals(addressBookFromFile, typicalPersonsAddressBook);
+        AddressBook typicalPersonsAddressBook = TypicalPersons.getTestTypicalAddressBook();
+        assertEquals(typicalPersonsAddressBook, addressBookFromFile);
     }
 
     @Test
@@ -44,18 +45,18 @@ public class JsonSerializableAddressBookTest {
                 JsonSerializableAddressBook.class).get();
 
 
-        Person alice = new PersonBuilder().withName("Alice Pauline")
+        Person alice = new TestPerson(new TestPerson(new PersonBuilder().withName("Alice Pauline")
                 .withEmail("alice@example.com")
                 .withPhone("94351253")
-                .withTags("income:$100,000").build();
-        Person pauline = new PersonBuilder().withName("Alice Pauline")
+                .withTags("income:$100,000").build()));
+        Person pauline = new TestPerson(new TestPerson(new PersonBuilder().withName("Alice Pauline")
                 .withPhone("94351253")
-                .withEmail("pauline@example.com").build();
+                .withEmail("pauline@example.com").build()));
         AddressBook ab = new AddressBook();
         ab.addPerson(alice);
         ab.addPerson(pauline);
 
         AddressBook addressBook = dataFromFile.toModelType();
-        assertEquals(addressBook, ab);
+        assertEquals(ab, addressBook);
     }
 }

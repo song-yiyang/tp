@@ -89,6 +89,8 @@ public class SortCommand extends Command {
         }
     }
 
+    public static final String MESSAGE_SUCCESS = "Sorted %1$d person(s) by %2$s.";
+
     private final SortSpec spec;
 
     /**
@@ -115,7 +117,13 @@ public class SortCommand extends Command {
             model.setSelectedPerson(model.getFilteredPersonList().get(0));
         }
 
-        return new CommandResult(String.format("Sorted %d person(s).", model.getFilteredPersonList().size()));
+        String field = spec.targetType == SortTargetType.TAG
+                ? "tag '" + spec.tagName + "'" : spec.targetType.name().toLowerCase();
+        return new CommandResult(
+                String.format(
+                    MESSAGE_SUCCESS,
+                    model.getFilteredPersonList().size(),
+                    field));
     }
 
     @Override

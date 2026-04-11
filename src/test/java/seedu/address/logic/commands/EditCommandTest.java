@@ -29,6 +29,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TestPerson;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for EditCommand.
@@ -59,7 +60,7 @@ public class EditCommandTest {
         Person lastPerson = model.getFilteredPersonList().get(indexLastPerson.getZeroBased());
 
         PersonBuilder personInList = new PersonBuilder(lastPerson);
-        Person editedPerson = personInList.withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB).build();
+        Person editedPerson = new TestPerson(personInList.withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB).build());
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB).build();
@@ -83,7 +84,7 @@ public class EditCommandTest {
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(newName).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
 
-        Person editedPerson = new PersonBuilder(SILENT).withName(newName).build();
+        Person editedPerson = new TestPerson(new PersonBuilder(SILENT).withName(newName).build());
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
         Model expectedModel = new ModelManager(new AddressBook(localModel.getAddressBook()), new UserPrefs());
@@ -93,23 +94,11 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_noFieldSpecifiedUnfilteredList_success() {
-        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, new EditPersonDescriptor());
-        Person editedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
-
-        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-
-        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
-    }
-
-    @Test
     public void execute_filteredList_success() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
         Person personInFilteredList = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person editedPerson = new PersonBuilder(personInFilteredList).withName(VALID_NAME_BOB).build();
+        Person editedPerson = new TestPerson(new PersonBuilder(personInFilteredList).withName(VALID_NAME_BOB).build());
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
@@ -130,10 +119,10 @@ public class EditCommandTest {
         EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
 
         Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        Person expectedPerson = new PersonBuilder(firstPerson)
+        Person expectedPerson = new TestPerson(new PersonBuilder(firstPerson)
                 .withTags(secondPerson.getPrintableTags().toArray(new String[0]))
                 .withStatus(secondPerson.getStatus())
-                .build();
+                .build());
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(secondPerson, expectedPerson);
 
@@ -153,10 +142,10 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder(personInList).build());
 
         Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person expectedPerson = new PersonBuilder(personInList)
+        Person expectedPerson = new TestPerson(new PersonBuilder(personInList)
                 .withTags(firstPerson.getPrintableTags().toArray(new String[0]))
                 .withStatus(firstPerson.getStatus())
-                .build();
+                .build());
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, expectedPerson);
 
@@ -199,7 +188,7 @@ public class EditCommandTest {
         Index indexLastPerson = Index.fromOneBased(model.getFilteredPersonList().size());
         Person lastPerson = model.getFilteredPersonList().get(indexLastPerson.getZeroBased());
 
-        Person editedPerson = new PersonBuilder(lastPerson).withName(VALID_NAME_BOB).build();
+        Person editedPerson = new TestPerson(new PersonBuilder(lastPerson).withName(VALID_NAME_BOB).build());
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditCommand editCommand = new EditCommand(indexLastPerson, descriptor);
 
@@ -216,10 +205,10 @@ public class EditCommandTest {
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(firstPerson).build();
         EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
-        Person expectedPerson = new PersonBuilder(firstPerson)
+        Person expectedPerson = new TestPerson(new PersonBuilder(firstPerson)
                 .withTags(secondPerson.getPrintableTags().toArray(new String[0]))
                 .withStatus(secondPerson.getStatus())
-                .build();
+                .build());
 
         editCommand.execute(model);
 

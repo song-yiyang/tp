@@ -8,13 +8,14 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TestPerson;
 
 public class AddCommandParserTest {
     private AddCommandParser parser = new AddCommandParser();
 
     @Test
     public void parse_nameOnlyPresent_success() {
-        Person expectedPerson = new PersonBuilder(SILENT).build();
+        Person expectedPerson = new TestPerson(new PersonBuilder(SILENT).build());
 
         // whitespace only preamble
         assertParseSuccess(parser, SILENT.getName().toString(), new AddCommand(expectedPerson));
