@@ -44,6 +44,7 @@ public class NameTest {
         assertTrue(Name.isValidName("Kong Kar Lok, Donald (Kong Jia Le)")); // check for , ()
         assertTrue(Name.isValidName("Davinder Singh Sachdev s/o Amar Singh")); // check for /
         assertTrue(Name.isValidName("George H.W. Bush")); // check for .
+        assertTrue(Name.isValidName("John\\Doe")); // check for \
     }
 
     @Test
