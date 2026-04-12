@@ -2,6 +2,10 @@
   <link rel="stylesheet" href="{{baseUrl}}/stylesheets/main.css">
 </head-bottom>
 
+<div class="bg-warning text-center p-1 text-dark">
+  <strong>FOR ACADEMIC USE ONLY.</strong> This is an NUS student project. The authors assume zero liability for any use or misuse of this code. Use at your own risk.
+</div>
+
 <header sticky>
   <navbar type="dark">
     <a slot="brand" href="{{baseUrl}}/index.html" title="Home" class="navbar-brand">ScamBook</a>
