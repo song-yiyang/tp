@@ -197,6 +197,9 @@ public class SortCommand extends Command {
 
                 if (leftNumber != null && rightNumber != null) {
                     result = Long.compare(leftNumber, rightNumber);
+                    if (result == 0) {
+                        result = leftValue.compareToIgnoreCase(rightValue);
+                    }
                     return order == SortOrder.DESC ? -result : result;
                 }
                 if (leftNumber != null) {
