@@ -134,7 +134,7 @@ mark {
     display: none;
   }
 
-  /* Reduce font size when printing */
+  /* Reduce font size when printing
   h1 {
       font-size: 1.2rem !important;
   }
@@ -157,8 +157,9 @@ mark {
       font-size: 0.65rem !important;
   }
   img {
-      zoom: 0.8;  /* might not work on some browsers */
+      zoom: 0.8;  might not work on some browsers
   }
+  */
 }
 
 h2,

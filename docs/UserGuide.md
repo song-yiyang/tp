@@ -12,6 +12,8 @@ ScamBook User Guide
 <!-- * Table of Contents -->
 <page-nav-print />
 
+<div style="page-break-after: always"></div>
+
 ## Introduction
 
 ### What is ScamBook?
@@ -32,6 +34,7 @@ ScamBook is designed for **investment and financial scam callers** targeting Sin
 ScamBook is the app for you!
 
 --------------------------------------------------------------------------------------------------------------------
+<br>
 
 <!-- Quickstart appropriate for target users and fit-for-purpose -->
 ## Quick start
@@ -51,6 +54,8 @@ ScamBook is the app for you!
 1. Double-click on the `.jar` file to run the application. If the application does not launch,
 refer to [troubleshooting](#troubleshooting) for alternate ways to launch the application.
 
+<div style="page-break-after: always"></div>
+
 <!-- Quickstart: Overview of UI -->
 ### Overview
 A GUI similar to the below should appear in a few seconds. The app contains some sample data for you to use.<br>
@@ -61,8 +66,10 @@ A GUI similar to the below should appear in a few seconds. The app contains some
 </div>
 <br>
 The top part of the application is the contact list - you can view contacts there.
-
+<br><br>
 The box at the bottom that reads "Enter command here..." is where you enter commands. This is where you get to interact with ScamBook!
+
+<br><br>
 
 ### Entering a Command
 
@@ -97,7 +104,9 @@ To understand more about how to interpret the command formats, refer to [Command
 </box>
 
 --------------------------------------------------------------------------------------------------------------------
+<br>
 
+<div style="page-break-after: always"></div>
 
 ## Command Format Information
 
@@ -173,11 +182,6 @@ Tips about the command, e.g. how to use it more effectively, etc.
 
 
 ## Commands
-
-### Viewing command history
-
-Similar to the command line interface of a terminal, you can use the up and down arrow keys to view your command history. This allows you to easily reuse or modify previous commands without having to retype them.
-
 
 <br>
 
@@ -281,8 +285,8 @@ Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status
 - With repeated `--name`, `--phone`, `--email`, or `--status`, profiles match any of the specified values.
   e.g. `--name John --name Jane` matches persons whose name contains `John` or `Jane`.
 - `NAME`, `EMAIL`, and `PHONE` conditions require case-insensitive partial match.
-- `STATUS` must be one of `NONE`, `TARGET`, `SCAM`, or `IGNORE` (case-insensitive).
-- `--tag TAGNAME` checks whether a person has a tag with that name. `TAGNAME` must be a valid tag name, according to [this](#tag-constraints).
+- `STATUS` must be one of `none`, `target`, `scam`, or `ignore` (case-insensitive).
+- `--tag TAGNAME` checks whether a person has a tag with that name. `TAGNAME` must be a valid tag name, according to the [tag constraints](#tag-constraints).
 - `--tag TAGNAME:TAGVALUE` checks whether a person has a tag with that name whose value contains `TAGVALUE`.
 - `TAGNAME` requires the exact tag name (case-insensitive), while `TAGVALUE` only requires partial match (case-insensitive).
 - With repeated `--tag` filters with the same tag name, profiles match any of the specified values.
@@ -371,6 +375,9 @@ Examples:
 
 <br>
 
+<div style="page-break-after: always"></div>
+
+
 ### Listing all persons : `list`
 
 Shows a list of ALL persons in the ScamBook, in their original creation order. This command can be used after `sort` or `filter` to revert ScamBook to its original state.
@@ -409,6 +416,9 @@ Format: `nuke`
 
 <br>
 
+<div style="page-break-after: always"></div>
+
+
 ### Viewing help : `help`
 
 Shows a pop-up window explaining how to use the basic commands. For more details on how to use this
@@ -417,7 +427,6 @@ application, you can also click on **Copy URL** to access the user guide.
 ![help message](images/helpMessage.png)
 
 Format: `help`
-
 
 <br>
 
@@ -429,7 +438,10 @@ Format: `exit`
 
 <br>
 
+
 --------------------------------------------------------------------
+
+<div style="page-break-after: always"></div>
 
 ### Constraints on input values
 
@@ -439,9 +451,9 @@ All `INDEX` parameters refer to the displayed index as shown in the current disp
 
 #### Name Constraints
 
-Names can contain any alphanumeric characters, spaces, and the following special characters <code>,.()\`'/\-</code>.
+Names can contain any alphanumeric characters, spaces, and the following special characters <code>,.()\`'/\\-</code>.
 
-Names should also contain at least one character
+Names should also contain at least one character.
 
 #### Phone Constraints
 
@@ -494,12 +506,20 @@ ScamBook data are saved automatically as a JSON file `[JAR file location]/data/a
 <box type="warning" seamless>
 <b>Caution:</b>
 If your changes to the data file makes its format invalid, ScamBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
+<br>
 Furthermore, certain edits can cause the ScamBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
 <br>
 
 ---------------------------------------------------
+<div style="page-break-after: always"></div>
+
+### Viewing command history
+
+Similar to the command line interface of a terminal, you can use the up and down arrow keys to view your command history. This allows you to easily reuse or modify previous commands without having to retype them.
+
+<br>
 
 ### Autoscroll
 - After making modifications to a contact, the app will scroll to and select the relevant contact. This behaviour
@@ -511,6 +531,7 @@ Furthermore, certain edits can cause the ScamBook to behave in unexpected ways (
 <br>
 
 ----------------------------------------------------------------------
+<div style="page-break-after: always"></div>
 
 ## FAQ
 
@@ -530,6 +551,9 @@ On a Mac, if the option to open a terminal at the folder does not exist, refer t
 **Q**: When I opened ScamBook, my previous session's changes weren't saved. Why? <br>
 **A**: If ScamBook is in a write-protected folder, the program cannot save your data. Try checking your folder's properties, or moving ScamBook to another location.
 
+<div style="page-break-after: always"></div>
+
+
 ### Miscellaneous
 
 **Q**: I have a question that is not answered here. Where can I ask it?<br>
@@ -539,7 +563,13 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 <br>
 
 --------------------------------------------------------------------------------------------------------------------
+
+<div style="page-break-after: always"></div>
+
 ## Future work
+
+The following are features that are yet to be implemented, but are planned to be implemented.
+
 1. Currently, all data has to be either manually added via the commands, or by editing the `json` data file. Future work will support more mechanisms for data importation, such as reading directly from a `.csv` or `.xlsx` file.
 
 2. A scammer might have different personas when operating, such as pretending to be personnel from different banks. A possible future direction is to allow users to create multiple sets of ScamBooks, each with their own separate details, so every distinct persona can have its own list of contacts.
@@ -557,6 +587,7 @@ repository](https://github.com/AY2526S2-CS2103T-T16-1/tp/issues).
 <br>
 
 --------------------------------------------------------------------------------------------------------------------
+<div style="page-break-after: always"></div>
 
 ## Commands summary
 <!-- A summary of all commands. Should be of same/similar format as help
