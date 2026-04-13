@@ -281,6 +281,9 @@ Format: `filter [--name NAME]... [--phone PHONE]... [--email EMAIL]... [--status
 - With repeated `--name`, `--phone`, `--email`, or `--status`, profiles match any of the specified values.
   e.g. `--name John --name Jane` matches persons whose name contains `John` or `Jane`.
 - `NAME`, `EMAIL`, and `PHONE` conditions require case-insensitive partial match.
+- `--phone NONE` matches persons with no phone field, and `--email NONE` matches persons with no email field.
+- For phone or email filtering, `NONE` can be mixed with normal substrings.
+  e.g. `--phone NONE --phone 9876` matches persons with no phone or with a phone containing `9876`.
 - `STATUS` must be one of `NONE`, `TARGET`, `SCAM`, or `IGNORE` (case-insensitive).
 - `--tag TAGNAME` checks whether a person has a tag with that name. `TAGNAME` must be a valid tag name, according to [this](#tag-constraints).
 - `--tag TAGNAME:TAGVALUE` checks whether a person has a tag with that name whose value contains `TAGVALUE`.
@@ -298,6 +301,8 @@ Examples:
   Shows all persons whose status is either `TARGET` or `SCAM`.
 - `filter --phone 9876 --email gmail.com`
   Shows all persons whose phone number contains `9876` and whose email contains `gmail.com`.
+- `filter --phone NONE --email NONE`
+  Shows all persons with no phone and no email.
 - `filter --tag job`
   Shows all persons who have a tag named `job`, regardless of its value.
 - `filter --tag job:manager --tag job:director`
@@ -463,7 +468,7 @@ Emails should follow the format `local-part@domain` (e.g. `john.doe@example.com`
 ScamBook accepts a broader set of [RFC 5322 standards-compliant email addresses](https://datatracker.ietf.org/doc/html/rfc5322#section-3.4.1).
 
 <box type="tip" seamless>
-<b>Tip:</b> <code>filter --email</code> accepts any non-empty substring for matching and does not require a full valid email format.
+<b>Tip:</b> <code>filter --email</code> accepts any non-empty substring for matching (except the reserved keyword <code>NONE</code>, which matches missing email) and does not require a full valid email format.
 </box>
 
 
