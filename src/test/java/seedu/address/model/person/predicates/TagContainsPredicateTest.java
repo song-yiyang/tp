@@ -42,106 +42,93 @@ public class TagContainsPredicateTest {
     }
 
     @Test
-    public void test_personHasMatchingTags_returnsTrue() {
-        // Single tag matches
+    public void test_emptyFilters_matchesAnyPerson() {
+        TagContainsPredicate predicate = new TagContainsPredicate(Collections.emptyList());
+        assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+        assertTrue(predicate.test(new PersonBuilder().build()));
+    }
+
+    @Test
+    public void testSingleFilterNameAndValue_matchesCaseInsensitively() {
         TagContainsPredicate predicate = new TagContainsPredicate(
                 Collections.singletonList(new TagFilter("department:engineering")));
         assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
 
-        // Multiple tags required - person has all of them
-        predicate = new TagContainsPredicate(Arrays.asList(
-                new TagFilter("department:engineering"),
-                new TagFilter("level:senior")));
-        assertTrue(predicate.test(new PersonBuilder()
-                .withTags("department:engineering", "level:senior").build()));
-
-        // Multiple tags required - person has all plus extra
-        predicate = new TagContainsPredicate(Arrays.asList(
-                new TagFilter("department:engineering"),
-                new TagFilter("level:senior")));
-        assertTrue(predicate.test(new PersonBuilder()
-                .withTags("department:engineering", "level:senior", "project:webapp").build()));
-
-        // Tag name matches case-insensitively
         predicate = new TagContainsPredicate(
                 Collections.singletonList(new TagFilter("Department:engineering")));
         assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
 
-        // Tag value matches case-insensitively
         predicate = new TagContainsPredicate(
                 Collections.singletonList(new TagFilter("department:ENGINEERING")));
         assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+    }
 
-        // Bare tag name checks for existence only
-        predicate = new TagContainsPredicate(Collections.singletonList(new TagFilter("department")));
+    @Test
+    public void testSingleFilterNameAndValue_usesSubstringMatching() {
+        TagContainsPredicate predicate = new TagContainsPredicate(
+                Collections.singletonList(new TagFilter("part:engine")));
         assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
 
-        // Filters with the same tag name are OR-ed together
-        predicate = new TagContainsPredicate(Arrays.asList(
+        predicate = new TagContainsPredicate(Collections.singletonList(new TagFilter("part")));
+        assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+    }
+
+    @Test
+    public void test_sameTagNameFilters_areOrCombined() {
+        // same tag-name group: department=sales OR department=engineering
+        TagContainsPredicate predicate = new TagContainsPredicate(Arrays.asList(
                 new TagFilter("department:sales"),
                 new TagFilter("department:engineering")));
         assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+    }
 
-        // Same-name filters are OR-ed, then AND-ed with other tag-name groups
-        predicate = new TagContainsPredicate(Arrays.asList(
+    @Test
+    public void test_differentTagNameGroups_areAndCombined() {
+        // (department=sales OR department=engineering) AND level=senior
+        TagContainsPredicate predicate = new TagContainsPredicate(Arrays.asList(
                 new TagFilter("department:sales"),
                 new TagFilter("department:engineering"),
                 new TagFilter("level:senior")));
         assertTrue(predicate.test(new PersonBuilder()
                 .withTags("department:engineering", "level:senior").build()));
+        assertTrue(predicate.test(new PersonBuilder()
+                .withTags("department:engineering", "level:senior", "project:webapp").build()));
     }
 
     @Test
-    public void test_personDoesNotHaveMatchingTags_returnsFalse() {
-        // Zero tags in predicate
-        TagContainsPredicate predicate = new TagContainsPredicate(Collections.emptyList());
-        assertTrue(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
-
-        // Non-matching tag name
-        predicate = new TagContainsPredicate(
+    public void testSingleFilterNonMatchingName_returnsFalse() {
+        TagContainsPredicate predicate = new TagContainsPredicate(
                 Collections.singletonList(new TagFilter("role:manager")));
         assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+    }
 
-        // Non-matching tag value
-        predicate = new TagContainsPredicate(
+    @Test
+    public void testSingleFilterNonMatchingValue_returnsFalse() {
+        TagContainsPredicate predicate = new TagContainsPredicate(
                 Collections.singletonList(new TagFilter("department:sales")));
         assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+    }
 
-        // Multiple tags required but person has only one
-        predicate = new TagContainsPredicate(Arrays.asList(
+    @Test
+    public void testDifferentTagNameGroupsMissingOneGroup_returnsFalse() {
+        TagContainsPredicate predicate = new TagContainsPredicate(Arrays.asList(
                 new TagFilter("department:engineering"),
                 new TagFilter("level:senior")));
         assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
-
-        // Multiple tags required but person doesn't have any of them
-        predicate = new TagContainsPredicate(Arrays.asList(
-                new TagFilter("department:sales"),
-                new TagFilter("level:junior")));
-        assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering", "level:senior").build()));
-
-        // Multiple tags required but person has only one matching
-        predicate = new TagContainsPredicate(Arrays.asList(
-                new TagFilter("department:engineering"),
-                new TagFilter("level:junior")));
-        assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering", "level:senior").build()));
-
-        // Person has no tags
-        predicate = new TagContainsPredicate(
-                Collections.singletonList(new TagFilter("department:engineering")));
         assertFalse(predicate.test(new PersonBuilder().build()));
+    }
 
-        // Bare tag name does not match when tag is absent
-        predicate = new TagContainsPredicate(Collections.singletonList(new TagFilter("department")));
-        assertFalse(predicate.test(new PersonBuilder().withTags("role:engineering").build()));
-
-        // Same-name filters still fail when none of them match
-        predicate = new TagContainsPredicate(Arrays.asList(
+    @Test
+    public void testSameTagNameFiltersNoneMatch_returnsFalse() {
+        TagContainsPredicate predicate = new TagContainsPredicate(Arrays.asList(
                 new TagFilter("department:sales"),
                 new TagFilter("department:finance")));
         assertFalse(predicate.test(new PersonBuilder().withTags("department:engineering").build()));
+    }
 
-        // A matching same-name group is not enough when another tag-name group fails
-        predicate = new TagContainsPredicate(Arrays.asList(
+    @Test
+    public void testOneAndGroupFailsEvenWhenAnotherGroupMatches_returnsFalse() {
+        TagContainsPredicate predicate = new TagContainsPredicate(Arrays.asList(
                 new TagFilter("department:sales"),
                 new TagFilter("department:engineering"),
                 new TagFilter("level:junior")));

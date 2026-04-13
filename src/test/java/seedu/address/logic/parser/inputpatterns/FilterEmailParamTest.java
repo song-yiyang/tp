@@ -12,7 +12,7 @@ class FilterEmailParamTest {
     public void filterEmailParam_getPreview_returnsExpectedFormat() {
         FilterEmailParam param = new FilterEmailParam(0, 100);
 
-        assertEquals(PARAM_ID_EMAIL + " <email_substring>", param.getPreview());
+        assertEquals(PARAM_ID_EMAIL + " <email_substring|NONE>", param.getPreview());
     }
 
     @Test

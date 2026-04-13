@@ -6,6 +6,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 
 /**
  * A filter-only param that accepts any non-empty phone substring.
+ * The value {@code NONE} is interpreted by {@code FilterCommand} as a missing phone field.
  */
 public class FilterPhoneParam extends Param {
 
@@ -15,7 +16,7 @@ public class FilterPhoneParam extends Param {
 
     @Override
     public String getPreview() {
-        return PARAM_ID_PHONE + " <phone_substring>";
+        return PARAM_ID_PHONE + " <phone_substring|NONE>";
     }
 
     @Override

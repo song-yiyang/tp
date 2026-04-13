@@ -134,7 +134,7 @@ public class SortCommand extends Command {
 
     private void requireTagExists(Model model, String tagName) throws CommandException {
         boolean tagExists = model.getAddressBook().getPersonList().stream()
-                .anyMatch(person -> person.getTags().filterTagCaseInsensitive(tagName).isPresent());
+                .anyMatch(person -> person.getTags().getTagValueCaseInsensitive(tagName).isPresent());
 
         if (!tagExists) {
             throw new CommandException(String.format(MESSAGE_UNKNOWN_TAG, tagName));
@@ -233,7 +233,7 @@ public class SortCommand extends Command {
     }
 
     private String getTagValue(Person person, String tagName) {
-        return person.getTags().filterTagCaseInsensitive(tagName).orElse(null);
+        return person.getTags().getTagValueCaseInsensitive(tagName).orElse(null);
     }
 
     private Long parseLongOrNull(String value) {

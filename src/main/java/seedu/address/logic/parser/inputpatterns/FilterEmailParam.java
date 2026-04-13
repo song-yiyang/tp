@@ -6,6 +6,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 
 /**
  * A filter-only param that accepts any non-empty email substring.
+ * The value {@code NONE} is interpreted by {@code FilterCommand} as a missing email field.
  */
 public class FilterEmailParam extends Param {
 
@@ -15,7 +16,7 @@ public class FilterEmailParam extends Param {
 
     @Override
     public String getPreview() {
-        return PARAM_ID_EMAIL + " <email_substring>";
+        return PARAM_ID_EMAIL + " <email_substring|NONE>";
     }
 
     @Override

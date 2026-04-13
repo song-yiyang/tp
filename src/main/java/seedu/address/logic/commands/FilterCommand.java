@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.ToStringBuilder;
@@ -33,6 +34,7 @@ import seedu.address.model.tag.TagFilter;
 public class FilterCommand extends Command {
 
     public static final String COMMAND_WORD = "filter";
+    public static final String EMPTY_FIELD_KEYWORD = "NONE";
 
     public static final String EXAMPLE = COMMAND_WORD + " "
             + PARAM_ID_NAME + " John "
@@ -48,6 +50,8 @@ public class FilterCommand extends Command {
             + "[" + PARAM_ID_EMAIL + " <email>]... "
             + "[" + PARAM_ID_STATUS + " <status>]... "
             + "[" + PARAM_ID_TAG + " <tagName>[:<tagValue>]]...\n"
+            + "Use " + PARAM_ID_PHONE + " " + EMPTY_FIELD_KEYWORD + " and/or "
+            + PARAM_ID_EMAIL + " " + EMPTY_FIELD_KEYWORD + " to filter missing phone/email fields.\n"
             + "Example: " + EXAMPLE;
 
     public static final String MESSAGE_SUCCESS = "Filtered victim profiles.";
@@ -120,14 +124,20 @@ public class FilterCommand extends Command {
         if (paramFilters.containsKey(FilterType.PHONE)) {
             List<String> phoneFilters = paramFilters.get(FilterType.PHONE);
             if (phoneFilters != null && !phoneFilters.isEmpty()) {
-                predicate = predicate.and(new PhoneContainsPredicate(phoneFilters));
+                Predicate<Person> phonePredicate = buildPhonePredicate(phoneFilters);
+                if (phonePredicate != null) {
+                    predicate = predicate.and(phonePredicate);
+                }
             }
         }
 
         if (paramFilters.containsKey(FilterType.EMAIL)) {
             List<String> emailFilters = paramFilters.get(FilterType.EMAIL);
             if (emailFilters != null && !emailFilters.isEmpty()) {
-                predicate = predicate.and(new EmailContainsPredicate(emailFilters));
+                Predicate<Person> emailPredicate = buildEmailPredicate(emailFilters);
+                if (emailPredicate != null) {
+                    predicate = predicate.and(emailPredicate);
+                }
             }
         }
 
@@ -135,17 +145,17 @@ public class FilterCommand extends Command {
             List<String> statusFilters = paramFilters.get(FilterType.STATUS);
             if (statusFilters != null && !statusFilters.isEmpty()) {
                 List<Status> statuses = statusFilters.stream()
-                        .map(status -> {
-                            try {
-                                return Status.parseStatus(status);
-                            } catch (IllegalValueException e) {
-                                Logger logger = Logger.getLogger(FilterCommand.class.getName());
-                                logger.warning(() -> "Invalid status filter value: " + status
-                                        + ". Skipping this filter.");
-                                return null; // Skip invalid status values
-                            }
-                        })
-                        .toList();
+                    .map(status -> {
+                        try {
+                            return Status.parseStatus(status);
+                        } catch (IllegalValueException e) {
+                            Logger logger = Logger.getLogger(FilterCommand.class.getName());
+                            logger.warning(() -> "Invalid status filter value: " + status
+                                    + ". Skipping this filter.");
+                            return null; // Skip invalid status values
+                        }
+                    })
+                    .toList();
                 predicate = predicate.and(new StatusEqualsPredicate(statuses));
             }
         }
@@ -155,6 +165,46 @@ public class FilterCommand extends Command {
         }
 
         return predicate;
+    }
+
+    private Predicate<Person> buildPhonePredicate(List<String> phoneFilters) {
+        boolean includesEmptyPhone = phoneFilters.stream().anyMatch(this::isEmptyFieldKeyword);
+        List<String> phoneSubstrings = phoneFilters.stream()
+                .filter(filter -> !isEmptyFieldKeyword(filter))
+                .collect(Collectors.toList());
+
+        Predicate<Person> phonePredicate = null;
+        if (!phoneSubstrings.isEmpty()) {
+            phonePredicate = new PhoneContainsPredicate(phoneSubstrings);
+        }
+        if (includesEmptyPhone) {
+            Predicate<Person> noPhonePredicate = person -> !person.hasPhone();
+            phonePredicate = phonePredicate == null ? noPhonePredicate : phonePredicate.or(noPhonePredicate);
+        }
+
+        return phonePredicate;
+    }
+
+    private Predicate<Person> buildEmailPredicate(List<String> emailFilters) {
+        boolean includesEmptyEmail = emailFilters.stream().anyMatch(this::isEmptyFieldKeyword);
+        List<String> emailSubstrings = emailFilters.stream()
+                .filter(filter -> !isEmptyFieldKeyword(filter))
+                .collect(Collectors.toList());
+
+        Predicate<Person> emailPredicate = null;
+        if (!emailSubstrings.isEmpty()) {
+            emailPredicate = new EmailContainsPredicate(emailSubstrings);
+        }
+        if (includesEmptyEmail) {
+            Predicate<Person> noEmailPredicate = person -> !person.hasEmail();
+            emailPredicate = emailPredicate == null ? noEmailPredicate : emailPredicate.or(noEmailPredicate);
+        }
+
+        return emailPredicate;
+    }
+
+    private boolean isEmptyFieldKeyword(String value) {
+        return EMPTY_FIELD_KEYWORD.equals(value.trim());
     }
 
     @Override

@@ -14,6 +14,7 @@ import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.GEORGE;
+import static seedu.address.testutil.TypicalPersons.SILENT;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ import seedu.address.model.person.predicates.PhoneContainsPredicate;
 import seedu.address.model.person.predicates.StatusEqualsPredicate;
 import seedu.address.model.person.predicates.TagContainsPredicate;
 import seedu.address.model.tag.TagFilter;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for FilterCommand.
@@ -205,6 +208,43 @@ public class FilterCommandTest {
     }
 
     @Test
+    public void execute_phoneNone_filtersPersonsWithoutPhone() {
+        model.addPerson(SILENT);
+        expectedModel.addPerson(SILENT);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.PHONE, "NONE"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(person -> !person.hasPhone());
+        assertFilterResult(command, model, List.of(SILENT));
+    }
+
+    @Test
+    public void execute_phoneNoneLowercase_treatedAsSubstring() {
+        model.addPerson(SILENT);
+        expectedModel.addPerson(SILENT);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.PHONE, "none"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(new PhoneContainsPredicate(List.of("none")));
+        assertFilterResult(command, model, Collections.emptyList());
+    }
+
+    @Test
+    public void execute_phoneNoneAndSubstring_filtersByEitherCondition() {
+        model.addPerson(SILENT);
+        expectedModel.addPerson(SILENT);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.PHONE, "NONE", "9435"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(
+                new PhoneContainsPredicate(List.of("9435")).or(person -> !person.hasPhone()));
+        assertFilterResult(command, model, List.of(ALICE, SILENT));
+    }
+
+    @Test
     public void execute_singleEmailCriteria_filtersCorrectly() {
         FilterCommand command = createFilterCommand(singleParamFilter(FilterType.EMAIL, "alice@example.com"),
                 Collections.emptyList());
@@ -323,6 +363,58 @@ public class FilterCommandTest {
 
         expectedModel.updateFilteredPersonList(new EmailContainsPredicate(List.of("nonexistent@example.com")));
         assertFilterResult(command, model, Collections.emptyList());
+    }
+
+    @Test
+    public void execute_emailNone_filtersPersonsWithoutEmail() {
+        model.addPerson(SILENT);
+        expectedModel.addPerson(SILENT);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.EMAIL, "NONE"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(person -> !person.hasEmail());
+        assertFilterResult(command, model, List.of(SILENT));
+    }
+
+    @Test
+    public void execute_emailNoneLowercase_treatedAsSubstring() {
+        model.addPerson(SILENT);
+        expectedModel.addPerson(SILENT);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.EMAIL, "none"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(new EmailContainsPredicate(List.of("none")));
+        assertFilterResult(command, model, Collections.emptyList());
+    }
+
+    @Test
+    public void execute_emailNoneLowercase_canMatchLiteralNoneSubstring() {
+        var noneEmailPerson = new PersonBuilder().withName("Nora None")
+                .withEmail("none@example.com")
+                .build();
+        model.addPerson(noneEmailPerson);
+        expectedModel.addPerson(noneEmailPerson);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.EMAIL, "none"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(new EmailContainsPredicate(List.of("none")));
+        assertFilterResult(command, model, List.of(noneEmailPerson));
+    }
+
+    @Test
+    public void execute_emailNoneAndSubstring_filtersByEitherCondition() {
+        model.addPerson(SILENT);
+        expectedModel.addPerson(SILENT);
+
+        FilterCommand command = createFilterCommand(singleParamFilter(FilterType.EMAIL, "NONE", "alice@example"),
+                Collections.emptyList());
+
+        expectedModel.updateFilteredPersonList(
+                new EmailContainsPredicate(List.of("alice@example")).or(person -> !person.hasEmail()));
+        assertFilterResult(command, model, List.of(ALICE, SILENT));
     }
 
     @Test
@@ -585,5 +677,27 @@ public class FilterCommandTest {
         assertTrue(result.contains("FilterCommand"));
         assertTrue(result.contains("filterCriteria"));
         assertTrue(result.contains("tagFilters"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void buildPhonePredicate_emptyFilters_returnsNull() throws Exception {
+        FilterCommand command = createFilterCommand(new HashMap<>(), Collections.emptyList());
+        var method = FilterCommand.class.getDeclaredMethod("buildPhonePredicate", List.class);
+        method.setAccessible(true);
+
+        Predicate<?> result = (Predicate<?>) method.invoke(command, Collections.emptyList());
+        assertNull(result);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void buildEmailPredicate_emptyFilters_returnsNull() throws Exception {
+        FilterCommand command = createFilterCommand(new HashMap<>(), Collections.emptyList());
+        var method = FilterCommand.class.getDeclaredMethod("buildEmailPredicate", List.class);
+        method.setAccessible(true);
+
+        Predicate<?> result = (Predicate<?>) method.invoke(command, Collections.emptyList());
+        assertNull(result);
     }
 }

@@ -27,9 +27,9 @@ public class TagContainsPredicate implements Predicate<Person> {
     public boolean test(Person person) {
         TagList personTags = person.getTags();
 
-        // Group tagFilters by tag name
+        // Group tagFilters by tag name (case-insensitive)
         Map<String, List<TagFilter>> tagFilterGroups = tagFilters.stream()
-                .collect(Collectors.groupingBy(tf -> tf.tagName));
+                .collect(Collectors.groupingBy(tf -> tf.getTagName().toLowerCase()));
 
         // Check that for each tag filter group, at least one tag filter matches the person's tags
         return tagFilterGroups.values().stream()
@@ -38,11 +38,10 @@ public class TagContainsPredicate implements Predicate<Person> {
     }
 
     private boolean matchesTagFilter(TagList personTags, TagFilter tagFilter) {
-        return personTags.filterTagCaseInsensitive(tagFilter.tagName)
-                .filter(tagValue -> tagFilter.getTagValue()
+        return personTags.filterTagCaseInsensitive(tagFilter.getTagName()).stream()
+                .anyMatch(tagValue -> tagFilter.getTagValue()
                         .map(expectedValue -> tagValue.toLowerCase().contains(expectedValue.toLowerCase()))
-                        .orElse(true))
-                .isPresent();
+                        .orElse(true));
     }
 
     @Override

@@ -19,7 +19,7 @@ public class TagFilterTest {
     public void constructor_nameOnly_success() {
         TagFilter tagFilter = new TagFilter("job");
 
-        assertEquals("job", tagFilter.tagName);
+        assertEquals("job", tagFilter.getTagName());
         assertFalse(tagFilter.hasTagValue());
         assertTrue(tagFilter.getTagValue().isEmpty());
     }
@@ -28,7 +28,7 @@ public class TagFilterTest {
     public void constructor_nameOnlyWithWhitespace_success() {
         TagFilter tagFilter = new TagFilter("  job title\t ");
 
-        assertEquals("job title", tagFilter.tagName);
+        assertEquals("job title", tagFilter.getTagName());
         assertFalse(tagFilter.hasTagValue());
         assertTrue(tagFilter.getTagValue().isEmpty());
     }
@@ -37,7 +37,7 @@ public class TagFilterTest {
     public void constructor_nameAndValue_success() {
         TagFilter tagFilter = new TagFilter("job:engineer");
 
-        assertEquals("job", tagFilter.tagName);
+        assertEquals("job", tagFilter.getTagName());
         assertTrue(tagFilter.hasTagValue());
         assertEquals("engineer", tagFilter.getTagValue().orElseThrow());
     }
@@ -46,7 +46,7 @@ public class TagFilterTest {
     public void constructor_nameAndValueWithWhitespace_success() {
         TagFilter tagFilter = new TagFilter(" job title :  investment banker ");
 
-        assertEquals("job title", tagFilter.tagName);
+        assertEquals("job title", tagFilter.getTagName());
         assertTrue(tagFilter.hasTagValue());
         assertEquals("investment banker", tagFilter.getTagValue().orElseThrow());
     }

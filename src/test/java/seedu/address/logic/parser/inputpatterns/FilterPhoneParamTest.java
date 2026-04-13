@@ -12,7 +12,7 @@ class FilterPhoneParamTest {
     public void filterPhoneParam_getPreview_returnsExpectedFormat() {
         FilterPhoneParam param = new FilterPhoneParam(0, 100);
 
-        assertEquals(PARAM_ID_PHONE + " <phone_substring>", param.getPreview());
+        assertEquals(PARAM_ID_PHONE + " <phone_substring|NONE>", param.getPreview());
     }
 
     @Test
