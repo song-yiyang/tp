@@ -220,15 +220,15 @@ public class FilterCommandTest {
     }
 
     @Test
-    public void execute_phoneNoneCaseInsensitive_filtersPersonsWithoutPhone() {
+    public void execute_phoneNoneLowercase_treatedAsSubstring() {
         model.addPerson(SILENT);
         expectedModel.addPerson(SILENT);
 
         FilterCommand command = createFilterCommand(singleParamFilter(FilterType.PHONE, "none"),
                 Collections.emptyList());
 
-        expectedModel.updateFilteredPersonList(person -> !person.hasPhone());
-        assertFilterResult(command, model, List.of(SILENT));
+        expectedModel.updateFilteredPersonList(new PhoneContainsPredicate(List.of("none")));
+        assertFilterResult(command, model, Collections.emptyList());
     }
 
     @Test
