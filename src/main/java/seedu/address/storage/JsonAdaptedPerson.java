@@ -11,6 +11,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Status;
 import seedu.address.model.person.TagList;
 import seedu.address.model.tag.Tag;
 
@@ -25,6 +26,7 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final Status status;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -32,13 +34,15 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags,
+            @JsonProperty("status") Status status) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         if (tags != null) {
             this.tags.addAll(tags);
         }
+        this.status = (status == null ? Status.NONE : status);
     }
 
     /**
@@ -59,6 +63,7 @@ class JsonAdaptedPerson {
         tags.addAll(source.getPrintableTags().stream()
                 .map(JsonAdaptedTag::new)
                 .toList());
+        status = source.getStatus();
     }
 
     /**
@@ -75,7 +80,9 @@ class JsonAdaptedPerson {
         if (name == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName()));
         }
-        if (!Name.isValidName(name)) {
+        try {
+            Name.isValidName(name);
+        } catch (IllegalValueException e) {
             throw new IllegalValueException(Name.MESSAGE_CONSTRAINTS);
         }
         final Name modelName = new Name(name);
@@ -83,24 +90,30 @@ class JsonAdaptedPerson {
         Phone modelPhone;
         if (phone == null) {
             modelPhone = null;
-        } else if (!Phone.isValidPhone(phone)) {
-            throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
         } else {
+            try {
+                Phone.isValidPhone(phone);
+            } catch (IllegalValueException e) {
+                throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
+            }
             modelPhone = new Phone(phone);
         }
 
         Email modelEmail;
         if (email == null) {
             modelEmail = null;
-        } else if (!Email.isValidEmail(email)) {
-            throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
         } else {
+            try {
+                Email.isValidEmail(email);
+            } catch (IllegalValueException e) {
+                throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
+            }
             modelEmail = new Email(email);
         }
 
 
         final TagList modelTags = new TagList(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelTags);
+        return new Person(modelName, modelPhone, modelEmail, modelTags, status);
     }
 
 }

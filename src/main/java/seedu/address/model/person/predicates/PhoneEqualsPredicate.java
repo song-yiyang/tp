@@ -19,8 +19,10 @@ public class PhoneEqualsPredicate implements Predicate<Person> {
 
     @Override
     public boolean test(Person person) {
-        return phone.stream()
-            .anyMatch(phoneNumber -> person.getPhone().value.equals(phoneNumber));
+        if (person.hasPhone()) {
+            return phone.contains(person.getPhone().value);
+        }
+        return false;
     }
 
     @Override

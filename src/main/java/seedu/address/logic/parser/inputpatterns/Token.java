@@ -1,5 +1,7 @@
 package seedu.address.logic.parser.inputpatterns;
 
+import seedu.address.commons.exceptions.IllegalValueException;
+
 /**
  * An abstract class for representing a single token
  * A command consists of several tokens following an InputPattern
@@ -38,17 +40,7 @@ public abstract class Token {
      * @param segment a string entered for a token
      * @return whether the segment is a valid string matching the token's requirements
      */
-    public abstract boolean matches(String segment);
-
-
-    /**
-     * @param segment a string entered for a token
-     * @return if the segment is definitely not a prefix of a valid input of the token, returns false.
-     *         else it returns true
-     */
-    public boolean prefixMatches(String segment) {
-        return true;
-    }
+    public abstract boolean matches(String segment) throws IllegalValueException;
 
     /**
      * @return whether this token allow spaces, which by default is false

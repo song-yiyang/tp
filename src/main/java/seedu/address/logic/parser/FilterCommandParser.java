@@ -1,7 +1,10 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CliSyntax.PARAM_ID_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_NAME;
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PARAM_ID_STATUS;
+import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,15 +14,19 @@ import java.util.Map;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FilterCommand.FilterType;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.logic.parser.inputpatterns.FilterEmailParam;
+import seedu.address.logic.parser.inputpatterns.FilterPhoneParam;
 import seedu.address.logic.parser.inputpatterns.InputPattern;
 import seedu.address.logic.parser.inputpatterns.NameParam;
 import seedu.address.logic.parser.inputpatterns.Param;
-import seedu.address.logic.parser.inputpatterns.PhoneParam;
+import seedu.address.logic.parser.inputpatterns.StatusParam;
+import seedu.address.logic.parser.inputpatterns.TagParam;
 import seedu.address.logic.parser.inputpatterns.Token;
+import seedu.address.model.tag.TagFilter;
 
 /**
  * Parses input arguments and creates a new FilterCommand object.
- * Supports filtering by name and phone parameters.
+ * Supports filtering by name, phone, email, status, and tag parameters.
  */
 public class FilterCommandParser extends Parser<FilterCommand> {
 
@@ -34,10 +41,13 @@ public class FilterCommandParser extends Parser<FilterCommand> {
 
         ArrayList<Param> params = new ArrayList<>(List.of(
                 new NameParam(0, 100),
-                new PhoneParam(0, 100)
+                new FilterPhoneParam(0, 100),
+                new FilterEmailParam(0, 100),
+                new StatusParam(0, 100),
+                new TagParam(0, 100)
         ));
 
-        return new InputPattern("filter", tokens, params);
+        return new InputPattern(FilterCommand.COMMAND_WORD, tokens, params);
     }
 
     /**
@@ -64,6 +74,22 @@ public class FilterCommandParser extends Parser<FilterCommand> {
             filterCriterion.put(FilterType.PHONE, phoneFilter);
         }
 
-        return new FilterCommand(filterCriterion);
+        Param emailParam = inputPattern.getParamWithId(PARAM_ID_EMAIL);
+        List<String> emailFilter = emailParam.getValues();
+        if (!emailFilter.isEmpty()) {
+            filterCriterion.put(FilterType.EMAIL, emailFilter);
+        }
+
+        Param statusParam = inputPattern.getParamWithId(PARAM_ID_STATUS);
+        List<String> statusFilter = statusParam.getValues();
+        if (!statusFilter.isEmpty()) {
+            filterCriterion.put(FilterType.STATUS, statusFilter);
+        }
+
+        Param tagParam = inputPattern.getParamWithId(PARAM_ID_TAG);
+        List<String> tagFilterStrings = tagParam.getValues();
+        List<TagFilter> tagFilter = tagFilterStrings.stream().map(TagFilter::new).toList();
+
+        return new FilterCommand(filterCriterion, tagFilter);
     }
 }

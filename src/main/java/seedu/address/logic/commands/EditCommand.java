@@ -27,6 +27,10 @@ public class EditCommand extends Command {
 
     public static final String COMMAND_WORD = "edit";
 
+    public static final String EXAMPLE = COMMAND_WORD + " 1 "
+            + PARAM_ID_PHONE + " 91234567 "
+            + PARAM_ID_EMAIL + " johndoe@example.com";
+
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
             + "by the index number used in the displayed person list. "
             + "Existing values will be overwritten by the input values.\n"
@@ -34,20 +38,19 @@ public class EditCommand extends Command {
             + "[" + PARAM_ID_NAME + "] "
             + "[" + PARAM_ID_PHONE + "] "
             + "[" + PARAM_ID_EMAIL + "] "
-            + "Example: " + COMMAND_WORD + " 1 "
-            + PARAM_ID_PHONE + " 91234567 "
-            + PARAM_ID_EMAIL + " johndoe@example.com";
+            + "Example: " + EXAMPLE;
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
 
     /**
-     * @param index of the person in the filtered person list to edit
-     * @param editPersonDescriptor details to edit the person with
+     * Creates an edit command with the specified index and details of the edit.
+     *
+     * @param index of the person in the filtered person list to edit.
+     * @param editPersonDescriptor details to edit the person with.
      */
     public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
         requireNonNull(index);
@@ -63,19 +66,17 @@ public class EditCommand extends Command {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            throw new CommandException(Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                    + "\nThere is/are only " + lastShownList.size() + " person(s) in the list.");
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
-        if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
-        }
-
         model.setPerson(personToEdit, editedPerson);
+        model.setSelectedPerson(editedPerson);
 
-        if (!model.getMostRecentPredicate().test(editedPerson)) {
+        if (!model.getCurrentPredicate().test(editedPerson)) {
             model.showAllPersons();
         }
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
@@ -94,7 +95,7 @@ public class EditCommand extends Command {
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.hasEmail()
             ? personToEdit.getEmail() : null);
 
-        return new Person(updatedName, updatedPhone, updatedEmail, personToEdit.getTags());
+        return new Person(updatedName, updatedPhone, updatedEmail, personToEdit.getTags(), personToEdit.getStatus());
     }
 
     @Override

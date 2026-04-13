@@ -2,12 +2,17 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
+import javafx.util.Duration;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.Logic;
 import seedu.address.model.person.Person;
 
 /**
@@ -20,13 +25,42 @@ public class PersonListPanel extends UiPart<Region> {
     @FXML
     private ListView<Person> personListView;
 
+    private Logic logic;
+
     /**
-     * Creates a {@code PersonListPanel} with the given {@code ObservableList}.
+     * Creates a {@code PersonListPanel} with the given {@code ObservableList} and {@code ObjectProperty}.
      */
-    public PersonListPanel(ObservableList<Person> personList) {
+    public PersonListPanel(ObservableList<Person> personList, ObjectProperty<Person> selectedPerson) {
         super(FXML);
         personListView.setItems(personList);
         personListView.setCellFactory(listView -> new PersonListViewCell());
+
+    }
+
+    /**
+     * Scrolls the {@code PersonListPanel} to the given {@code Person} and selects them.
+     * The scroll and selection are performed on the JavaFX Application Thread via
+     * {@code Platform.runLater} to ensure UI updates are safe regardless of the calling thread.
+     *
+     * @param person the {@code Person} to scroll to and select
+     */
+    public void scrollToAndSelect(Person person) {
+        Platform.runLater(() -> {
+            if (person == null) {
+                personListView.getSelectionModel().clearSelection();
+                return;
+            }
+            int index = personListView.getItems().indexOf(person);
+            if (index < 0) {
+                return;
+            }
+            personListView.getSelectionModel().select(index);
+
+            // Small delay to allow JavaFX layout pass to complete before scrolling
+            PauseTransition pause = new PauseTransition(Duration.millis(70));
+            pause.setOnFinished(event -> personListView.scrollTo(index));
+            pause.play();
+        });
     }
 
     /**

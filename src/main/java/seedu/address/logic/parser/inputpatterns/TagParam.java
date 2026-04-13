@@ -2,10 +2,11 @@ package seedu.address.logic.parser.inputpatterns;
 
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG;
 
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.tag.Tag;
 
 /**
- * A Param that takes in a tag-value pair to be added, with id "--tag"
+ * A Param that takes in either a tag name or tag-value pair, with id "--tag"
  */
 public class TagParam extends Param {
     public TagParam(int minOccurrences, int maxOccurrences) {
@@ -14,11 +15,15 @@ public class TagParam extends Param {
 
     @Override
     public String getPreview() {
-        return PARAM_ID_TAG + "<tag_name>:<tag_value>";
+        return PARAM_ID_TAG + "<tag_name>[:<tag_value>]";
     }
 
     @Override
-    boolean valueMatches(String value) {
-        return Tag.isValidTagString(value);
+    public boolean valueMatches(String value) throws IllegalValueException {
+        if (value.contains(Tag.TAG_DELIMITER)) {
+            return Tag.isValidTagPair(value);
+        } else {
+            return Tag.isValidTagName(value); // Tag value not provided
+        }
     }
 }

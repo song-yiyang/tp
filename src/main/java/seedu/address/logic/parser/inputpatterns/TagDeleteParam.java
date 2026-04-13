@@ -2,10 +2,11 @@ package seedu.address.logic.parser.inputpatterns;
 
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG_DELETE;
 
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.tag.Tag;
 
 /**
- * A Param that takes in a tag-value pair to be added, with id "--delete"
+ * A Param that takes in a tag-value pair to be added, with id "--delete".
  */
 public class TagDeleteParam extends Param {
     public TagDeleteParam(int minOccurrences, int maxOccurrences) {
@@ -18,7 +19,7 @@ public class TagDeleteParam extends Param {
     }
 
     @Override
-    boolean valueMatches(String value) {
-        return Tag.noDelimiter(value);
+    public boolean valueMatches(String value) throws IllegalValueException {
+        return Tag.isValidDeleteNameWithoutDelimiter(value);
     }
 }

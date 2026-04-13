@@ -10,15 +10,17 @@ import seedu.address.logic.parser.inputpatterns.InputPattern;
 public abstract class Parser<T extends Command> {
 
     /**
-     * Defines the InputPattern of the parser for the command of type T
-     * @return An InputPattern
+     * Defines the InputPattern of the parser for the command of type T.
+     *
+     * @return An InputPattern.
      */
     abstract InputPattern createInputPattern();
 
 
     /**
      * Parses {@code userInput} into a command and returns it.
-     * @throws ParseException if {@code userInput} does not conform the expected format
+     *
+     * @throws ParseException If {@code userInput} does not conform the expected format.
      */
     abstract T parse(String userInput) throws ParseException;
 

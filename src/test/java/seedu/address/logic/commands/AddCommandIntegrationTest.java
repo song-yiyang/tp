@@ -1,9 +1,9 @@
 package seedu.address.logic.commands;
 
-import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class AddCommandIntegrationTest {
 
         Map<FilterCommand.FilterType, List<String>> filterCriterion = new HashMap<>();
         filterCriterion.put(FilterCommand.FilterType.NAME, List.of("Alice"));
-        new FilterCommand(filterCriterion).execute(model);
+        new FilterCommand(filterCriterion, Collections.emptyList()).execute(model);
 
         assertCommandSuccess(new AddCommand(validPerson), model,
                 String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
@@ -60,10 +60,12 @@ public class AddCommandIntegrationTest {
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
+    public void execute_duplicatePerson_success() {
         Person personInList = model.getAddressBook().getPersonList().get(0);
-        assertCommandFailure(new AddCommand(personInList), model,
-                AddCommand.MESSAGE_DUPLICATE_PERSON);
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.addPerson(personInList);
+        assertCommandSuccess(new AddCommand(personInList), model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(personInList)),
+                expectedModel);
     }
-
 }

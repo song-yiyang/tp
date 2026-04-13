@@ -4,11 +4,15 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
@@ -22,8 +26,10 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final SortedList<Person> sortedPersons;
+    private Predicate<Person> currentPredicate = PREDICATE_SHOW_ALL_PERSONS;
 
-    private Predicate<Person> mostRecentPredicate = PREDICATE_SHOW_ALL_PERSONS;
+    private final ObjectProperty<Person> selectedPerson = new SimpleObjectProperty<>();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -36,6 +42,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        sortedPersons = new SortedList<>(filteredPersons);
     }
 
     public ModelManager() {
@@ -90,8 +97,8 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public Predicate<Person> getMostRecentPredicate() {
-        return this.mostRecentPredicate;
+    public Predicate<Person> getCurrentPredicate() {
+        return this.currentPredicate;
     }
 
     @Override
@@ -130,14 +137,47 @@ public class ModelManager implements Model {
      */
     @Override
     public ObservableList<Person> getFilteredPersonList() {
-        return filteredPersons;
+        return sortedPersons;
     }
 
     @Override
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
-        this.mostRecentPredicate = predicate;
         filteredPersons.setPredicate(predicate);
+        currentPredicate = predicate;
+    }
+
+    @Override
+    public void updateSortedPersonList(Comparator<Person> comparator) {
+        requireNonNull(comparator);
+        sortedPersons.setComparator(comparator);
+    }
+
+    @Override
+    public boolean isFilteredViewActive() {
+        return currentPredicate != PREDICATE_SHOW_ALL_PERSONS;
+    }
+
+    @Override
+    public void sortMasterPersonList(Comparator<Person> comparator) {
+        requireNonNull(comparator);
+        addressBook.sortPersons(comparator);
+    }
+
+    @Override
+    public void resetSortedPersonList() {
+        sortedPersons.setComparator(null);
+    }
+
+    //=========== Selected Person Accessors =============================================================
+
+    public ObjectProperty<Person> getSelectedPerson() {
+        return selectedPerson;
+    }
+
+    @Override
+    public void setSelectedPerson(Person person) {
+        selectedPerson.set(person);
     }
 
     @Override
@@ -154,7 +194,8 @@ public class ModelManager implements Model {
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+            && filteredPersons.equals(otherModelManager.filteredPersons)
+            && sortedPersons.equals(otherModelManager.sortedPersons);
     }
 
 }

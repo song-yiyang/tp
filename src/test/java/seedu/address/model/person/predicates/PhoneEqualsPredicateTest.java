@@ -3,7 +3,6 @@ package seedu.address.model.person.predicates;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +52,7 @@ public class PhoneEqualsPredicateTest {
         assertFalse(predicate.test(new PersonBuilder().withPhone("87654321").build()));
 
         // Missing phone
-        assertThrows(AssertionError.class, () -> predicate.test(new PersonBuilder().build()));
+        assertFalse(predicate.test(new PersonBuilder().build()));
     }
 
     @Test

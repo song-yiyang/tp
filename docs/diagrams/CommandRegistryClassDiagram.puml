@@ -1,0 +1,24 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide stereotype
+hide empty members
+hide circle
+
+skinparam class {
+    BackgroundColor<<HelpWindow>> #FFDDC1
+    BackgroundColor<<CommandRegistry>> #C1E1FF
+    BackgroundColor<<CommandInfo>> #C1FFC1
+}
+
+class HelpWindow <<HelpWindow>>
+class CommandRegistry <<CommandRegistry>>
+class CommandInfo <<CommandInfo>> {
+    name
+    description
+    example
+}
+
+HelpWindow ..> CommandRegistry : retrieves commands from
+CommandRegistry "1" *-- "*" CommandInfo : contains
+
+@enduml

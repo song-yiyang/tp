@@ -21,19 +21,37 @@ public class CommandBox extends UiPart<Region> {
     private final CommandExecutor commandExecutor;
     private final CommandHistory commandHistory;
 
+    private final ResultDisplayUpdater resultHistoryUpdater;
+
     @FXML
     private TextField commandTextField;
 
     /**
      * Creates a {@code CommandBox} with the given {@code CommandExecutor}.
      */
-    public CommandBox(CommandExecutor commandExecutor) {
+    public CommandBox(CommandExecutor commandExecutor, ResultDisplayUpdater resultDisplayUpdater) {
         super(FXML);
         this.commandExecutor = commandExecutor;
         this.commandHistory = new CommandHistory();
+        this.resultHistoryUpdater = resultDisplayUpdater;
         // calls #setStyleToDefault() whenever there is a change to the text of the command box.
         commandTextField.textProperty().addListener((unused1, unused2, unused3) -> setStyleToDefault());
         commandTextField.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
+
+        commandTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            onUserInputUpdated(newValue);
+        });
+    }
+
+    private void onUserInputUpdated(String newValue) {
+        resultHistoryUpdater.updateResultDisplay(newValue);
+    }
+
+    /**
+     * Requests focus on the command text field.
+     */
+    public void requestFocus() {
+        commandTextField.requestFocus();
     }
 
     /**
@@ -45,12 +63,14 @@ public class CommandBox extends UiPart<Region> {
             String prevCommand = commandHistory.navigateUp(commandTextField.getText());
             commandTextField.setText(prevCommand);
             commandTextField.positionCaret(prevCommand.length());
+            resultHistoryUpdater.updateResultDisplay(prevCommand);
             event.consume();
             break;
         case DOWN:
             String nextCommand = commandHistory.navigateDown();
             commandTextField.setText(nextCommand);
             commandTextField.positionCaret(nextCommand.length());
+            resultHistoryUpdater.updateResultDisplay(nextCommand);
             event.consume();
             break;
         default:
@@ -110,4 +130,14 @@ public class CommandBox extends UiPart<Region> {
         CommandResult execute(String commandText) throws CommandException, ParseException;
     }
 
+    /**
+     * Represents a function that can update the help commannd
+     */
+    @FunctionalInterface
+    public interface ResultDisplayUpdater {
+        /**
+         * updates the text in the result display
+         */
+        void updateResultDisplay(String newText);
+    }
 }

@@ -6,7 +6,9 @@ import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG_DELETE;
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG_EDIT;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -22,12 +24,14 @@ public class TagCommand extends Command {
 
     public static final String COMMAND_WORD = "tag";
 
+    public static final String EXAMPLE = COMMAND_WORD + " 1 " + PARAM_ID_TAG_ADD + " school:NUS "
+            + PARAM_ID_TAG_EDIT + " salary:10000 " + PARAM_ID_TAG_DELETE + " age";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Manages tags of a profile."
             + "Parameters: INDEX (starting from 1) "
             + "[" + PARAM_ID_TAG_ADD + " <tag-name>:<tag-value>] "
             + "[" + PARAM_ID_TAG_EDIT + " <existing tag-name>:<new tag-value>] "
             + "[" + PARAM_ID_TAG_DELETE + " <existing tag-name>]\n"
-            + "Example: " + COMMAND_WORD + " 1 --add school:NUS --edit salary:10000 --delete age";
+            + "Example: " + EXAMPLE;
 
     public static final String MESSAGE_SUCCESS = "Tags successfully updated";
     public static final String ADD_TAG_ALREADY_EXISTS = "Tag name of tag to be added already exists.";
@@ -38,6 +42,8 @@ public class TagCommand extends Command {
     private final List<Tag> addTags;
     private final List<Tag> editTags;
     private final List<Tag> deleteTags;
+
+    private final Logger logger = LogsCenter.getLogger(TagCommand.class);
 
     /**
      * Creates a new TagCommand object.
@@ -52,6 +58,7 @@ public class TagCommand extends Command {
         requireNonNull(addTags);
         requireNonNull(editTags);
         requireNonNull(deleteTags);
+        // defensive coding
 
         this.index = index;
         this.addTags = addTags;
@@ -65,41 +72,56 @@ public class TagCommand extends Command {
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX);
+            throw new CommandException(Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                    + "\nThere is/are only " + lastShownList.size() + " person(s) in the list.");
         }
 
         Person person = lastShownList.get(index.getZeroBased());
         Person updatedPerson = new Person(person.getName(),
                 person.hasPhone() ? person.getPhone() : null,
                 person.hasEmail() ? person.getEmail() : null,
-                person.getTags());
+                person.getTags(),
+                person.getStatus());
 
         for (Tag tag : addTags) {
-            if (updatedPerson.getTags().containsTagName(tag.tagName)) {
+            assert(Tag.isValidTagPairWithoutErrors(tag));
+
+            if (updatedPerson.getTags().containsTagName(tag.getTagName())) {
                 throw new CommandException(ADD_TAG_ALREADY_EXISTS);
             }
             updatedPerson.getTags().addTag(tag);
         }
 
         for (Tag tag : editTags) {
-            if (!updatedPerson.getTags().containsTagName(tag.tagName)) {
+            assert(Tag.isValidTagPairWithoutErrors(tag));
+
+            if (!updatedPerson.getTags().containsTagName(tag.getTagName())) {
                 throw new CommandException(EDIT_TAG_NAME_DOES_NOT_EXIST);
             }
             updatedPerson.getTags().editTag(tag);
         }
 
         for (Tag tag : deleteTags) {
-            if (!updatedPerson.getTags().containsTagName(tag.tagName)) {
+            assert(Tag.isValidTagPairWithoutErrors(tag));
+
+            if (!updatedPerson.getTags().containsTagName(tag.getTagName())) {
                 throw new CommandException(DELETE_TAG_NAME_DOES_NOT_EXIST);
             }
             updatedPerson.getTags().deleteTag(tag);
         }
 
         model.setPerson(person, updatedPerson);
+        model.setSelectedPerson(updatedPerson);
 
-        if (!model.getMostRecentPredicate().test(updatedPerson)) {
+        if (!model.getCurrentPredicate().test(updatedPerson)) {
             model.showAllPersons();
         }
+
+        String logMessage = "Tags changed as follows:\n\tNew tags added: " + addTags.toString()
+                + "\n\tExisting tags updated: " + editTags.toString()
+                + "\n\tExisting tags deleted: " + deleteTags.toString();
+        logger.info(logMessage);
+
         return new CommandResult(MESSAGE_SUCCESS);
     }
 

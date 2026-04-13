@@ -7,23 +7,49 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.stream.Stream;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+
+/**
+ * Interface for testing of delete jar functionality
+ */
+@FunctionalInterface
+interface JarPathResolver {
+    Path resolve() throws URISyntaxException;
+}
 
 /**
  * Deletes local data artifacts and exits the program.
  */
 public class NukeCommand extends Command {
-
     public static final String COMMAND_WORD = "nuke";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes the data folder and application jar,"
-            + "then exits.\nExample: " + COMMAND_WORD;
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Deletes the data folder and application jar, then exits.\n"
+            + "Example: " + COMMAND_WORD;
     public static final String MESSAGE_SUCCESS = "Nuked. Exiting...";
-    public static final String MESSAGE_FAILURE = "Unable to nuke. An error occurred: %s";
+    public static final String MESSAGE_FAILURE = "Unable to nuke. An error occurred.";
+
+    private final JarPathResolver jarPathResolver;
+
+    /**
+     * Default constructor for normal usage of NukeCommand.
+     *
+     * Initialises with JarPathResolver that finds the path
+     * of the current jar file being run.
+     */
+    public NukeCommand() {
+        this(() -> Paths.get(NukeCommand.class.getProtectionDomain()
+                .getCodeSource().getLocation().toURI()));
+    }
+
+    // Constructor with injected resolver
+    NukeCommand(JarPathResolver resolver) {
+        this.jarPathResolver = resolver;
+    }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
@@ -31,55 +57,57 @@ public class NukeCommand extends Command {
 
         try {
             deleteDataDirectory(model.getAddressBookFilePath());
-            deleteJar();
-        } catch (IOException e) {
-            throw new CommandException(String.format(MESSAGE_FAILURE, e.getMessage()), e);
+            Path jarPath = resolveJarPath();
+            deleteLogFiles(jarPath);
+            deleteJar(jarPath);
+        } catch (IOException | URISyntaxException e) {
+            Logger logger = LogsCenter.getLogger(NukeCommand.class);
+            logger.warning(MESSAGE_FAILURE + e.getMessage());
+            return new CommandResult(MESSAGE_FAILURE, false, true, true);
         }
 
         return new CommandResult(MESSAGE_SUCCESS, false, true, true);
     }
 
     private void deleteDataDirectory(Path addressBookFilePath) throws IOException {
-        if (addressBookFilePath == null) {
-            return;
-        }
+        requireNonNull(addressBookFilePath);
 
         Path parent = addressBookFilePath.getParent();
         Path dataDirectory = parent.toAbsolutePath().normalize();
-        if (!Files.exists(dataDirectory)) {
+        Files.delete(addressBookFilePath);
+        // Delete the data directory if it is empty after deleting the address book file
+        if (Files.list(dataDirectory).findAny().isEmpty()) {
+            Files.delete(dataDirectory);
+        }
+    }
+
+    private Path resolveJarPath() throws URISyntaxException {
+        return jarPathResolver.resolve();
+    }
+
+    private void deleteLogFiles(Path jarPath) throws IOException {
+        if (jarPath == null || jarPath.getParent() == null) {
             return;
         }
 
-        deleteRecursively(dataDirectory);
-    }
-
-    private void deleteJar() throws IOException {
-        Path jarPath = resolveCurrentJarPath();
-        if (jarPath == null || !Files.exists(jarPath) || !Files.isRegularFile(jarPath)) {
-            return;
-        }
-
-        Files.deleteIfExists(jarPath);
-    }
-
-    private Path resolveCurrentJarPath() {
-        try {
-            return Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
-        } catch (URISyntaxException e) {
-            return null;
+        // Delete all files with the log file prefix in the same directory as the jar file
+        String logPrefix = LogsCenter.getLogFileName();
+        Path appDirectory = jarPath.getParent().toAbsolutePath().normalize();
+        for (Path logFile : Files.newDirectoryStream(appDirectory, logPrefix + "*")) {
+            if (Files.isRegularFile(logFile)) {
+                Files.deleteIfExists(logFile);
+            }
         }
     }
 
-    private void deleteRecursively(Path directory) throws IOException {
-        try (Stream<Path> walk = Files.walk(directory)) {
-            walk.sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+    private void deleteJar(Path jarPath) throws IOException {
+        if (jarPath != null) {
+            Files.deleteIfExists(jarPath);
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof NukeCommand;
     }
 }

@@ -1,16 +1,19 @@
 package seedu.address.logic.parser;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ClearStatusCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -18,13 +21,20 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FilterCommand.FilterType;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.IgnoreStatusCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.NukeCommand;
+import seedu.address.logic.commands.ScamStatusCommand;
+import seedu.address.logic.commands.SortCommand;
+import seedu.address.logic.commands.TagCommand;
+import seedu.address.logic.commands.TargetStatusCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
+import seedu.address.testutil.TestPerson;
 
 public class AddressBookParserTest {
 
@@ -32,15 +42,15 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_add() throws Exception {
-        Person person = new PersonBuilder().build();
+        Person person = new TestPerson(new PersonBuilder().build());
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
         assertEquals(new AddCommand(person), command);
     }
 
     @Test
     public void parseCommand_clear() throws Exception {
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
+        ClearCommand command = (ClearCommand) parser.parseCommand(ClearCommand.COMMAND_WORD);
+        assertEquals(new ClearCommand(), command);
     }
 
     @Test
@@ -61,20 +71,26 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_exit() throws Exception {
-        assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
-        assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3") instanceof ExitCommand);
+        ExitCommand command = (ExitCommand) parser.parseCommand(ExitCommand.COMMAND_WORD);
+        assertEquals(new ExitCommand(), command);
     }
 
     @Test
     public void parseCommand_help() throws Exception {
-        assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
-        assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
+        HelpCommand command = (HelpCommand) parser.parseCommand(HelpCommand.COMMAND_WORD);
+        assertEquals(new HelpCommand(), command);
     }
 
     @Test
     public void parseCommand_list() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+        ListCommand command = (ListCommand) parser.parseCommand(ListCommand.COMMAND_WORD);
+        assertEquals(new ListCommand(), command);
+    }
+
+    @Test
+    public void parseCommand_nuke() throws Exception {
+        NukeCommand command = (NukeCommand) parser.parseCommand(NukeCommand.COMMAND_WORD);
+        assertEquals(new NukeCommand(), command);
     }
 
     @Test
@@ -83,13 +99,53 @@ public class AddressBookParserTest {
         criteria.put(FilterType.NAME, java.util.List.of("Alice"));
         FilterCommand command = (FilterCommand) parser.parseCommand(
                 FilterCommand.COMMAND_WORD + " --name Alice");
-        assertEquals(new FilterCommand(criteria), command);
+        assertEquals(new FilterCommand(criteria, emptyList()), command);
     }
 
     @Test
-    public void parseCommand_nuke() throws Exception {
-        assertTrue(parser.parseCommand(NukeCommand.COMMAND_WORD) instanceof NukeCommand);
-        assertTrue(parser.parseCommand(NukeCommand.COMMAND_WORD + " now") instanceof NukeCommand);
+    public void parseCommand_sort() throws Exception {
+        SortCommand command = (SortCommand) parser.parseCommand("sort NAME --ASC --alpha");
+        SortCommand.SortSpec expectedSpec = new SortCommand.SortSpec(
+                SortCommand.SortTargetType.NAME,
+                null,
+                SortCommand.SortOrder.ASC,
+                SortCommand.SortMode.ALPHA
+        );
+        assertEquals(new SortCommand(expectedSpec), command);
+    }
+
+    @Test
+    public void parseCommand_tag() throws Exception {
+        List<Tag> tagsToAdd = List.of(new Tag("friend:John"));
+        List<Tag> tagsToEdit = List.of(new Tag("colleague:Jane"));
+        List<Tag> tagsToDelete = List.of(new Tag("office:dummy"));
+        TagCommand command = new TagCommand(INDEX_FIRST_PERSON, tagsToAdd, tagsToEdit, tagsToDelete);
+        TagCommand parsed = (TagCommand) parser.parseCommand(
+                TagCommand.COMMAND_WORD + " 1 --add friend:John --edit colleague:Jane --delete office");
+        assertEquals(parsed, command);
+    }
+
+    @Test
+    public void parseCommand_status() throws Exception {
+        TargetStatusCommand tCommand = new TargetStatusCommand(INDEX_FIRST_PERSON);
+        TargetStatusCommand tParsed = (TargetStatusCommand) parser.parseCommand(
+                TargetStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(tParsed, tCommand);
+
+        ClearStatusCommand cCommand = new ClearStatusCommand(INDEX_FIRST_PERSON);
+        ClearStatusCommand cParsed = (ClearStatusCommand) parser.parseCommand(
+                ClearStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(cParsed, cCommand);
+
+        ScamStatusCommand sCommand = new ScamStatusCommand(INDEX_FIRST_PERSON);
+        ScamStatusCommand sParsed = (ScamStatusCommand) parser.parseCommand(
+                ScamStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(sParsed, sCommand);
+
+        IgnoreStatusCommand iCommand = new IgnoreStatusCommand(INDEX_FIRST_PERSON);
+        IgnoreStatusCommand iParsed = (IgnoreStatusCommand) parser.parseCommand(
+                IgnoreStatusCommand.COMMAND_WORD + " 1");
+        assertEquals(iParsed, iCommand);
     }
 
     @Test

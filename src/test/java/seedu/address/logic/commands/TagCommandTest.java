@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
@@ -14,14 +15,16 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TestPerson;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for EditCommand.
+ * Contains integration tests (interaction with the Model) and unit tests for TagCommand.
  */
 public class TagCommandTest {
     private static final Person ALICE = new PersonBuilder().withName("Alice Pauline")
@@ -44,6 +47,9 @@ public class TagCommandTest {
             .withEmail("alice@example.com")
             .withPhone("94351253")
             .withTags("job:professor", "school:NUS").build();
+    private static final Person BENSON = new PersonBuilder().withName("Benson Meier")
+            .withEmail("johnd@example.com").withPhone("98765432")
+            .withTags("rich:yes", "income:$100,000").build();
 
     private static Model newModelWithPerson(Person person) {
         Model model = new ModelManager();
@@ -51,42 +57,46 @@ public class TagCommandTest {
         return model;
     }
 
+    public void helper(Person initial, Person expected, List<Tag> add, List<Tag> edit, List<Tag> delete) {
+        Model model = newModelWithPerson(initial);
+        Model expectedModel = newModelWithPerson(new TestPerson(expected));
+        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, add, edit, delete);
+        assertCommandSuccess(tagCommand, model, TagCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
     @Test
     public void execute_addTag_success() {
-        Model model = newModelWithPerson(ALICE);
-        Model expectedModel = newModelWithPerson(ALICE_ADDED);
-        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON,
-                List.of(new Tag("salary:10000")), List.of(), List.of());
-        assertCommandSuccess(tagCommand, model, TagCommand.MESSAGE_SUCCESS, expectedModel);
+        helper(ALICE, ALICE_ADDED, List.of(new Tag("salary:10000")), List.of(), List.of());
     }
 
     @Test
     public void execute_editTag_success() {
-        Model model = newModelWithPerson(ALICE);
-        Model expectedModel = newModelWithPerson(ALICE_EDITED);
-        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON,
-                List.of(), List.of(new Tag("job:student")), List.of());
-        assertCommandSuccess(tagCommand, model, TagCommand.MESSAGE_SUCCESS, expectedModel);
+        helper(ALICE, ALICE_EDITED, List.of(), List.of(new Tag("job:student")), List.of());
     }
 
     @Test
-    public void execute_deleteTag_success() {
-        Model model = newModelWithPerson(ALICE);
-        Model expectedModel = newModelWithPerson(ALICE_NO_JOB);
-        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON,
-                List.of(), List.of(), List.of(new Tag("job:dummy")));
-        assertCommandSuccess(tagCommand, model, TagCommand.MESSAGE_SUCCESS, expectedModel);
+    private void execute_deleteTag_success() {
+        helper(ALICE, ALICE_NO_JOB, List.of(), List.of(), List.of(new Tag("job:dummy")));
     }
 
     @Test
     public void execute_multiple_success() {
-        Model model = newModelWithPerson(ALICE_ADDED);
-        Model expectedModel = newModelWithPerson(ALICE_MULTIPLE);
-        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON,
+        helper(ALICE_ADDED, ALICE_MULTIPLE,
                 List.of(new Tag("school:NUS")),
                 List.of(new Tag("job:professor")),
                 List.of(new Tag("salary:dummy")));
-        assertCommandSuccess(tagCommand, model, TagCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+
+    @Test
+    public void execute_addTag_setsSelectedPerson() throws Exception {
+        Model model = newModelWithPerson(ALICE);
+        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON,
+                List.of(new Tag("salary:10000")), List.of(), List.of());
+
+        tagCommand.execute(model);
+
+        assertEquals(new TestPerson(ALICE_ADDED), model.getSelectedPerson().getValue());
     }
 
     @Test
@@ -94,7 +104,19 @@ public class TagCommandTest {
         Model model = newModelWithPerson(ALICE);
         Index outOfBoundIndex = Index.fromOneBased(2);
         TagCommand tagCommand = new TagCommand(outOfBoundIndex, List.of(), List.of(), List.of());
-        assertCommandFailure(tagCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX);
+        assertCommandFailure(tagCommand, model, Messages.MESSAGE_OUT_OF_BOUNDS_PERSON_INDEX
+                + "\nThere is/are only " + model.getFilteredPersonList().size() + " person(s) in the list.");
+    }
+
+    @Test
+    public void execute_invalidIndex_doesNotSetSelectedPerson() {
+        Model model = newModelWithPerson(ALICE);
+        model.setSelectedPerson(ALICE); // set a pre-existing selection
+        Index outOfBoundIndex = Index.fromOneBased(2);
+        TagCommand tagCommand = new TagCommand(outOfBoundIndex, List.of(), List.of(), List.of());
+
+        assertThrows(CommandException.class, () -> tagCommand.execute(model));
+        assertEquals(ALICE, model.getSelectedPerson().getValue()); // unchanged
     }
 
     @Test
@@ -119,6 +141,44 @@ public class TagCommandTest {
         TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON,
                 List.of(), List.of(), List.of(new Tag("hello:dummy")));
         assertCommandFailure(tagCommand, model, TagCommand.DELETE_TAG_NAME_DOES_NOT_EXIST);
+    }
+
+    @Test
+    public void execute_addTagAlreadyExists_doesNotSetSelectedPerson() {
+        Model model = newModelWithPerson(ALICE);
+        model.setSelectedPerson(ALICE);
+        model.addPerson(BENSON);
+        TagCommand tagCommand = new TagCommand(INDEX_SECOND_PERSON,
+                List.of(new Tag("rich:no")), List.of(), List.of());
+
+        assertThrows(CommandException.class, TagCommand.ADD_TAG_ALREADY_EXISTS, () -> tagCommand.execute(model));
+        assertEquals(ALICE, model.getSelectedPerson().getValue());
+    }
+
+    @Test
+    public void execute_editTagDoesNotExist_doesNotSetSelectedPerson() {
+        Model model = newModelWithPerson(ALICE);
+        model.addPerson(BENSON);
+        model.setSelectedPerson(ALICE);
+        TagCommand tagCommand = new TagCommand(INDEX_SECOND_PERSON,
+                List.of(), List.of(new Tag("job:professor")), List.of()); // job tag doesn't exist on BENSON
+
+        assertThrows(CommandException.class,
+                TagCommand.EDIT_TAG_NAME_DOES_NOT_EXIST, () -> tagCommand.execute(model));
+        assertEquals(ALICE, model.getSelectedPerson().getValue());
+    }
+
+    @Test
+    public void execute_deleteTagDoesNotExist_doesNotSetSelectedPerson() {
+        Model model = newModelWithPerson(ALICE);
+        model.addPerson(BENSON);
+        model.setSelectedPerson(ALICE);
+        TagCommand tagCommand = new TagCommand(INDEX_SECOND_PERSON,
+                List.of(), List.of(), List.of(new Tag("job:dummy"))); // job tag doesn't exist on BENSON
+
+        assertThrows(CommandException.class,
+                TagCommand.DELETE_TAG_NAME_DOES_NOT_EXIST, () -> tagCommand.execute(model));
+        assertEquals(ALICE, model.getSelectedPerson().getValue());
     }
 
     @Test

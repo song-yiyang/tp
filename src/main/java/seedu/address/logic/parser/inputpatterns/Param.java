@@ -2,6 +2,7 @@ package seedu.address.logic.parser.inputpatterns;
 
 import java.util.ArrayList;
 
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 
@@ -46,7 +47,7 @@ public abstract class Param extends Token {
      * @return whether it matches
      */
     @Override
-    public boolean matches(String segment) {
+    public boolean matches(String segment) throws IllegalValueException {
         if (!idMatches(segment)) {
             return false;
         }
@@ -63,7 +64,7 @@ public abstract class Param extends Token {
      */
     public boolean idMatches(String segment) {
         String strippedSegment = segment.strip();
-        return strippedSegment.matches(getId() + " .*");
+        return strippedSegment.matches(getId() + " .*") || (strippedSegment.equals(getId()));
     }
 
     String getValueFromSegment(String segment) {
@@ -72,7 +73,13 @@ public abstract class Param extends Token {
         return value;
     }
 
-    abstract boolean valueMatches(String value);
+    /**
+     * Checks if a string is a valid matching value for this {@code Param}.
+     *
+     * @param value String to be tested.
+     * @throws IllegalValueException An error whose message indicates why the value is invalid.
+     */
+    public abstract boolean valueMatches(String value) throws IllegalValueException;
 
     /**
      * Appends the value to the ArrayList of values
@@ -80,8 +87,6 @@ public abstract class Param extends Token {
      * @param segment the segment of text to add from
      */
     public void addValueFromSegment(String segment) {
-        assert(matches(segment));
-
         String value = getValueFromSegment(segment);
         values.add(value);
     }
@@ -90,6 +95,7 @@ public abstract class Param extends Token {
      * Checks if the number of values associated with this param
      * is between minOccurnces and maxOccurences
      * If not, throws the ParseException
+     *
      * @throws ParseException
      */
     public void checkIfAppropriateNumberOfValues() throws ParseException {
@@ -97,8 +103,8 @@ public abstract class Param extends Token {
             throw new ParseException("Expected at least " + minOccurences + " parameter for " + getId());
         }
         if (values.size() > maxOccurences) {
-            throw new ParseException(values.size() + " parameters of " + getId() + " inputted"
-                    + " expected at most " + maxOccurences + " only");
+            throw new ParseException(values.size() + " parameters of " + getId() + " inputted, "
+                    + "expected at most " + maxOccurences + " only.");
         }
     }
 

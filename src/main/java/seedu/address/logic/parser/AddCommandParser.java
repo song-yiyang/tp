@@ -6,8 +6,8 @@ import static seedu.address.logic.parser.CliSyntax.PARAM_ID_TAG;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.logic.parser.inputpatterns.EmailParam;
@@ -43,7 +43,7 @@ public class AddCommandParser extends Parser<AddCommand> {
                 new TagParam(0, 100)
         ));
 
-        return new InputPattern("add", tokens, params);
+        return new InputPattern(AddCommand.COMMAND_WORD, tokens, params);
     }
 
     /**
@@ -57,8 +57,10 @@ public class AddCommandParser extends Parser<AddCommand> {
 
         Token nameToken = inputPattern.getTokenWithId("name");
         String nameString = nameToken.getAssignedSegment();
-        if (!Name.isValidName(nameString)) {
-            throw new ParseException("Name inputted: " + nameString + "\n" + Name.MESSAGE_CONSTRAINTS);
+        try {
+            Name.isValidName(nameString);
+        } catch (IllegalValueException e) {
+            throw new ParseException(e.getMessage());
         }
         Name name = new Name(nameString);
 
@@ -90,13 +92,4 @@ public class AddCommandParser extends Parser<AddCommand> {
             throw new ParseException(e.getMessage());
         }
     }
-
-    /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
-     */
-    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
-        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
-    }
-
 }

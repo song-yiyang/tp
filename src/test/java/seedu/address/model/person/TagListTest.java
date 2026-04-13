@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -67,9 +68,34 @@ public class TagListTest {
     }
 
     @Test
+    public void getTagValueCaseInsensitive_success() {
+        TagList tagList1 = new TagList(tagString1, tagString3);
+
+        assertEquals(Optional.of("engineer"), tagList1.getTagValueCaseInsensitive("job"));
+        assertEquals(Optional.of("engineer"), tagList1.getTagValueCaseInsensitive("JOB"));
+        assertEquals(Optional.of("FASS"), tagList1.getTagValueCaseInsensitive("FaCuLtY"));
+    }
+
+    @Test
+    public void getTagValueCaseInsensitive_tagMissingReturnsEmpty() {
+        TagList tagList1 = new TagList(tagString1, tagString3);
+
+        assertEquals(Optional.empty(), tagList1.getTagValueCaseInsensitive("salary"));
+    }
+
+    @Test
     public void equals_with_self() {
         TagList tagList1 = new TagList(tagString1, tagString3);
         assertEquals(tagList1, tagList1);
+    }
+
+    @Test
+    public void hashCode_sameValues_sameHashCode() {
+        TagList tagList1 = new TagList(tagString1, tagString3);
+        TagList tagList2 = new TagList(List.of(tag1, tag3));
+
+        assertEquals(tagList1, tagList2);
+        assertEquals(tagList1.hashCode(), tagList2.hashCode());
     }
 
     @Test

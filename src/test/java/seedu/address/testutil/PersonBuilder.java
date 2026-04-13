@@ -4,6 +4,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Status;
 import seedu.address.model.person.TagList;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -19,6 +20,7 @@ public class PersonBuilder {
     private Phone phone = null;
     private Email email = null;
     private TagList tags;
+    private Status status = Status.NONE;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -40,6 +42,7 @@ public class PersonBuilder {
             email = personToCopy.getEmail();
         }
         tags = personToCopy.getTags();
+        status = personToCopy.getStatus();
     }
 
     /**
@@ -74,8 +77,16 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code Status} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withStatus(Status status) {
+        this.status = status;
+        return this;
+    }
+
     public Person build() {
-        return new Person(name, phone, email, tags);
+        return new Person(name, phone, email, tags, status);
     }
 
 }

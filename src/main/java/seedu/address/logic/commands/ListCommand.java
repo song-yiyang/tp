@@ -18,6 +18,18 @@ public class ListCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.showAllPersons();
+        model.resetSortedPersonList();
+        // Scroll to and select first person in list
+        if (model.getFilteredPersonList().isEmpty()) {
+            model.setSelectedPerson(null);
+        } else {
+            model.setSelectedPerson(model.getFilteredPersonList().get(0));
+        }
         return new CommandResult(MESSAGE_SUCCESS);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof ListCommand;
     }
 }

@@ -2,6 +2,7 @@ package seedu.address.logic.parser.inputpatterns;
 
 import static seedu.address.logic.parser.CliSyntax.PARAM_ID_NAME;
 
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Name;
 
 /**
@@ -9,8 +10,8 @@ import seedu.address.model.person.Name;
  */
 public class NameParam extends Param {
 
-    public NameParam(int minOccurences, int maxOccurences) {
-        super(PARAM_ID_NAME, minOccurences, maxOccurences);
+    public NameParam(int minOccurrences, int maxOccurrences) {
+        super(PARAM_ID_NAME, minOccurrences, maxOccurrences);
     }
 
     @Override
@@ -19,7 +20,7 @@ public class NameParam extends Param {
     }
 
     @Override
-    boolean valueMatches(String value) {
+    public boolean valueMatches(String value) throws IllegalValueException {
         return Name.isValidName(value);
     }
 }

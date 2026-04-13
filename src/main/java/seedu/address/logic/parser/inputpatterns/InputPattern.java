@@ -2,7 +2,11 @@ package seedu.address.logic.parser.inputpatterns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import seedu.address.commons.core.CommandInfo;
+import seedu.address.commons.core.CommandRegistry;
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 
@@ -12,32 +16,32 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class InputPattern {
 
-    public static final String MESSAGE_TOO_FEW_FIELDS = "Too few fields inputted (TODO MORE DESCRIPTIVE)";
-    public static final String MESSAGE_TOO_MANY_FIELDS = "Too many fields inputted (TODO MORE DESCRIPTIVE)";
+    public static final String MESSAGE_TOO_FEW_FIELDS = "Too few fields inputted! Expected format is:";
+    public static final String MESSAGE_TOO_MANY_FIELDS = "Too many fields inputted! Expected format is:";
     /**
      * The list of tokens that form the first part of the input arguments
      */
-    private ArrayList<Token> tokens;
+    private final ArrayList<Token> tokens;
 
     /**
      * The list of parameters that can come after all the tokens
      */
-    private ArrayList<Param> params;
+    private final ArrayList<Param> params;
 
     /**
      * The label of this input pattern,
      * typically refers to the command this input pattern handles
      */
-    private final String label;
+    private final String commandWord;
 
     /**
-     * @param label the label of the InputPattern
+     * @param commandWord the commandWord of the InputPattern
      * @param tokens a List of tokens that make up this InputPattern
      * @param params a List of params that can be specified at the end of this InputPattern
      */
-    public InputPattern(String label, ArrayList<Token> tokens, ArrayList<Param> params) {
+    public InputPattern(String commandWord, ArrayList<Token> tokens, ArrayList<Param> params) {
+        this.commandWord = commandWord;
         this.tokens = tokens;
-        this.label = label;
         this.params = params;
     }
 
@@ -89,47 +93,62 @@ public class InputPattern {
      * @throws ParseException
      */
     public void assignSegmentsFromArgs(String args) throws ParseException {
+        // add a space in front as removing the command word may remove the space
+        // this accounts for the case where the input has zero tokens and starts with args
+        args = " " + args;
         int tokenParamSplitPoint = args.length();
 
-        for (Param param : params) {
-            int thisSplitPoint = args.indexOf(param.getId());
 
-            // cannot find that param
-            if (thisSplitPoint == -1) {
-                continue;
-            }
-
-            // choose the earliest occurrence of any param to split
-            tokenParamSplitPoint = Math.min(thisSplitPoint, tokenParamSplitPoint);
+        if (!args.contains(" --")) {
+            // cannot find any params
+            tokenParamSplitPoint = args.length();
+        } else {
+            tokenParamSplitPoint = args.indexOf(" --");
         }
 
         String tokenArgs = args.substring(0, tokenParamSplitPoint).strip();
         String paramArgs = args.substring(tokenParamSplitPoint).strip();
 
         /// Settle the tokenArgs
-
         ArrayList<String> combinedSegments = getCombinedSegments(tokenArgs);
 
         if (combinedSegments.size() < this.tokens.size()) {
-            throw new ParseException(MESSAGE_TOO_FEW_FIELDS);
+            Optional<CommandInfo> commandInfo = CommandRegistry.getCommandInfo(commandWord);
+            assert(commandInfo.isPresent());
+
+            String message = MESSAGE_TOO_FEW_FIELDS + "\n"
+                    + commandInfo.get().getDescription();
+
+            throw new ParseException(message);
         } else if (combinedSegments.size() > this.tokens.size()) {
-            throw new ParseException(MESSAGE_TOO_MANY_FIELDS);
+            Optional<CommandInfo> commandInfo = CommandRegistry.getCommandInfo(commandWord);
+            assert(commandInfo.isPresent());
+
+            String message = MESSAGE_TOO_MANY_FIELDS + "\n"
+                    + commandInfo.get().getDescription();
+
+            throw new ParseException(message);
         }
 
         for (int i = 0; i < combinedSegments.size(); i++) {
             String segment = combinedSegments.get(i);
             Token token = this.tokens.get(i);
 
-            if (!token.matches(segment)) {
-                throw new ParseException("Your input of '" + segment
-                        + "' does not match an expected value of the form " + token.getPreview());
+            try {
+                token.matches(segment);
+                token.setAssignedSegment(segment);
+            } catch (IllegalValueException e) {
+                throw new ParseException(e.getMessage());
             }
-
-            token.setAssignedSegment(segment);
         }
 
         /// settle the paramsArgs
-        String[] paramSegments = paramArgs.split(" --");
+        String[] paramSegments = paramArgs.split("--");
+
+        if (paramArgs.strip().equals("--")) {
+            throw new ParseException("Unknown -- found with no parameter id provided");
+        }
+
         for (int i = 0; i < paramSegments.length; i++) {
             String segment = paramSegments[i];
             if (segment.isEmpty()) {
@@ -148,18 +167,18 @@ public class InputPattern {
                     continue;
                 }
 
-                if (!param.matches(segment)) {
-                    throw new ParseException(param.getValueFromSegment(segment)
-                            + " is not a valid value for the param " + param.getId());
+                try {
+                    param.matches(segment);
+                    param.addValueFromSegment(segment);
+                    hasMatchingSegment = true;
+                    break;
+                } catch (IllegalValueException e) {
+                    throw new ParseException(e.getMessage());
                 }
-
-                param.addValueFromSegment(segment);
-                hasMatchingSegment = true;
-                break;
             }
 
             if (!hasMatchingSegment) {
-                throw new ParseException("unknown parameter: " + segment);
+                throw new ParseException("Unknown parameter found: " + segment);
             }
         }
 
@@ -209,8 +228,12 @@ public class InputPattern {
                     while (segmentPointer < rawSegments.size()) {
                         String nextSegment = rawSegments.get(segmentPointer);
 
-                        if (nextToken.matches(nextSegment)) {
-                            break;
+                        try {
+                            if (nextToken.matches(nextSegment)) {
+                                break;
+                            }
+                        } catch (IllegalValueException ignored) {
+                            // Nothing is supposed to happen
                         }
 
                         segmentsToJoin.add(nextSegment);

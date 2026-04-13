@@ -3,7 +3,6 @@ package seedu.address.model.person;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -21,17 +20,40 @@ public class Person {
 
     // Data fields
     private final TagList tags;
+    private final Status status;
 
     /**
+     * Initialises a new person.
      * Name and tag list must be present and not null (tag list can be empty).
      */
     public Person(Name name, Phone phone, Email email, TagList tags) {
-        requireAllNonNull(name, tags);
+        this(name, phone, email, tags, Status.NONE);
+    }
+
+    /**
+     * Initialises a new person.
+     * Name and tag list must be present and not null (tag list can be empty).
+     */
+    public Person(Name name, Phone phone, Email email, TagList tags, Status status) {
+        requireAllNonNull(name, tags, status); // defensive coding, to avoid null values
 
         this.name = name;
         this.phone = Optional.ofNullable(phone);
         this.email = Optional.ofNullable(email);
         this.tags = new TagList(tags);
+        this.status = status;
+    }
+
+    /**
+     * Creates an identical copy of another person.
+     */
+    public Person(Person otherPerson) {
+        requireAllNonNull(otherPerson);
+        this.name = otherPerson.name;
+        this.phone = otherPerson.phone;
+        this.email = otherPerson.email;
+        this.tags = otherPerson.tags;
+        this.status = otherPerson.status;
     }
 
     public Name getName() {
@@ -67,6 +89,10 @@ public class Person {
         return this.tags.viewTags();
     }
 
+    public Status getStatus() {
+        return this.status;
+    }
+
     /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
@@ -83,29 +109,14 @@ public class Person {
     /**
      * Returns true if both persons have the same identity and data fields.
      * This defines a stronger notion of equality between two persons.
+     * Used for testing.
      */
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        // instanceof handles nulls
-        if (!(other instanceof Person)) {
-            return false;
-        }
-
-        Person otherPerson = (Person) other;
+    public boolean testEquals(Person otherPerson) {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && tags.equals(otherPerson.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, tags);
+                && tags.equals(otherPerson.tags)
+                && status.equals(otherPerson.status);
     }
 
     @Override
@@ -115,6 +126,7 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("tags", tags)
+                .add("status", status)
                 .toString();
     }
 

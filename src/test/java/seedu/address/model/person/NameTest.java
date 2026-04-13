@@ -1,10 +1,13 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
+
+import seedu.address.commons.exceptions.IllegalValueException;
 
 public class NameTest {
 
@@ -20,15 +23,16 @@ public class NameTest {
     }
 
     @Test
-    public void isValidName() {
+    public void validateName() throws IllegalValueException {
         // null name
         assertThrows(NullPointerException.class, () -> Name.isValidName(null));
 
         // invalid name
-        assertFalse(Name.isValidName("")); // empty string
-        assertFalse(Name.isValidName(" ")); // spaces only
-        assertFalse(Name.isValidName("^")); // only non-alphanumeric characters
-        assertFalse(Name.isValidName("peter*")); // contains non-alphanumeric characters
+        // empty string, spaces only, only non-alphanumeric characters, contains non-alphanumeric characters
+        for (String name : new String[]{"", " ", "^", "peter*"}) {
+            Exception e = assertThrows(IllegalValueException.class, () -> Name.isValidName(name));
+            assertEquals('"' + name + '"' + " is not a valid name.\n" + Name.MESSAGE_CONSTRAINTS, e.getMessage());
+        }
 
         // valid name
         assertTrue(Name.isValidName("peter jack")); // alphabets only
@@ -36,6 +40,11 @@ public class NameTest {
         assertTrue(Name.isValidName("peter the 2nd")); // alphanumeric characters
         assertTrue(Name.isValidName("Capital Tan")); // with capital letters
         assertTrue(Name.isValidName("David Roger Jackson Ray Jr 2nd")); // long names
+        assertTrue(Name.isValidName("Jia` En")); // check for `
+        assertTrue(Name.isValidName("Kong Kar Lok, Donald (Kong Jia Le)")); // check for , ()
+        assertTrue(Name.isValidName("Davinder Singh Sachdev s/o Amar Singh")); // check for /
+        assertTrue(Name.isValidName("George H.W. Bush")); // check for .
+        assertTrue(Name.isValidName("John\\Doe")); // check for \
     }
 
     @Test
