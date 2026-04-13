@@ -12,6 +12,8 @@ Class AddressBook
 Class ModelManager
 Class UserPrefs
 
+Class Predicate
+
 Class UniquePersonList
 Class Person
 Class Email
@@ -40,7 +42,7 @@ ModelManager -left-> "1" AddressBook
 ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
 
-AddressBook *--> "1" UniquePersonList
+AddressBook *---> "1" UniquePersonList
 UniquePersonList -right-> "~* all" Person
 Person *--> Name
 Person *--> Phone
@@ -55,5 +57,8 @@ TagList --> "*" Tag
 
 Name -[hidden]right-> Phone
 
-ModelManager --> "~* filtered" Person
+ModelManager ---> "0..1 selected" Person
+ModelManager ---> "~* filtered and/or sorted" Person
+ModelManager -right> "1" Predicate
+UserPrefs -[hidden]down-> Predicate
 @enduml
