@@ -116,6 +116,20 @@ public class FilterCommandParserTest {
     }
 
     @Test
+    public void parse_phoneNoneCriteria_returnsFilterCommand() throws Exception {
+        FilterCommand expected = createExpectedFilterCommand(singleParamFilter(FilterType.PHONE, "NONE"),
+                Collections.emptyList());
+        assertParseSuccess(parser, " --phone NONE", expected);
+    }
+
+    @Test
+    public void parse_emailNoneCriteria_returnsFilterCommand() throws Exception {
+        FilterCommand expected = createExpectedFilterCommand(singleParamFilter(FilterType.EMAIL, "NONE"),
+                Collections.emptyList());
+        assertParseSuccess(parser, " --email NONE", expected);
+    }
+
+    @Test
     public void parse_singleStatusCriteria_returnsFilterCommand() throws Exception {
         FilterCommand expected = createExpectedFilterCommand(singleParamFilter(FilterType.STATUS, "TARGET"),
                 Collections.emptyList());
