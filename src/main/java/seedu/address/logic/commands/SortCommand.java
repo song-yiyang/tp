@@ -215,7 +215,7 @@ public class SortCommand extends Command {
     }
 
     private String getTagValue(Person person, String tagName) {
-        return person.getTags().filterTagCaseInsensitive(tagName).orElse(null);
+        return person.getTags().getTagValueCaseInsensitive(tagName).orElse(null);
     }
 
     private Long parseLongOrNull(String value) {

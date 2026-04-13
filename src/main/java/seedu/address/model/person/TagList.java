@@ -80,12 +80,26 @@ public class TagList {
     }
 
     /**
+     * Returns a list containing the values of tags with names containing the given search string,
+     * ignoring case, if it exists.
+     *
+     * @param searchString The substring for the tag names to search for, case-insensitive.
+     * @return A list containing the values of any tags found, or an empty list if none found.
+     */
+    public List<String> filterTagCaseInsensitive(String searchString) {
+        return this.tags.entrySet().stream()
+                .filter(tag -> tag.getKey().toLowerCase().contains(searchString.toLowerCase()))
+                .map(Map.Entry::getValue)
+                .toList();
+    }
+
+    /**
      * Returns an Optional containing the value of the tag with the given name, ignoring case, if it exists.
      *
      * @param tagName The name of the tag to search for, case-insensitive.
      * @return An Optional containing the value of the tag if found, or an empty Optional if not found.
      */
-    public Optional<String> filterTagCaseInsensitive(String tagName) {
+    public Optional<String> getTagValueCaseInsensitive(String tagName) {
         return this.tags.entrySet().stream()
                 .filter(tag -> tag.getKey().equalsIgnoreCase(tagName))
                 .findFirst()

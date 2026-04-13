@@ -11,7 +11,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
  * Represents a filter on a tag, either by tag name alone or by tag name and value.
  */
 public class TagFilter {
-    public final String tagName;
+    private final String tagName;
     private final String tagValue;
 
     /**
@@ -36,6 +36,10 @@ public class TagFilter {
         } catch (IllegalValueException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    public String getTagName() {
+        return tagName;
     }
 
     public Optional<String> getTagValue() {
